@@ -164,6 +164,8 @@ namespace RolzOrgEnchancer
                 var json = webClient.DownloadString(RoomLog);
                 // Now parse with JSON.Net
                 textBox1.Text = json;
+
+
             }
         }
 

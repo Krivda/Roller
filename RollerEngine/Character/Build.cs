@@ -82,6 +82,7 @@ namespace RollerEngine.Character
         public class Backgrounds
         {
             public const string Ansestors = "Poison";
+
             public const string SpiritHeritage = "SpiritHeritage";
         }
 
