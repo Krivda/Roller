@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 using Microsoft.Win32;
 using System.Diagnostics;
+using Newtonsoft.Json;
 
 namespace RolzOrgEnchancer
 {
@@ -165,6 +166,10 @@ namespace RolzOrgEnchancer
                 // Now parse with JSON.Net
                 textBox1.Text = json;
 
+                RootObject r = JsonConvert.DeserializeObject<RootObject>(json);
+
+                MessageBox.Show(r.room.name);
+                MessageBox.Show(r.items.Last().details);
 
             }
         }
