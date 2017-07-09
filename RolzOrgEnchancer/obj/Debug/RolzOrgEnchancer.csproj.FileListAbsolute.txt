@@ -1,9 +1,0 @@
-D:\Projects\GitHub\serial\Roller\RolzOrgEnchancer\bin\Debug\RolzOrgEnchancer.exe.config
-D:\Projects\GitHub\serial\Roller\RolzOrgEnchancer\bin\Debug\RolzOrgEnchancer.exe
-D:\Projects\GitHub\serial\Roller\RolzOrgEnchancer\bin\Debug\RolzOrgEnchancer.pdb
-D:\Projects\GitHub\serial\Roller\RolzOrgEnchancer\obj\Debug\RolzOrgEnchancer.csprojResolveAssemblyReference.cache
-D:\Projects\GitHub\serial\Roller\RolzOrgEnchancer\obj\Debug\RolzOrgEnchancer.Form1.resources
-D:\Projects\GitHub\serial\Roller\RolzOrgEnchancer\obj\Debug\RolzOrgEnchancer.Properties.Resources.resources
-D:\Projects\GitHub\serial\Roller\RolzOrgEnchancer\obj\Debug\RolzOrgEnchancer.csproj.GenerateResource.Cache
-D:\Projects\GitHub\serial\Roller\RolzOrgEnchancer\obj\Debug\RolzOrgEnchancer.exe
-D:\Projects\GitHub\serial\Roller\RolzOrgEnchancer\obj\Debug\RolzOrgEnchancer.pdb

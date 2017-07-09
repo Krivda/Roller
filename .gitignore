@@ -2,4 +2,12 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/RollerEngine/obj/Debug
+*.suo
+*.sdf
+packages
+/RollerEngine/obj
+/RollerEngine/bin
+/RollerEngine/.vs
+/RolzOrgEnchancer/obj
+/RolzOrgEnchancer/bin
+/RolzOrgEnchancer/.vs
