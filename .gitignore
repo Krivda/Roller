@@ -4,7 +4,6 @@
 
 *.suo
 *.sdf
-packages
 /RollerEngine/obj
 /RollerEngine/bin
 /RollerEngine/.vs
