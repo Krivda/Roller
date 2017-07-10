@@ -10,3 +10,6 @@
 /RolzOrgEnchancer/obj
 /RolzOrgEnchancer/bin
 /RolzOrgEnchancer/.vs
+/packages
+/UnitTests/bin/Debug
+/UnitTests/obj/Debug

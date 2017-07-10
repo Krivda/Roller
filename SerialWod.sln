@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RolzOrgEnchancer", "RolzOrg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RollerEngine", "RollerEngine\RollerEngine.csproj", "{91CAFB5A-5FDC-4244-9479-B9E18C45D2A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{13444BDA-F8CF-45AC-BDC2-A07DF27F1007}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{91CAFB5A-5FDC-4244-9479-B9E18C45D2A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91CAFB5A-5FDC-4244-9479-B9E18C45D2A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91CAFB5A-5FDC-4244-9479-B9E18C45D2A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13444BDA-F8CF-45AC-BDC2-A07DF27F1007}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13444BDA-F8CF-45AC-BDC2-A07DF27F1007}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13444BDA-F8CF-45AC-BDC2-A07DF27F1007}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13444BDA-F8CF-45AC-BDC2-A07DF27F1007}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

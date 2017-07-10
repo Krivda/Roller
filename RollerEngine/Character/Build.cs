@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RollerEngine.Character.Modifiers;
 
 namespace RollerEngine.Character
 {
-    class Build
+    public class Build
     {
         public class Atributes
         {
@@ -81,12 +79,62 @@ namespace RollerEngine.Character
 
         public class Backgrounds
         {
-            public const string Ansestors = "Poison";
-
-            public const string SpiritHeritage = "SpiritHeritage";
+            public const string Ansestors = "Ansestors";
+            public const string SpiritHeritage = "Spirit Heritage";
         }
 
+        public class RollableTraits
+        {
+            public const string Will = "Will";
+            public const string Gnosis = "Gnosis";
+            public const string Rage = "Rage";
+        }
 
+        public Dictionary<string, int> Traits = new Dictionary<string, int>();
+        
+        public List<TraitModifier> TraitModifiers { get; set; } = new List<TraitModifier>();
+        public List<DCModifer> DCModifiers { get; set; } = new List<DCModifer>();
+        public List<BonusModifier> BonusDicePoolModifiers { get; set; } = new List<BonusModifier>();
 
+        public List<DCModifer> BonusDCModifiers { get; set; } = new List<DCModifer>();
+        public object Name { get; set; }
+
+        public Build(string name)
+        {
+            Name = name;
+            InitTraits();
+        }
+
+        private void InitTraits()
+        {
+
+            AddTraits(typeof(Abilities));
+            AddTraits(typeof(Atributes));
+            AddTraits(typeof(Backgrounds));
+            AddTraits(typeof(RollableTraits));
+        }
+
+        protected void AddTraits(Type clazz)
+        {
+            foreach (var field in clazz.GetFields())
+            {
+                Traits.Add(field.Name, 0);
+            }
+        }
+
+        public void AddTraitModifer(TraitModifier modifer)
+        {
+            TraitModifiers.Add(modifer);
+        }
+
+        public void AddDCModifer(DCModifer modifer)
+        {
+            DCModifiers.Add(modifer);
+        }
+
+        public void AddDicePoolBonusModifer(BonusModifier modifier)
+        {
+            BonusDicePoolModifiers.Add(modifier);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace RollerEngine.Rolls
 {
@@ -14,7 +15,7 @@ namespace RollerEngine.Rolls
 
         public void Log(string record)
         {
-            buf.Append($"{record}\n");
+            buf.Append(string.Format("{0}\n", record));
         }
 
 
