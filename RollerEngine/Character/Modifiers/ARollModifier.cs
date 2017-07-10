@@ -14,12 +14,12 @@ namespace RollerEngine.Character.Modifiers
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public string Name { get; }
-        public int Value { get; }
+        public string Name { get; private set; }
+        public int Value { get; private set; }
 
-        public List<string> Traits { get; }
-        public DurationType Duration { get; }
-        private List<string> Condtions { get; }
+        public List<string> Traits { get; private set; }
+        public DurationType Duration { get; private set; }
+        private List<string> Condtions { get; set; }
 
         protected ARollModifer(string name, List<string> traits, DurationType duration, List<string> condtions, int value)
         {

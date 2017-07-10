@@ -14,8 +14,8 @@ namespace RollerEngine.Character.Modifiers
             AdditionalDice = 3
         }
 
-        public BonusTypeKind BonusType { get; }
-        public int Limit { get; }
+        public BonusTypeKind BonusType { get; private set; }
+        public int Limit { get; private set; }
 
         public TraitModifier(string name, List<string> traits, DurationType duration, List<string> condtions, int value, BonusTypeKind bonusType) : base(name, traits, duration, condtions, value)
         {

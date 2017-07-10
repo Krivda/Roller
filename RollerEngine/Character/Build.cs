@@ -92,11 +92,11 @@ namespace RollerEngine.Character
 
         public Dictionary<string, int> Traits = new Dictionary<string, int>();
         
-        public List<TraitModifier> TraitModifiers { get; set; } = new List<TraitModifier>();
-        public List<DCModifer> DCModifiers { get; set; } = new List<DCModifer>();
-        public List<BonusModifier> BonusDicePoolModifiers { get; set; } = new List<BonusModifier>();
+        public List<TraitModifier> TraitModifiers = new List<TraitModifier>();
+        public List<DCModifer> DCModifiers = new List<DCModifer>();
+        public List<BonusModifier> BonusDicePoolModifiers = new List<BonusModifier>();
 
-        public List<DCModifer> BonusDCModifiers { get; set; } = new List<DCModifer>();
+        public List<DCModifer> BonusDCModifiers = new List<DCModifer>();
         public object Name { get; set; }
 
         public Build(string name)

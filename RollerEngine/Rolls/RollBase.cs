@@ -17,10 +17,10 @@ namespace RollerEngine.Rolls
         private readonly ILogger _log;
         private readonly IRoller _roller;
 
-        public string Name { get; }
-        public List<string> DicePool { get; }
-        public bool RemoveSuccessesOn1 { get; }
-        public List<string> Conditions { get; }
+        public string Name { get; private set; }
+        public List<string> DicePool { get; private set; }
+        public bool RemoveSuccessesOn1 { get; private set; }
+        public List<string> Conditions { get; private set; }
 
         public class TraitValueInfo
         {
