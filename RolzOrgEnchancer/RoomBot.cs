@@ -9,79 +9,6 @@ using Newtonsoft.Json;
 
 namespace RolzOrgEnchancer
 {
-
-    class RoomLogParser
-    {
-        private const string room_log_prefix = "https://rolz.org/api/roomlog?room=";
-        private Uri room_log;
-
-        public RoomLogParser(string room_name)
-        {
-            this.room_log = new System.Uri(room_log_prefix + room_name, System.UriKind.Absolute);
-        }
-
-        public string  GetRawLog()
-        {
-            string json;
-            using (var webClient = new System.Net.WebClient())
-            {
-                json = webClient.DownloadString(room_log);
-            }
-            return json;
-        }
-
-        public RoomLog.RootObject GetLog()
-        {
-            var json = GetRawLog();
-            //Now parse with JSON.Net
-            return JsonConvert.DeserializeObject<RoomLog.RootObject>(json);
-        }
-
-        public bool ParseLog(string message)
-        {
-            RoomLog.RootObject log = GetLog();
-            try
-            {
-                var item = log.items.Last(m => (m.type.Equals("txtmsg") && m.text.Equals(message)));
-                Program.Log("ParseLog: time=" + item.time);
-                return true;
-            }
-            catch (System.InvalidOperationException)
-            {
-            }
-            return false;
-        }
-
-        public bool ParseRoll(int roll_id)
-        {
-            RoomLog.RootObject log = GetLog();
-            try
-            {
-                var item = log.items.Last(m => (m.type.Equals("dicemsg") && (null!=m.comment) && m.comment.Equals("roll_id="+roll_id.ToString())));
-                Program.Log("ParseRoll: time=" + item.time + " input=" + item.input + " result=" + item.result +
-                    " details=" + item.details);
-                
-                if (null != item.tags)
-                {
-                    string tag_info = "";
-                    foreach (var tag in item.tags)
-                    {
-                        tag_info += (tag.k.ToString() + "=" + tag.v.ToString() + ";");
-                    }
-                    Program.Log("tags=" + item.tags.Count + " : " + tag_info);
-                }
-                
-                return true;
-            }
-            catch (System.InvalidOperationException)
-            {
-            }
-            return false;
-        }
-    }
-
-    //item.detail; /* "( (6, 4, 3, 4, 9, 5  \u2192 2 successes against 6) )" - need to parse to understand results */
-
     /*
     class IRoomBot
     {
@@ -98,7 +25,8 @@ namespace RolzOrgEnchancer
     {
         static Thread thread;
         static IRolzOrg browser;
-        static RoomLogParser parser = new RoomLogParser(default_room_name);
+        static IFormUpdate updater;
+        static RoomLog.Parser parser = new RoomLog.Parser(default_room_name);
         const string default_room_name = "Hatys%20Test";
 
         static int ticks = 0;
@@ -152,8 +80,6 @@ namespace RolzOrgEnchancer
                 await Task.Delay(100);
             Program.Log("Worker: Inside room");
 
-            
-
             //Establish session
             int connection_attempt = 0;
             string connection_message;
@@ -161,7 +87,7 @@ namespace RolzOrgEnchancer
             {
                 Random n = new Random(unchecked((int)DateTime.Now.Ticks));
                 connection_message = "establishing session #" + n.Next().ToString() + "...";
-            } while (parser.ParseLog(connection_message));
+            } while (null != parser.MatchMessage(connection_message));
             for (;;)
             {
                 //repeat message each 5 secs
@@ -170,9 +96,11 @@ namespace RolzOrgEnchancer
                     SetMessage(connection_message, true);
                 }
 
-                if (parser.ParseLog(connection_message))
+                var item = parser.MatchMessage(connection_message);
+                if (null != item)
                 {
                     Program.Log("Worker: session was established");
+                    parser.SetSessionTime(item.time);
                     break;
                     //return true;
                 }
@@ -190,10 +118,10 @@ namespace RolzOrgEnchancer
 
             for (int n = 0; n < 5; n++)
             {
-                SetMessage("#6d10f5 #roll_id=" + n.ToString(), false);
+                SetMessage("#8d10f5 #roll_id=" + n.ToString(), false);
                 for (; ; )
                 {
-                    if (parser.ParseRoll(n))
+                    if (null != parser.MatchRoll(n))
                     {
                         Program.Log("Worker: roll was found");
                         break;
@@ -209,10 +137,9 @@ namespace RolzOrgEnchancer
 
         static public void OnGuiTick()
         {            
-            Program.ProcessLogQueue();
-            if (0 == ticks++ % 20) Program.logger.LogRoomLog(parser.GetRawLog());
-            Program.logger.UpdateActionQueueDepth(action_queue.Count);
-            //Program.logger.LogRoomLog();
+            Program.safe_log.ProcessLogQueue();
+            if (0 == ticks++ % 30) updater.LogRoomLog(parser.GetSessionRoomLogParsed());
+            updater.UpdateActionQueueDepth(action_queue.Count);
             var message = GetMessage();
             if (null != message)
             {
@@ -221,7 +148,6 @@ namespace RolzOrgEnchancer
                 else
                     browser.SendMessage(message);
             }
-            //Program.Log - process log here
         }
 
         static public void OnGuiAction(string action)
@@ -230,14 +156,15 @@ namespace RolzOrgEnchancer
             action_queue.Enqueue(action);
         }
 
-        static public void OnGuiStarted(IRolzOrg _browser)
+        static public void OnGuiStarted(IRolzOrg _browser, IFormUpdate _updater)
         {
             thread = new Thread(Worker);
             thread.IsBackground = true;
-            thread.Start();
             browser = _browser;
+            updater = _updater;
             action_queue = new ConcurrentQueue<string>();
             browser.JoinRoom(default_room_name);
+            thread.Start();
         }
 
     }

@@ -49,13 +49,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DicePoolRoll.cs" />
+    <Compile Include="RoomLog\Parser.cs" />
+    <Compile Include="UI\SafeLog.cs" />
     <Compile Include="UI\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interfaces\ILogger.cs" />
+    <Compile Include="Interfaces\IFormUpdate.cs" />
     <Compile Include="Interfaces\IRolzOrg.cs" />
     <Compile Include="UI\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

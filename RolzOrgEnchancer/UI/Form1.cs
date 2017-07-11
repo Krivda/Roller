@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace RolzOrgEnchancer
 {
-    public partial class Form1 : Form, ILogger
+    public partial class Form1 : Form, IFormUpdate
     {                      
         public Form1()
         {            
@@ -11,6 +11,7 @@ namespace RolzOrgEnchancer
             InitializeComponent();
         }
 
+        #region IFormUpdate interface
         public void Log(string log_message)
         {
             textBox2.AppendText(log_message + "\r\n");
@@ -26,7 +27,9 @@ namespace RolzOrgEnchancer
         {
             toolStripLabel1.Text = "depth=" + depth.ToString("000");
         }
+        #endregion
 
+        #region Handlers
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
             RoomBot.OnGuiAction("Action1");
@@ -59,8 +62,9 @@ namespace RolzOrgEnchancer
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            RoomBot.OnGuiStarted(webBrowser1);
+            RoomBot.OnGuiStarted(webBrowser1, this);
         }
+        #endregion
 
     }
 }

@@ -6,9 +6,11 @@ namespace RolzOrgEnchancer
 {
     class RolzWebBrowser : WebBrowser, IRolzOrg
     {
+
         //
         // These static metods are required to configure ie settings
         //
+        #region IE settings
         static private UInt32 GetBrowserEmulationMode()
         {
             int browserVersion = 7;
@@ -93,6 +95,7 @@ namespace RolzOrgEnchancer
             SetBrowserFeatureControlKey("FEATURE_WINDOW_RESTRICTIONS ", fileName, 0);
             SetBrowserFeatureControlKey("FEATURE_XMLHTTP", fileName, 1);
         }
+        #endregion
 
         private const string inframe_prefix = "https://rolz.org/wiki/inframe";
         private const string room_prefix = "https://rolz.org/dr?room=";
@@ -120,11 +123,11 @@ namespace RolzOrgEnchancer
             //almost not interested in child documents
             if (this.Document.Window.Frames.Count != 0)
             {
-                if (completed_url.Equals(inframe_entered))
+                if (completed_url.Equals(this.inframe_entered))
                 {
                     Program.Log("on DocumentCompleted: Room Entered - InFrame (" + completed_url.ToString() + ")");
                 }
-                room_entered = true;
+                this.room_entered = true;
                 return;
             }
 
@@ -156,7 +159,7 @@ namespace RolzOrgEnchancer
                     Program.Log("on blank Navigating: url= " + url);
                     return;
                 }
-                if (url == room.ToString())
+                if (url == this.room.ToString())
                 {
                     Program.Log("on room Navigating: url= " + url);
                     return;
@@ -172,9 +175,13 @@ namespace RolzOrgEnchancer
             // 
             // RolzWebBrowser
             // 
+            this.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.IsWebBrowserContextMenuEnabled = false;
+            this.TabStop = false;
             this.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.onDocumentCompleted);
             this.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.onNavigating);
             this.ResumeLayout(false);
+
         }
 
         public RolzWebBrowser() : base()
@@ -182,28 +189,29 @@ namespace RolzOrgEnchancer
             InitializeComponent();
         }
 
+        #region IRolzOrg interface
         public void JoinRoom(string room_name)
         {
-            this.room = new System.Uri("https://rolz.org/dr?room=" + room_name, System.UriKind.Absolute);
-            this.inframe_entered = new System.Uri("https://rolz.org/wiki/inframe?w=help&n=index", System.UriKind.Absolute);
+            this.room = new Uri(room_prefix + room_name, UriKind.Absolute);
             this.room_entered = false;
-            this.Url = room;
+            Url = room;
         }
 
         public bool RoomEntered()
         {
-            return room_entered;
+            return this.room_entered;
         }
 
         public void SendMessage(string message)
         {
-            this.Document.InvokeScript("eval", new object[] { "window.sendLine('" + message + "');" });
+            Document.InvokeScript("eval", new object[] { "window.sendLine('" + message + "');" });
         }
 
         public void SendSystemMessage(string message)
         {
-            this.Document.InvokeScript("eval", new object[] { "window.sendLine('red:" + message + "');" });
+            Document.InvokeScript("eval", new object[] { "window.sendLine('red:" + message + "');" });
         }
+        #endregion
 
     }
 }
