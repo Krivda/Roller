@@ -74,21 +74,21 @@ namespace RollerEngine.Roller
 
             for (int i = 0; i < _diceFace; i++)
             {
-                int mulipler = 1;
+                int multiplier = 1;
                 if (removeSuccessOnOnes && i + 1 == 1)
                 {
-                    mulipler = -1;
+                    multiplier = -1;
                 }
                 else if (i +1 < DC)
                 {
-                    mulipler = 0;
+                    multiplier = 0;
                 }
                 else if (hasSpecialization && i + 1 == _diceFace)
                 {
-                    mulipler = 2;
+                    multiplier = 2;
                 }
 
-                successCount += roll[i] * mulipler;
+                successCount += roll[i] * multiplier;
             }
 
             if (successCount < 0 && hasWill)

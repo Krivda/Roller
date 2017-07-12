@@ -30,16 +30,16 @@ namespace RollerEngine.Character.Modifiers
             Condtions = condtions;
         }
 
-        public bool ConditionsMet(List<string> condtions)
+        public bool ConditionsMet(List<string> rollConditions)
         {
             bool conditionsMet = false;
-            if (condtions.Count == 0)
+            if (Condtions.Count == 0)
             {
                 conditionsMet = true;
             }
             else
             {
-                foreach (var condtion in condtions)
+                foreach (var condtion in rollConditions)
                 {
                     conditionsMet = Condtions.Contains(condtion);
                     if (conditionsMet)

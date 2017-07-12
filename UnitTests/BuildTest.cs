@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using RollerEngine.Character;
 using RollerEngine.Character.Modifiers;
@@ -34,8 +30,6 @@ namespace UnitTests
             bool hasSpec = true;
             bool hasWill = true;
             bool remove1 = true;
-
-
 
             RollBase roll = new RollBase(name, logger, roller, dicepool, remove1, new List<string>() );
             var info =  roll.GetRollInfo(build, new List<Build> {build});
@@ -120,5 +114,84 @@ namespace UnitTests
             Assert.AreEqual(brawl + 2, info.DicePoolInfo.Traits[Build.Abilities.Brawl].ModifiedValue, "brawl");
             
         }
+
+        [Test(Description = "Test conditions")]
+        public void RollTestConditionsMods()
+        {
+            var roller = new OfflineDiceRoller();
+            ILogger logger = null;
+
+            Build build = new Build("Artze");
+            int dex = 3;
+            int brawl = 3;
+
+            build.Traits[Build.Atributes.Dexterity] = dex;
+            build.Traits[Build.Abilities.Brawl] = brawl;
+
+            string name = "Attack!";
+            var targets = new List<Build> { build };
+            var dicepool = new List<string> { Build.Atributes.Dexterity, Build.Abilities.Brawl };
+            var conditions = new List<string>();
+            bool hasSpec = true;
+            bool hasWill = true;
+            bool remove1 = true;
+
+            var crinos = new TraitModifier("crinos", new List<string> { Build.Atributes.Dexterity }, DurationType.Scene, conditions, 1, TraitModifier.BonusTypeKind.TraitMod);
+            build.AddTraitModifer(crinos);
+
+
+            string conSunny = "Sunny";
+            var sunny = new TraitModifier("Weather is sunny", new List<string> { Build.Atributes.Dexterity }, DurationType.Scene, new List<string> { conSunny }, 2, TraitModifier.BonusTypeKind.TraitMod);
+            build.AddTraitModifer(sunny);
+
+
+            RollBase roll = new RollBase(name, logger, roller, dicepool, remove1, new List<string>());
+            var info = roll.GetRollInfo(build, new List<Build> { build });
+            roll.Roll(build, targets, hasSpec, hasWill);
+
+            //nothing  changed, Sunny don't apply
+            Assert.AreEqual(dex + brawl + 1, info.DicePoolInfo.Dices, "dice pool");
+            Assert.AreEqual(dex + 1, info.DicePoolInfo.Traits[Build.Atributes.Dexterity].ModifiedValue, "dex value");
+            Assert.AreEqual(brawl, info.DicePoolInfo.Traits[Build.Abilities.Brawl].ModifiedValue, "brawl");
+
+
+            roll = new RollBase(name, logger, roller, dicepool, remove1, new List<string>() { conSunny });
+            info = roll.GetRollInfo(build, new List<Build> { build });
+            roll.Roll(build, targets, hasSpec, hasWill);
+
+            //nothing  changed, Sunny don't apply
+            Assert.AreEqual(dex + brawl + 1 +2, info.DicePoolInfo.Dices, "dice pool");
+            Assert.AreEqual(dex + 1 +2, info.DicePoolInfo.Traits[Build.Atributes.Dexterity].ModifiedValue, "dex value");
+            Assert.AreEqual(brawl, info.DicePoolInfo.Traits[Build.Abilities.Brawl].ModifiedValue, "brawl");
+
+            //all rolls in umbra have +1
+            string inUmbraName = "umbra";
+            var inUmbra = new BonusModifier("in umbra", DurationType.Scene, new List<string>() { inUmbraName } , 3);
+            build.AddDicePoolBonusModifer(inUmbra);
+
+            roll = new RollBase(name, logger, roller, dicepool, remove1, new List<string>() { conSunny });
+            info = roll.GetRollInfo(build, new List<Build> { build });
+            roll.Roll(build, targets, hasSpec, hasWill);
+
+            //nothing  changed, Umbra don't apply
+            Assert.AreEqual(dex + brawl + 1 + 2, info.DicePoolInfo.Dices, "dice pool");
+            Assert.AreEqual(dex + 1 + 2, info.DicePoolInfo.Traits[Build.Atributes.Dexterity].ModifiedValue, "dex value");
+            Assert.AreEqual(brawl, info.DicePoolInfo.Traits[Build.Abilities.Brawl].ModifiedValue, "brawl");
+
+            //apply umbra
+            roll = new RollBase(name, logger, roller, dicepool, remove1, new List<string>() { conSunny, inUmbraName });
+            info = roll.GetRollInfo(build, new List<Build> { build });
+            roll.Roll(build, targets, hasSpec, hasWill);
+
+            //Umbra applied
+            Assert.AreEqual(dex + brawl + 1 + 2 +3, info.DicePoolInfo.Dices, "dice pool");
+            Assert.AreEqual(dex + 1 + 2 + 3, info.DicePoolInfo.Traits[Build.Atributes.Dexterity].ModifiedValue, "dex value");
+            Assert.AreEqual(brawl, info.DicePoolInfo.Traits[Build.Abilities.Brawl].ModifiedValue, "brawl");
+
+
+
+        }
     }
 }
+
+
