@@ -81,7 +81,7 @@ namespace Makedonsky.MapLogic.SpreadSheets
 
             try
             {
-                data = SpreadsheetService.GetSpreadsheetRange(spreadsheetId, range);
+                data = GetSpreadsheetRange(spreadsheetId, range);
             }
             catch (Exception e)
             {

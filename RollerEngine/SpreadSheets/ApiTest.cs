@@ -31,11 +31,13 @@ namespace RollerEngine.SpreadSheets
 
         public static void Test()
         {
-
             UserCredential credential;
 
-            using (var stream =
-                new FileStream(AssemblyDirectory + @"\SpreadSheets\client_secret.json", FileMode.Open, FileAccess.Read))
+            var path = AssemblyDirectory + @"\SpreadSheets\client_secret.json";
+            if (!File.Exists(path))
+                throw new FileNotFoundException(path);
+
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 string credPath = System.Environment.GetFolderPath(
                     System.Environment.SpecialFolder.Personal);
