@@ -75,6 +75,21 @@ namespace RollerEngine.Character
             public const string Poison = "Poison";
             public const string WyrmLore = "Wyrm Lore";
             public const string SpiritLore = "Spirit Lore";
+
+            //strange
+            public const string Mimicry = "Mimicry";
+            public const string Search = "Search";
+            public const string Swimming = "Swimming";
+            public const string Ventriloquism = "Ventriloquism";
+            public const string Gambling = "Gambling";
+            public const string Kailindo = "Kailindo";
+            public const string Wrestling = "Wrestling";
+            public const string Gesture = "Gesture";
+            public const string Stickball = "Stickball";
+            public const string Iskakku = "Iskakku";
+            public const string FaerieLore = "Faerie Lore";
+            public const string TribalLore = "Tribal Lore";
+            public const string AnimalLore = "Animal Lore";
         }
 
         public class Backgrounds
@@ -85,7 +100,7 @@ namespace RollerEngine.Character
 
         public class RollableTraits
         {
-            public const string Will = "Will";
+            public const string Willpower = "Willpower";
             public const string Gnosis = "Gnosis";
             public const string Rage = "Rage";
         }
@@ -118,7 +133,7 @@ namespace RollerEngine.Character
         {
             foreach (var field in clazz.GetFields())
             {
-                Traits.Add(field.Name, 0);
+                Traits.Add(field.GetValue(null).ToString(), 0);
             }
         }
 
