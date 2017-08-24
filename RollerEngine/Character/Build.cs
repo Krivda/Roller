@@ -105,6 +105,12 @@ namespace RollerEngine.Character
             public const string Rage = "Rage";
         }
 
+        public class Conditions
+        {
+            public const string AncestorSpirits = "Ancestor Spirits";
+            public const string Social = "Social";
+        }
+
         public Dictionary<string, int> Traits = new Dictionary<string, int>();
         
         public List<TraitModifier> TraitModifiers = new List<TraitModifier>();

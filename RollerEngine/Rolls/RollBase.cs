@@ -12,14 +12,15 @@ namespace RollerEngine.Rolls
     {
         private const int BASE_DC = 6;
         private const int MIN_DC = 3;
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        //private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly ILogger _log;
-        private readonly IRoller _roller;
+        protected readonly ILogger _log;
+        protected readonly IRoller _roller;
 
         public string Name { get; private set; }
         public List<string> DicePool { get; private set; }
         public bool RemoveSuccessesOn1 { get; private set; }
+        public bool CanBotch { get; private set; }
         public List<string> Conditions { get; private set; }
 
         public class TraitValueInfo
@@ -73,24 +74,90 @@ namespace RollerEngine.Rolls
         }
 
 
-        public RollBase(string name, ILogger log, IRoller roller,  List<String> dicePool, bool removeSuccessesOn1,  List<string> conditions)
+        public RollBase(string name, ILogger log, IRoller roller,  List<String> dicePool, bool removeSuccessesOn1, bool canBotch, List<string> conditions)
         {
             _log = log;
             _roller = roller;
             Name = name;
             DicePool = dicePool;
             RemoveSuccessesOn1 = removeSuccessesOn1;
+            CanBotch = canBotch;
             Conditions = conditions;
         }
 
-        public int Roll(Build actor, List<Build> targets, bool hasSpec, bool hasWill)
+        protected virtual int Roll(Build actor, List<Build> targets, bool hasSpec, bool hasWill)
         {
+            StringBuilder logMessageBefore = new StringBuilder(500);
+            logMessageBefore.AppendLine();
+
+            StringBuilder targetsStr = new StringBuilder(100);
+            string delim = "";
+            foreach (var target in targets)
+            {
+                targetsStr.Append(string.Format("{0}{1}", delim, target.Name));
+                delim = ", ";
+            }
+
+            //Artze is rolling bless in Artze, Keltur with Specialization, with Will
+            logMessageBefore.AppendFormat("{0} is rolling {1} on {2}", actor.Name, Name, targetsStr);
+
+            if (hasSpec)
+                logMessageBefore.Append(" with Specilization");
+            if (hasWill)
+                logMessageBefore.Append(" with Will");
+
+            logMessageBefore.Append(".");
+
+            _log.Log(Verbosity.Details, logMessageBefore.ToString());
+
             RollInfo info = GetRollInfo(actor, targets);
 
             string logMessage = GetLogForRoll(actor, targets, info, hasSpec, hasWill);
-            logger.Info(logMessage);
+            _log.Log(Verbosity.Important, string.Format(logMessage));
 
             int successes = _roller.Roll(info.DicePoolInfo.Dices, info.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill, Name);
+
+            //remove used modifiers
+            foreach (var traitValueInfo in info.DicePoolInfo.Traits)
+            {
+                foreach (var valueModifirer in traitValueInfo.Value.Modifires)
+                {
+                    if (valueModifirer.Item2.Duration == DurationType.Roll)
+                    {
+                        actor.TraitModifiers.Remove(valueModifirer.Item2);
+                    }
+                }
+            }
+
+            foreach (var bonusModifier in info.DicePoolInfo.BonusDices.Modifires)
+            {
+                    if (bonusModifier.Item2.Duration == DurationType.Roll)
+                    {
+                        actor.BonusDicePoolModifiers.Remove(bonusModifier.Item2);
+                    }
+            }
+
+            foreach (var traitDCModifiers in info.DCInfo.Traits.Values)
+            {
+                foreach (var dcModifier in traitDCModifiers.Modifires)
+                {
+                    if (dcModifier.Item2.Duration == DurationType.Roll)
+                    {
+                        actor.DCModifiers.Remove(dcModifier.Item2);
+                    }
+                }
+            }
+
+            foreach (var bonusDCModifier in info.DCInfo.BonusModifers.Modifires)
+            {
+                if (bonusDCModifier.Item2.Duration == DurationType.Roll)
+                {
+                    actor.BonusDCModifiers.Remove(bonusDCModifier.Item2);
+                }
+            }
+
+            if (CanBotch && successes < 0)
+                throw new BotchException(string.Format("{0} roll botched on {1} successes.", Name, successes));
 
             return successes;
          }
@@ -141,7 +208,7 @@ namespace RollerEngine.Rolls
             {
                 if (!modifier.ConditionsMet(conditions))
                 {
-                    logger.Debug("Modifier {0} conditions aren't met.", modifier.Name);
+                    _log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {
@@ -157,7 +224,7 @@ namespace RollerEngine.Rolls
                     {
                         triatValue += modValueLimitedValue;
                         modValue = modValueLimitedValue;
-                        logger.Warn("Modifer {0} is overcapped. Value set to {1}", modifier.Name, modValueLimitedValue);
+                        _log.Log(Verbosity.Warning, string.Format("Modifer {0} is overcapped. Value set to {1}.", modifier.Name, modValueLimitedValue));
                     }
 
                     appliedMods.Add(new Tuple<int, TraitModifier>(modValue, modifier));
@@ -170,7 +237,6 @@ namespace RollerEngine.Rolls
         private BonusValueInfo GetBonusDices(Build actor, List<Build> targets, List<string> conditions)
         {
             var appliedMods = new List<Tuple<int, BonusModifier>>();
-
             int value = 0;
 
             var modifiers = actor.BonusDicePoolModifiers;
@@ -179,7 +245,7 @@ namespace RollerEngine.Rolls
             {
                 if (!modifier.ConditionsMet(conditions))
                 {
-                    logger.Debug("Modifier {0} conditions aren't met.", modifier.Name);
+                    _log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {
@@ -213,7 +279,7 @@ namespace RollerEngine.Rolls
             //hadle limited value
             if (adjectedDC < MIN_DC)
             {
-                logger.Warn("DC was lesser then min, adjusted to ${0}", MIN_DC);
+                _log.Log(Verbosity.Warning, string.Format("DC was lesser then min, adjusted to ${0}.", MIN_DC));
                 dcInfo.AdjustedDC = MIN_DC;
             }
             else
@@ -235,7 +301,7 @@ namespace RollerEngine.Rolls
 
             if (!actor.Traits.ContainsKey(traitName))
             {
-                throw new Exception(string.Format("Trait {0} is not found", traitName));
+                throw new Exception(string.Format("Trait {0} is not found.", traitName));
             }
             int adjustedValue = 0;
 
@@ -245,7 +311,7 @@ namespace RollerEngine.Rolls
             {
                 if (!modifier.ConditionsMet(conditions))
                 {
-                    logger.Debug("Modifier {0} conditions aren't met.", modifier.Name);
+                    _log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {
@@ -271,7 +337,7 @@ namespace RollerEngine.Rolls
             {
                 if (!modifier.ConditionsMet(conditions))
                 {
-                    logger.Debug("Modifier {0} conditions aren't met.", modifier.Name);
+                    _log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {
@@ -288,27 +354,8 @@ namespace RollerEngine.Rolls
         {
             StringBuilder logMessage = new StringBuilder(500);
 
-            StringBuilder targetsStr = new StringBuilder(100);
-            string delim = "";
-            foreach (var target in targets)
-            {
-                targetsStr.Append(string.Format("{0}{1}", delim, target.Name));
-                delim = ", ";
-            }
-
-            //Artze is rolling bless in Artze, Keltur with Specialization, with Will
-            logMessage.Append(string.Format("{0} is rolling {1} on {2}", actor.Name, Name, targetsStr));
-
-            if (hasSpec)
-                logMessage.Append(" with Specilization");
-            if (hasWill)
-                logMessage.Append(" with Will");
-
-            logMessage.Append(".");
-            logMessage.AppendLine();
-
             //Strength[8 +1(Crinos) +1(in Umbra)] + Brawl[4 +1(amultet)] +1(all rolls have +1) +4(Spirit Heritage) vs 6 [+1(in umbra) -1 (vs humans)]= 15d10vs6
-            delim = "";
+            string delim = "";
             foreach (var traitInfo in info.DicePoolInfo.Traits.Values)
             {
                 string traitModifiers = GetTraitModifiersLogMessage(traitInfo);
@@ -357,7 +404,7 @@ namespace RollerEngine.Rolls
             message.Append(string.Format("{0}", dcInfo.BaseDC));
             foreach (var modifier in mods)
             {
-                message.Append(string.Format(" {0:+0}({1})", modifier.Value, modifier.Name));
+                message.Append(string.Format(" {0:+#;-#;0}({1})", modifier.Value, modifier.Name));
             }
 
             return message.ToString();
@@ -374,6 +421,18 @@ namespace RollerEngine.Rolls
             }
 
             return message.ToString();
+        }
+    }
+
+    public class BasicRoll : RollBase
+    {
+        public BasicRoll(string name, ILogger log, IRoller roller, List<string> dicePool, bool removeSuccessesOn1, bool canBotch, List<string> conditions) : base(name, log, roller, dicePool, removeSuccessesOn1, canBotch, conditions)
+        {
+        }
+
+        public new int Roll(Build actor, List<Build> targets, bool hasSpec, bool hasWill)
+        {
+            return base.Roll(actor, targets, hasSpec, hasWill);
         }
     }
 }

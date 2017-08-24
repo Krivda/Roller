@@ -67,11 +67,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Character\Build.cs" />
+    <Compile Include="Character\CommonBuffs.cs" />
+    <Compile Include="Character\HatysParty.cs" />
     <Compile Include="Character\HatysPartyLoader.cs" />
+    <Compile Include="Character\Party\Kurt.cs" />
     <Compile Include="Character\Modifiers\BonusModifier.cs" />
     <Compile Include="Character\Modifiers\DCModifer.cs" />
     <Compile Include="Character\Modifiers\TraitModifier.cs" />
     <Compile Include="Character\Modifiers\ARollModifier.cs" />
+    <Compile Include="Character\Party\Nameless.cs" />
+    <Compile Include="Character\Party\Spirdon.cs" />
+    <Compile Include="Character\Party\Yoki.cs" />
+    <Compile Include="Rolls\Backgrounds\Ancestors.cs" />
+    <Compile Include="Rolls\BackgroundRoll.cs" />
+    <Compile Include="Rolls\BotchException.cs" />
+    <Compile Include="Rolls\CompositeLogger.cs" />
+    <Compile Include="Rolls\GiftRoll.cs" />
+    <Compile Include="Rolls\Gifts\GhostPack.cs" />
+    <Compile Include="Rolls\Gifts\Persuasion.cs" />
+    <Compile Include="Rolls\NLogLogger.cs" />
+    <Compile Include="Rolls\StringBufferLogger.cs" />
     <Compile Include="SpreadSheets\ApiTest.cs" />
     <Compile Include="SpreadSheets\SpreadsheetService.cs" />
     <Compile Include="Roller\OfflineDiceRoller.cs" />
@@ -81,7 +96,9 @@
     <Compile Include="Rolls\InstructionTeach.cs" />
     <Compile Include="Rolls\RollBase.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Rolls\Rollchains\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="SpreadSheets\client_secret.json">
