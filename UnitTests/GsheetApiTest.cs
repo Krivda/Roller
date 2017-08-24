@@ -1,6 +1,7 @@
 using Makedonsky.MapLogic.SpreadSheets;
 using NUnit.Framework;
 using RollerEngine.Character;
+using RollerEngine.Rolls;
 using RollerEngine.SpreadSheets;
 
 namespace UnitTests
@@ -24,7 +25,7 @@ namespace UnitTests
         [Test]
         public void TestPartyLoad()
         {
-            var res = HatysPartyLoader.LoadFromGoogle();
+            var res = HatysPartyLoader.LoadFromGoogle(new StringBufferLogger());
 
             Assert.AreEqual(7, res.Count, "should load 7 characters");
 

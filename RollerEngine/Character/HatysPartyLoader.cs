@@ -4,6 +4,8 @@ using System.Linq;
 using Makedonsky.MapLogic.SpreadSheets;
 using NLog;
 using RollerEngine.Character.Modifiers;
+using RollerEngine.Roller;
+using ILogger = RollerEngine.Rolls.ILogger;
 
 namespace RollerEngine.Character
 {
@@ -12,7 +14,13 @@ namespace RollerEngine.Character
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static Dictionary<string, Build> LoadFromGoogle()
+        public static HatysParty LoadParty(ILogger log, IRoller roller)
+        {
+            var partyChars = LoadFromGoogle(log);
+            return new HatysParty(partyChars, log, roller);
+        }
+
+        public static Dictionary<string, Build> LoadFromGoogle(ILogger log)
         {
             Dictionary<string, Build> result = new Dictionary<string, Build>();
 
@@ -86,8 +94,61 @@ namespace RollerEngine.Character
                 }
             }
 
+            //add known modifiers
+            AddKnownModifiers(result);
+
 
             return result;
+        }
+
+        private static void AddKnownModifiers(Dictionary<string, Build> result)
+        {
+            foreach (KeyValuePair<string, Build> buildKvp in result)
+            {
+                //spirit heritage
+                if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur"))
+                {
+                    buildKvp.Value.Traits[Build.Backgrounds.SpiritHeritage] = 5;
+                }
+
+                //Ansestors
+                if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur"))
+                {
+                    buildKvp.Value.Traits[Build.Backgrounds.Ansestors] = 5;
+                }
+
+                if (buildKvp.Key.Equals("Alisa"))
+                {
+                    buildKvp.Value.Traits[Build.Backgrounds.Ansestors] = 2;
+                }
+                if (buildKvp.Key.Equals("Urfin"))
+                {
+                    buildKvp.Value.Traits[Build.Backgrounds.Ansestors] = 1;
+                }
+
+                //Hatys
+                if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur") || buildKvp.Key.Equals("Alisa") || buildKvp.Key.Equals("Urfin"))
+                {
+                    buildKvp.Value.DCModifiers.Add(new DCModifer(
+                        "Hatys",
+                        new List<string>() { Build.Backgrounds.Ansestors },
+                        DurationType.Scene,
+                        new List<string>(),
+                        -2
+                    ));
+                }
+
+                //Sprit heritages
+                if (buildKvp.Value.Traits[Build.Backgrounds.SpiritHeritage] !=0)
+                {
+                    buildKvp.Value.BonusDicePoolModifiers.Add(new BonusModifier(
+                        "Spirit Heritage",
+                        DurationType.Scene,
+                        new List<string>() {Build.Conditions.AncestorSpirits},
+                        buildKvp.Value.Traits[Build.Backgrounds.SpiritHeritage]
+                    ));
+                }
+            }
         }
 
         private static string ProbeLine(Build probeBuild, IList<object> line, int index)

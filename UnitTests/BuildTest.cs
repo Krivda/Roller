@@ -31,7 +31,7 @@ namespace UnitTests
             bool hasWill = true;
             bool remove1 = true;
 
-            RollBase roll = new RollBase(name, logger, roller, dicepool, remove1, new List<string>() );
+            BasicRoll roll = new BasicRoll(name, logger, roller, dicepool, remove1, true, new List<string>() );
             var info =  roll.GetRollInfo(build, new List<Build> {build});
 
             Assert.AreEqual(dex+brawl, info.DicePoolInfo.Dices, "dice pool");
@@ -70,7 +70,7 @@ namespace UnitTests
             var crinos = new TraitModifier("crinos", new List<string> { Build.Atributes.Dexterity }, DurationType.Scene, conditions, 1, TraitModifier.BonusTypeKind.TraitMod);
             build.AddTraitModifer(crinos);
 
-            RollBase roll = new RollBase(name, logger, roller, dicepool, remove1, new List<string>());
+            BasicRoll roll = new BasicRoll(name, logger, roller, dicepool, remove1, true, new List<string>());
             var info = roll.GetRollInfo(build, new List<Build> { build });
             roll.Roll(build, targets, hasSpec, hasWill);
 
@@ -145,7 +145,7 @@ namespace UnitTests
             build.AddTraitModifer(sunny);
 
 
-            RollBase roll = new RollBase(name, logger, roller, dicepool, remove1, new List<string>());
+            BasicRoll roll = new BasicRoll(name, logger, roller, dicepool, remove1, true, new List<string>());
             var info = roll.GetRollInfo(build, new List<Build> { build });
             roll.Roll(build, targets, hasSpec, hasWill);
 
@@ -155,7 +155,7 @@ namespace UnitTests
             Assert.AreEqual(brawl, info.DicePoolInfo.Traits[Build.Abilities.Brawl].ModifiedValue, "brawl");
 
 
-            roll = new RollBase(name, logger, roller, dicepool, remove1, new List<string>() { conSunny });
+            roll = new BasicRoll(name, logger, roller, dicepool, remove1, true, new List<string>() { conSunny });
             info = roll.GetRollInfo(build, new List<Build> { build });
             roll.Roll(build, targets, hasSpec, hasWill);
 
@@ -169,7 +169,7 @@ namespace UnitTests
             var inUmbra = new BonusModifier("in umbra", DurationType.Scene, new List<string>() { inUmbraName } , 3);
             build.AddDicePoolBonusModifer(inUmbra);
 
-            roll = new RollBase(name, logger, roller, dicepool, remove1, new List<string>() { conSunny });
+            roll = new BasicRoll(name, logger, roller, dicepool, remove1, true, new List<string>() { conSunny });
             info = roll.GetRollInfo(build, new List<Build> { build });
             roll.Roll(build, targets, hasSpec, hasWill);
 
@@ -179,7 +179,7 @@ namespace UnitTests
             Assert.AreEqual(brawl, info.DicePoolInfo.Traits[Build.Abilities.Brawl].ModifiedValue, "brawl");
 
             //apply umbra
-            roll = new RollBase(name, logger, roller, dicepool, remove1, new List<string>() { conSunny, inUmbraName });
+            roll = new BasicRoll(name, logger, roller, dicepool, remove1, true, new List<string>() { conSunny, inUmbraName });
             info = roll.GetRollInfo(build, new List<Build> { build });
             roll.Roll(build, targets, hasSpec, hasWill);
 
