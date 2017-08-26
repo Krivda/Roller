@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RolzOrgEnchancer", "RolzOrgEnchancer\RolzOrgEnchancer.csproj", "{76A8C03A-4375-474B-A7E9-016AF094762E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RollerEngine", "RollerEngine\RollerEngine.csproj", "{91CAFB5A-5FDC-4244-9479-B9E18C45D2A4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{13444BDA-F8CF-45AC-BDC2-A07DF27F1007}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{91118D43-0613-4342-AB6F-DFAE4984F504}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{E410164B-499A-406B-A543-D7DCC171FB73}"
 EndProject
@@ -33,6 +35,10 @@ Global
 		{E410164B-499A-406B-A543-D7DCC171FB73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E410164B-499A-406B-A543-D7DCC171FB73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E410164B-499A-406B-A543-D7DCC171FB73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91118D43-0613-4342-AB6F-DFAE4984F504}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91118D43-0613-4342-AB6F-DFAE4984F504}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91118D43-0613-4342-AB6F-DFAE4984F504}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91118D43-0613-4342-AB6F-DFAE4984F504}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

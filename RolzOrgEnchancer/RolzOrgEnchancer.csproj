@@ -32,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -98,7 +99,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Configs\App.config" />
+    <ProjectReference Include="..\RollerEngine\RollerEngine.csproj">
+      <Project>{91cafb5a-5fdc-4244-9479-b9e18c45d2a4}</Project>
+      <Name>RollerEngine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
