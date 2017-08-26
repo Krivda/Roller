@@ -4,6 +4,9 @@
 
 *.suo
 *.sdf
+/ConsoleTest/obj
+/ConsoleTest/bin
+/ConsoleTest/.vs
 /RollerEngine/obj
 /RollerEngine/bin
 /RollerEngine/.vs
