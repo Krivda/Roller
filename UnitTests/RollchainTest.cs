@@ -1,6 +1,7 @@
 using NLog;
 using NUnit.Framework;
 using RollerEngine.Character;
+using RollerEngine.Logger;
 using RollerEngine.Roller;
 using RollerEngine.Rolls;
 using Logger = NUnit.Framework.Internal.Logger;

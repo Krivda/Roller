@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using RollerEngine.Character;
+using RollerEngine.Logger;
 using RollerEngine.Roller;
 
 namespace RollerEngine.Rolls
 {
     public class BackgroundRoll : RollBase
     {
-        public BackgroundRoll(string name, ILogger log, IRoller roller, List<string> conditions) 
+        public BackgroundRoll(string name, IRollLogger log, IRoller roller, List<string> conditions) 
             : base(name, log, roller, new List<string>(){name}, true, true, conditions)
         {}
 

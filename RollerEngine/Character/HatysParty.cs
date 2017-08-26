@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using RollerEngine.Character.Party;
 using RollerEngine.Roller;
-using RollerEngine.Rolls;
+using RollerEngine.Logger;
 
 namespace RollerEngine.Character
 {
@@ -12,7 +12,7 @@ namespace RollerEngine.Character
         public Yoki Yoki { get; private set; }
         public Kurt Kurt { get; private set; }
 
-        public HatysParty(Dictionary<string, Build> party, ILogger log, IRoller roller)
+        public HatysParty(Dictionary<string, Build> party, IRollLogger log, IRoller roller)
         {
             Nameless = new Nameless(party["Krivda"], log, roller, this);
             Spirdon = new Spirdon(party["Keltur"]);

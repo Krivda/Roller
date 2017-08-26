@@ -1,5 +1,5 @@
 using RollerEngine.Roller;
-using RollerEngine.Rolls;
+using RollerEngine.Logger;
 using RollerEngine.Rolls.Backgrounds;
 using RollerEngine.Rolls.Gifts;
 
@@ -8,11 +8,11 @@ namespace RollerEngine.Character.Party
     public class Nameless
     {
         public Build Build { get; private set; }
-        public ILogger Log { get; private set; }
+        public IRollLogger Log { get; private set; }
         public IRoller Roller { get; private set; }
         public const string CharacterName = "Безымянный";
 
-        public Nameless(Build build, ILogger log, IRoller roller, HatysParty party)
+        public Nameless(Build build, IRollLogger log, IRoller roller, HatysParty party)
         {
             Build = build;
             Build.Name = CharacterName;

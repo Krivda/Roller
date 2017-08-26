@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using NLog;
 using RollerEngine.Character;
 using RollerEngine.Character.Modifiers;
+using RollerEngine.Logger;
 using RollerEngine.Roller;
 
 namespace RollerEngine.Rolls
@@ -14,7 +14,7 @@ namespace RollerEngine.Rolls
         private const int MIN_DC = 3;
         //private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        protected readonly ILogger _log;
+        protected readonly IRollLogger _log;
         protected readonly IRoller _roller;
 
         public string Name { get; private set; }
@@ -74,7 +74,7 @@ namespace RollerEngine.Rolls
         }
 
 
-        public RollBase(string name, ILogger log, IRoller roller,  List<String> dicePool, bool removeSuccessesOn1, bool canBotch, List<string> conditions)
+        public RollBase(string name, IRollLogger log, IRoller roller,  List<String> dicePool, bool removeSuccessesOn1, bool canBotch, List<string> conditions)
         {
             _log = log;
             _roller = roller;
@@ -426,7 +426,7 @@ namespace RollerEngine.Rolls
 
     public class BasicRoll : RollBase
     {
-        public BasicRoll(string name, ILogger log, IRoller roller, List<string> dicePool, bool removeSuccessesOn1, bool canBotch, List<string> conditions) : base(name, log, roller, dicePool, removeSuccessesOn1, canBotch, conditions)
+        public BasicRoll(string name, IRollLogger log, IRoller roller, List<string> dicePool, bool removeSuccessesOn1, bool canBotch, List<string> conditions) : base(name, log, roller, dicePool, removeSuccessesOn1, canBotch, conditions)
         {
         }
 

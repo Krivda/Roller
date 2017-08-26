@@ -12,7 +12,7 @@ namespace RollerEngine.Character.Modifiers
 
     public abstract class ARollModifer
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
 
         public string Name { get; private set; }
         public int Value { get; private set; }

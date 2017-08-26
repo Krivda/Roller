@@ -5,7 +5,7 @@ namespace RollerEngine.Character.Modifiers
 {
     public class TraitModifier : ARollModifer
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
 
         public enum BonusTypeKind
         {

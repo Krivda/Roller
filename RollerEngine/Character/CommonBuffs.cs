@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using RollerEngine.Character.Modifiers;
-using RollerEngine.Rolls;
+using RollerEngine.Logger;
 
 namespace RollerEngine.Character
 {
     public class CommonBuffs
     {
-        public static void ApplyHatysBuff(Build build, ILogger log)
+        public static void ApplyHatysBuff(Build build, IRollLogger log)
         {
             log.Log(Verbosity.Details , string.Format("Hatys totem power obtained by {0}", build.Name));
 
@@ -20,7 +20,7 @@ namespace RollerEngine.Character
                 ));
         }
 
-        public static void ApplyAncestorsChiminage(Build build, ILogger log)
+        public static void ApplyAncestorsChiminage(Build build, IRollLogger log)
         {
             log.Log(Verbosity.Details, string.Format("Ancestor spirits chiminage done by {0} (-1 DC on Ancestor Spirits interactions)", build.Name));
 
@@ -35,7 +35,7 @@ namespace RollerEngine.Character
         }
 
 
-        public static void ApplyCaernOfVigilPower(Build build, ILogger log)
+        public static void ApplyCaernOfVigilPower(Build build, IRollLogger log)
         {
             log.Log(Verbosity.Details, string.Format("Caern of Vigil power applied on {0} (+4 Ancestors)", build.Name));
 
@@ -51,7 +51,7 @@ namespace RollerEngine.Character
                 ));
         }
 
-        public static void ApplyBoneRythms(Build build, ILogger log)
+        public static void ApplyBoneRythms(Build build, IRollLogger log)
         {
             log.Log(Verbosity.Details, string.Format("Bone Rythms power applied on {0} (+1 Dice to next roll)", build.Name));
 
@@ -64,7 +64,7 @@ namespace RollerEngine.Character
                 ));
         }
 
-        public static void ApplyChannelling(Build build, ILogger log, int value)
+        public static void ApplyChannelling(Build build, IRollLogger log, int value)
         {
             log.Log(Verbosity.Details, string.Format("{0} Channels {1} Rage to boost his next Action (+{1} Dice on next roll)", build.Name, value));
 

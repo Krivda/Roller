@@ -6,7 +6,7 @@ namespace RollerEngine.Roller
 {
     public class OfflineDiceRoller : IRoller
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
 
         private static int _diceFace=10;
 

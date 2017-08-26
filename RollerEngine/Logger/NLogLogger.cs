@@ -1,19 +1,18 @@
 using NLog;
 
-namespace RollerEngine.Rolls
+namespace RollerEngine.Logger
 {
-    public class NLogLogger : ILogger
+    public class NLogLogger : IRollLogger
     {
-        private readonly Logger _nlog;
+        private readonly NLog.Logger _nlog;
 
-        public NLogLogger(Logger nlog)
+        public NLogLogger(NLog.Logger nlog)
         {
             _nlog = nlog;
         }
 
         public void Log(Verbosity verbosity, string record)
         {
-
             LogLevel level;
 
             switch (verbosity)
@@ -33,14 +32,8 @@ namespace RollerEngine.Rolls
                     break;
             }
 
-
-
             _nlog.Log(level, record);
         }
 
-        public string GetLog()
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

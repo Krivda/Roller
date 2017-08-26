@@ -1,7 +1,7 @@
 ﻿using System;
 using RollerEngine.Character;
+using RollerEngine.Logger;
 using RollerEngine.Roller;
-using RollerEngine.Rolls;
 
 namespace ConsoleTest
 {

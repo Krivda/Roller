@@ -58,10 +58,10 @@
     <Compile Include="RollerTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="NLog.config">
+    <None Include="Configs\NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="packages.config" />
+    <None Include="Configs\packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RollerEngine\RollerEngine.csproj">
