@@ -1,16 +1,23 @@
 using System;
 using System.Text;
 using NLog;
+using RollerEngine.Logger;
 
 namespace RollerEngine.Roller
 {
     public class OfflineDiceRoller : IRoller
     {
-        private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly IRollLogger _rollLogger;
 
         private static int _diceFace=10;
 
         private static readonly Random rnd = new Random();
+
+        public OfflineDiceRoller(IRollLogger rollLogger)
+        {
+            _rollLogger = rollLogger;
+            throw new NotImplementedException();
+        }
 
         public static void InitDiceFace(int diceFace)
         {
@@ -32,7 +39,8 @@ namespace RollerEngine.Roller
                 delim = ", ";
             }
 
-            logger.Info("{0} roll was [{1}] and gave {2} successes.", description, bld, info.Item1);
+            _rollLogger.Log(Verbosity.Details, string.Format("{0} roll was [{1}] and gave {2} successes.", description, bld, info.Item1));
+            
 
             return info.Item1;
 

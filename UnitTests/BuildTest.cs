@@ -14,7 +14,7 @@ namespace UnitTests
         [Test]
         public void RollSimpleTest()
         {
-            var roller = new OfflineDiceRoller();
+            var roller = new OfflineDiceRoller(new StringBufferLogger());
             IRollLogger logger = null;
 
             Build build = new Build("Artze");
@@ -50,7 +50,7 @@ namespace UnitTests
         [Test(Description = "Trait modifiers")]
         public void RollTestTraitMods()
         {
-            var roller = new OfflineDiceRoller();
+            var roller = new OfflineDiceRoller(new StringBufferLogger());
             IRollLogger logger = null;
 
             Build build = new Build("Artze");
@@ -119,7 +119,7 @@ namespace UnitTests
         [Test(Description = "Test conditions")]
         public void RollTestConditionsMods()
         {
-            var roller = new OfflineDiceRoller();
+            var roller = new OfflineDiceRoller(new StringBufferLogger());
             IRollLogger logger = null;
 
             Build build = new Build("Artze");
