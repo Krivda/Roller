@@ -11,7 +11,7 @@ namespace ConsoleTest
 
         private static void Main(string[] args)
         {
-            var res = HatysPartyLoader.LoadParty(new NLogLogger(Logger), new OfflineDiceRoller());
+            var res = HatysPartyLoader.LoadParty(new NLogLogger(Logger), new OfflineDiceRoller(Logger));
             res.Nameless.WeeklyBoostTeachersEase();
             Console.ReadKey();
         }
