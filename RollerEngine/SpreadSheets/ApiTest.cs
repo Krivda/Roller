@@ -43,12 +43,21 @@ namespace RollerEngine.SpreadSheets
                     System.Environment.SpecialFolder.Personal);
                 credPath = Path.Combine(credPath, ".credentials/sheets.googleapis.com-dotnet-quickstart.json");
 
-                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.Load(stream).Secrets,
-                    Scopes,
-                    "user",
-                    CancellationToken.None,
-                    new FileDataStore(credPath, true)).Result;
+                var secret = GoogleClientSecrets.Load(stream).Secrets;
+                try
+                {
+                    credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                        secret,
+                        Scopes,
+                        "user",
+                        CancellationToken.None,
+                        new FileDataStore(credPath, true)).Result;
+                }
+                catch(Exception e)
+                {
+                    string a = e.Message;
+                    throw;
+                }
                 Console.WriteLine("Credential file saved to: " + credPath);
             }
 

@@ -44,12 +44,19 @@ namespace Makedonsky.MapLogic.SpreadSheets
                     string credPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
                     credPath = Path.Combine(credPath, ".credentials/sheets.googleapis.makedonsky.json");
 
-                    credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                        GoogleClientSecrets.Load(stream).Secrets,
-                        Scopes,
-                        "user",
-                        CancellationToken.None,
-                        new FileDataStore(credPath, true)).Result;
+                    try
+                    {
+                        credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                            GoogleClientSecrets.Load(stream).Secrets,
+                            Scopes,
+                            "user",
+                            CancellationToken.None,
+                            new FileDataStore(credPath, true)).Result;
+                    }
+                    catch (Exception e)
+                    {
+                        throw;
+                    }
                     //Console.WriteLine("Credential file saved to: " + credPath);
                 }
 
