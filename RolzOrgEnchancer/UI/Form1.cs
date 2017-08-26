@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
 
+using Makedonsky.MapLogic.SpreadSheets;
+using RollerEngine.SpreadSheets;
+
 namespace RolzOrgEnchancer
 {
     public partial class Form1 : Form, IFormUpdate
@@ -48,11 +51,14 @@ namespace RolzOrgEnchancer
         private void toolStripButton4_Click(object sender, EventArgs e)
         {
             RoomBot.OnGuiAction("Action4");
+            ApiTest.Test();
         }
 
         private void toolStripButton5_Click(object sender, EventArgs e)
         {
             RoomBot.OnGuiAction("Action5");
+            var data = SpreadsheetService.GetNotEmptySpreadsheetRange("1tKXkAjTaUpIDkjmCi7w1QOVbnyYU2f-KOWEnl2EAIZg", "A1:J93", "Party sheet list");
+            MessageBox.Show("Attributes:" + data[0][0]);
         }
 
         private void timer1_Tick(object sender, EventArgs e)

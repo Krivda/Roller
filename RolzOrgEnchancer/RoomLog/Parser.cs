@@ -41,7 +41,7 @@ namespace RolzOrgEnchancer.RoomLog
         public Item MatchMessage(string message)
         {
             try
-            {
+            {   //LastOrDefault
                 return GetRoomLog().items.Last(m => (
                     m.type.Equals("txtmsg") &&
                     m.text.Equals(message) &&
@@ -57,7 +57,7 @@ namespace RolzOrgEnchancer.RoomLog
         public Item MatchRoll(int roll_id)
         {
             try
-            {
+            {   //LastOrDefault
                 return GetRoomLog().items.Last(m => (
                     m.type.Equals("dicemsg") &&
                     (null != m.comment) &&

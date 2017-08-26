@@ -53,10 +53,10 @@ namespace WOD
 
         public void CalculateResult(RollInput input)
         {
-            result = _raw_result;                                           // success - failures
-            if (input.hasSpecialization) result += _raw_number_of_tens;   // double successes if specialized
-            if (input.noFailures) result += _raw_number_of_ones;   // negate failures
-            if ((result < 0) && (input.negateBotch)) result = 0;            // negate botch
+            result = _raw_result;                                        // success - failures
+            if (input.hasSpecialization) result += _raw_number_of_tens;  // double successes if specialized
+            if (input.noFailures) result += _raw_number_of_ones;         // negate failures
+            if ((result < 0) && (input.negateBotch)) result = 0;         // negate botch
         }
     }
 
