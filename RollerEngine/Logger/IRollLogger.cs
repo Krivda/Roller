@@ -1,6 +1,6 @@
-﻿namespace RollerEngine.Rolls
+﻿namespace RollerEngine.Logger
 {
-    public interface ILogger
+    public interface IRollLogger
     {
         void Log(Verbosity verbosity, string record);
     }

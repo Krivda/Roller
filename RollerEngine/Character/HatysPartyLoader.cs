@@ -2,25 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using Makedonsky.MapLogic.SpreadSheets;
-using NLog;
 using RollerEngine.Character.Modifiers;
 using RollerEngine.Roller;
-using ILogger = RollerEngine.Rolls.ILogger;
+using RollerEngine.Logger;
 
 namespace RollerEngine.Character
 {
     public class HatysPartyLoader
     {
 
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public static HatysParty LoadParty(ILogger log, IRoller roller)
+        public static HatysParty LoadParty(IRollLogger log, IRoller roller)
         {
             var partyChars = LoadFromGoogle(log);
             return new HatysParty(partyChars, log, roller);
         }
 
-        public static Dictionary<string, Build> LoadFromGoogle(ILogger log)
+        public static Dictionary<string, Build> LoadFromGoogle(IRollLogger log)
         {
             Dictionary<string, Build> result = new Dictionary<string, Build>();
 

@@ -82,18 +82,18 @@
     <Compile Include="Rolls\Backgrounds\Ancestors.cs" />
     <Compile Include="Rolls\BackgroundRoll.cs" />
     <Compile Include="Rolls\BotchException.cs" />
-    <Compile Include="Rolls\CompositeLogger.cs" />
+    <Compile Include="Logger\CompositeLogger.cs" />
     <Compile Include="Rolls\GiftRoll.cs" />
     <Compile Include="Rolls\Gifts\GhostPack.cs" />
     <Compile Include="Rolls\Gifts\Persuasion.cs" />
-    <Compile Include="Rolls\NLogLogger.cs" />
-    <Compile Include="Rolls\StringBufferLogger.cs" />
+    <Compile Include="Logger\NLogLogger.cs" />
+    <Compile Include="Logger\StringBufferLogger.cs" />
     <Compile Include="SpreadSheets\ApiTest.cs" />
     <Compile Include="SpreadSheets\SpreadsheetService.cs" />
     <Compile Include="Roller\OfflineDiceRoller.cs" />
     <Compile Include="Roller\IRoller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rolls\ILogger.cs" />
+    <Compile Include="Logger\IRollLogger.cs" />
     <Compile Include="Rolls\InstructionTeach.cs" />
     <Compile Include="Rolls\RollBase.cs" />
   </ItemGroup>

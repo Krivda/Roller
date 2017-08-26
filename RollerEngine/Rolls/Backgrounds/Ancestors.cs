@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using RollerEngine.Character;
 using RollerEngine.Character.Modifiers;
+using RollerEngine.Logger;
 using RollerEngine.Roller;
 
 namespace RollerEngine.Rolls.Backgrounds
@@ -8,7 +9,7 @@ namespace RollerEngine.Rolls.Backgrounds
     class Ancestors : BackgroundRoll
     {
 
-        public Ancestors(ILogger log, IRoller roller)
+        public Ancestors(IRollLogger log, IRoller roller)
             : base(Build.Backgrounds.Ansestors, log, roller, new List<string>() {Build.Conditions.AncestorSpirits})
         {}
         

@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using RollerEngine.Character;
 using RollerEngine.Character.Modifiers;
+using RollerEngine.Logger;
 using RollerEngine.Roller;
 using RollerEngine.Rolls;
 
@@ -14,7 +15,7 @@ namespace UnitTests
         public void RollSimpleTest()
         {
             var roller = new OfflineDiceRoller();
-            ILogger logger = null;
+            IRollLogger logger = null;
 
             Build build = new Build("Artze");
             int dex = 4;
@@ -50,7 +51,7 @@ namespace UnitTests
         public void RollTestTraitMods()
         {
             var roller = new OfflineDiceRoller();
-            ILogger logger = null;
+            IRollLogger logger = null;
 
             Build build = new Build("Artze");
             int dex = 3;
@@ -119,7 +120,7 @@ namespace UnitTests
         public void RollTestConditionsMods()
         {
             var roller = new OfflineDiceRoller();
-            ILogger logger = null;
+            IRollLogger logger = null;
 
             Build build = new Build("Artze");
             int dex = 3;

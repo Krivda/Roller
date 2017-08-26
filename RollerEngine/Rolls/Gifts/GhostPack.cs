@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using RollerEngine.Character;
 using RollerEngine.Character.Modifiers;
+using RollerEngine.Logger;
 using RollerEngine.Roller;
 
 namespace RollerEngine.Rolls.Gifts
@@ -9,7 +10,7 @@ namespace RollerEngine.Rolls.Gifts
     {
         private const string GIFT_NAME = "Ghost Pack";
 
-        public GhostPack(ILogger log, IRoller roller) : base(GIFT_NAME, log, roller, 
+        public GhostPack(IRollLogger log, IRoller roller) : base(GIFT_NAME, log, roller, 
             new List<string>() { Build.Atributes.Charisma, Build.Abilities.Occult },
             new List<string>() {Build.Conditions.Social, Build.Conditions.AncestorSpirits})
         {

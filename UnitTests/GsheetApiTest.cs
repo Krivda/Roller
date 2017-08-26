@@ -1,6 +1,7 @@
 using Makedonsky.MapLogic.SpreadSheets;
 using NUnit.Framework;
 using RollerEngine.Character;
+using RollerEngine.Logger;
 using RollerEngine.Rolls;
 using RollerEngine.SpreadSheets;
 
