@@ -1,14 +1,12 @@
-﻿using System;
-
-namespace RolzOrgEnchancer
+﻿namespace RolzOrgEnchancer.Interfaces
 {
     //
     // UI thread only (except RoomEntered)
     // Rolz.Org interface for javascript
     //
-    interface IRolzOrg
+    internal interface IRolzOrg
     {
-        void JoinRoom(string room_name);
+        void JoinRoom(string roomName);
 
         bool RoomEntered();
 

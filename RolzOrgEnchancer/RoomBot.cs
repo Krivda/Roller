@@ -5,7 +5,17 @@ using System.Linq;
 //using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
+using System.Web.UI.WebControls;
 using Newtonsoft.Json;
+using RollerEngine.Character;
+using RollerEngine.Character.Modifiers;
+using RolzOrgEnchancer.Interfaces;
+using RolzOrgEnchancer.UI;
+using WOD;
+using IRollLogger = RollerEngine.Logger.IRollLogger;
+using IRoller = RollerEngine.Roller.IRoller;
+using Verbosity = RollerEngine.Logger.Verbosity;
 
 namespace RolzOrgEnchancer
 {
@@ -21,12 +31,119 @@ namespace RolzOrgEnchancer
     //                             while GetNextRoll will take action and perform sequence of rolls)
     //bool = GetNextRoll(roll);
 
-    static class RoomBot
+    class RoomBootImpl : IRollLogger, IRoller
+    {
+        static int nRoll = 100;
+        //RollerEngine.Roller.IRoller
+        public int Roll(int diceCount, int DC, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill, string description)
+        {
+            description = description.Replace('\n', 'x');
+            description = description.Replace('\r', 'x');
+            description = description.Replace('[', '{');
+            description = description.Replace(']', '}');
+            description = description.Replace('\'', '`');
+            Program.Log("RoomBootImpl: Rolling description: " + description);
+            RoomBot.SetMessage(description, true);
+            RoomLog.Item item;
+            for (; ; )
+            {
+                item = RoomBot.parser.MatchMessage(description);
+                if (null != item) break;
+                Task.Delay(100);
+            }
+            Task.Delay(1000);
+
+            var input = new RollInput();
+            input.Initialize(diceCount, DC, removeSuccessOnOnes, hasSpecialization, hasWill);
+            RoomBot.SetMessage("#" +diceCount + "d10f" + DC + " #roll_id=" + nRoll.ToString(), false);
+            item = null;
+            for (; ; )
+            {
+                item = RoomBot.parser.MatchRoll(nRoll);
+                if (null != item)
+                {
+                    Program.Log("RoomBootImpl: roll was found");
+                    break;
+                }
+                Task.Delay(100);
+            }
+            Task.Delay(500);
+            nRoll++;
+
+            int tens = 0;
+            int ones = 0;
+            if (null != item.tags)
+            {
+                throw new Exception("tags were gone");
+                foreach (var tag in item.tags)
+                {
+                    if (tag.k == "10s") tens = Convert.ToInt16(tag.v);
+                    if (tag.k == "ones") ones = Convert.ToInt16(tag.v);
+                }
+            }
+            var output = new RollOutput();
+            if (!item.details.StartsWith("( (")) throw new Exception("Invalid 1");
+            int index = item.details.IndexOf('→', 0);
+            if (index == -1) throw new Exception("Invalid 2");
+            string res = item.details.Substring(0, index);
+            res = res.Substring(3);
+            string[] res2 = res.Split(new[] {',', ' '}, StringSplitOptions.RemoveEmptyEntries);
+            if (res2.Length != diceCount) throw new Exception("Invalid 3");
+            output._raw_dices = new List<int>();
+            foreach (var r in res2)
+            {
+                int i;
+                if (!int.TryParse(r, out i)) throw new Exception("Invalid 4");
+                output._raw_dices.Add(i);
+            }
+
+            output._raw_number_of_ones = 0;
+            output._raw_number_of_tens = 0;
+            output._raw_result = 0;
+            foreach (var x in output._raw_dices)
+            {
+                if ((x < 1) || (x > 10)) throw new Exception("Invalid 5");
+                if (x == 1) output._raw_number_of_ones++;
+                if (x == 10) output._raw_number_of_tens++;
+                if (x >= input.DC) output._raw_result++;
+            }
+            output._raw_result -= output._raw_number_of_ones;
+            var check_r = Convert.ToInt16(item.result);
+            if (check_r != output._raw_result)
+            {
+                throw new Exception("Invalid 6");
+            }
+            output.CalculateResult(input);
+            return output.result;
+        }
+
+        //RollerEngine.Logger.IRollLogger
+        public void Log(Verbosity verbosity, string record)
+        {
+            record = record.Replace('\n', 'x');
+            record = record.Replace('\r', 'x');
+            record = record.Replace('[', '{');
+            record = record.Replace(']', '}');
+            record = record.Replace('\'', '`');
+            Program.Log("RoomBootImpl: Logging message: " + verbosity.ToString() + record);
+            RoomBot.SetMessage(record, false);
+            for (; ; )
+            {
+                var item = RoomBot.parser.MatchMessage(record);
+                if (null != item) break;
+                Task.Delay(100);
+            }
+            Task.Delay(1000);
+        }
+
+    }
+
+    static class RoomBot 
     {
         static Thread thread;
         static IRolzOrg browser;
         static IFormUpdate updater;
-        static RoomLog.Parser parser = new RoomLog.Parser(default_room_name);
+        static public RoomLog.Parser parser = new RoomLog.Parser(default_room_name);
         const string default_room_name = "Hatys%20Test";
 
         static int ticks = 0;
@@ -68,7 +185,7 @@ namespace RolzOrgEnchancer
             return tuple.Item1;
         }
 
-        static void SetMessage(string message, bool is_system_message)
+        public static void SetMessage(string message, bool is_system_message)
         {
             var ret = new Tuple<string, bool>(message, is_system_message);
             UpdateMessage(ret);
@@ -116,7 +233,7 @@ namespace RolzOrgEnchancer
             SetMessage("/nick HatysBot", false);
             await Task.Delay(500);
 
-            for (int n = 0; n < 5; n++)
+            for (int n = 0; n < 3; n++)
             {
                 SetMessage("#8d10f5 #roll_id=" + n.ToString(), false);
                 for (; ; )
@@ -133,11 +250,28 @@ namespace RolzOrgEnchancer
 
             //InitializeKrivda(IRoomBot)
             //EmulateKrivda()
+
+            RoomBootImpl interfaces = new RoomBootImpl();
+            var res = HatysPartyLoader.LoadParty(interfaces, interfaces);            
+
+            string action;
+            for(;;)
+                while (action_queue.TryDequeue(out action))
+                {
+                    await Task.Delay(100);
+                    if (!action.StartsWith("Action")) continue;
+                    int n_action;
+                    if (int.TryParse(action.Substring(6), out n_action))
+                    {
+                        Program.Log("Deque action #" + n_action);
+                        res.Nameless.WeeklyBoostTeachersEase();
+                    }
+                }
         }
 
         static public void OnGuiTick()
         {            
-            Program.safe_log.ProcessLogQueue();
+            Program.SafeLog.ProcessLogQueue();
             if (0 == ticks++ % 30) updater.LogRoomLog(parser.GetSessionRoomLogParsed());
             updater.UpdateActionQueueDepth(action_queue.Count);
             var message = GetMessage();

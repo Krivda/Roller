@@ -42,14 +42,14 @@ namespace WOD
                                 // =0 simple failure
                                 // >0 successes
 
-        public RollOutput(RollOutput output)
+        /*public RollOutput(RollOutput output)
         {
             _raw_result = output._raw_result;
             _raw_number_of_ones = output._raw_number_of_ones;
             _raw_number_of_tens = output._raw_number_of_tens;
             _raw_dices = new List<int>(output._raw_dices);
             result = 0;
-        }
+        }*/
 
         public void CalculateResult(RollInput input)
         {
@@ -78,10 +78,10 @@ namespace WOD
             output.CalculateResult(input);
         }
 
-        public RollOutput GetRollOutput()
+        /*public RollOutput GetRollOutput()
         {
             return new RollOutput(output);
-        }
+        }*/
 
         public int GetRollResult()
         {
