@@ -143,7 +143,7 @@ namespace RollerEngine.Character
                     buildKvp.Value.BonusDicePoolModifiers.Add(new BonusModifier(
                         "Spirit Heritage",
                         DurationType.Scene,
-                        new List<string>() {Build.Conditions.AncestorSpirits},
+                        new List<string>() {Build.Conditions.SpiritHeritage},
                         buildKvp.Value.Traits[Build.Backgrounds.SpiritHeritage]
                     ));
                 }

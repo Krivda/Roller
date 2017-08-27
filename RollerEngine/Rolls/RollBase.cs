@@ -115,7 +115,7 @@ namespace RollerEngine.Rolls
             string logMessage = GetLogForRoll(actor, targets, info, hasSpec, hasWill);
             _log.Log(Verbosity.Important, string.Format(logMessage));
 
-            int successes = _roller.Roll(info.DicePoolInfo.Dices, info.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill, Name);
+            int successes = _roller.Roll(info.DicePoolInfo.Dices, info.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill, Name).Successes;
 
             //remove used modifiers
             foreach (var traitValueInfo in info.DicePoolInfo.Traits)
