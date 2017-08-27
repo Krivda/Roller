@@ -1,45 +1,36 @@
-﻿using System;
+﻿using System.Collections.Concurrent;
 using System.Threading;
-using System.Collections.Concurrent;
+using RolzOrgEnchancer.Interfaces;
 
-namespace RolzOrgEnchancer
+namespace RolzOrgEnchancer.UI
 {
     //
     // provides Log method that can be called from any thread
     // everything except Log should be called from UI thread
     //
-    class SafeLog
+    internal class SafeLog
     {
-        private ConcurrentQueue<string> log_queue;
-        private Thread UI_thread;
-        private IFormUpdate updater;
+        private readonly ConcurrentQueue<string> _logQueue;
+        private readonly Thread _uiThread;
+        private readonly IFormUpdate _updater;
 
-        public SafeLog(IFormUpdate _updater)
+        public SafeLog(IFormUpdate updater)
         {
-            log_queue = new ConcurrentQueue<string>();
-            UI_thread = Thread.CurrentThread;
-            updater = _updater;
+            _logQueue = new ConcurrentQueue<string>();
+            _uiThread = Thread.CurrentThread;
+            _updater = updater;
         }
 
-        public void Log(string log_message)
+        public void LogOrEnqueue(string logMessage)
         {
-            if (Thread.CurrentThread != UI_thread)
-            {
-                log_queue.Enqueue(log_message);
-            }
-            else
-            {
-                updater.Log(log_message);
-            }
+            if (Thread.CurrentThread != _uiThread) _logQueue.Enqueue(logMessage);
+            else _updater.Log(logMessage);
         }
 
         public void ProcessLogQueue()
         {
-            string log_message;
-            if (log_queue.TryDequeue(out log_message))
-            {
-                updater.Log(log_message);
-            }
+            string logMessage;
+            while (_logQueue.TryDequeue(out logMessage)) _updater.Log(logMessage);
         }
 
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Newtonsoft.Json;
+using RolzOrgEnchancer.UI;
 
 namespace RolzOrgEnchancer.RoomLog
 {
@@ -41,12 +42,18 @@ namespace RolzOrgEnchancer.RoomLog
         public Item MatchMessage(string message)
         {
             try
-            {   //LastOrDefault
-                return GetRoomLog().items.Last(m => (
+            {
+                //LastOrDefault
+                var x = GetRoomLog().items;
+                if (x == null) return null;
+                return x.LastOrDefault(m => (
+                    m != null &&
+                    m.type != null &&
                     m.type.Equals("txtmsg") &&
+                    m.text != null &&
                     m.text.Equals(message) &&
-                    (m.time >= session_time)
-                    ));
+                    m.time >= session_time
+                ));
             }
             catch (InvalidOperationException)
             {
@@ -58,11 +65,15 @@ namespace RolzOrgEnchancer.RoomLog
         {
             try
             {   //LastOrDefault
-                return GetRoomLog().items.Last(m => (
+                var x = GetRoomLog().items;
+                if (x == null) return null;
+                return x.LastOrDefault(m => (
+                    m != null &&
+                    m.type != null &&
                     m.type.Equals("dicemsg") &&
-                    (null != m.comment) &&
+                    m.comment != null &&
                     m.comment.Equals("roll_id=" + roll_id.ToString()) &&
-                    (m.time >= session_time)
+                    m.time >= session_time
                     ));
             }
             catch (InvalidOperationException)
@@ -83,6 +94,7 @@ namespace RolzOrgEnchancer.RoomLog
                             ));
                     foreach(Item item in items)
                     {
+                        if (item.type == null) continue;
                         if (item.type.Equals("txtmsg")) res += ParseRoomLogMessage(item);
                         if (item.type.Equals("dicemsg")) res += ParseRoomLogRoll(item);
                     }
@@ -107,6 +119,7 @@ namespace RolzOrgEnchancer.RoomLog
             {
                 foreach (var tag in item.tags)
                 {
+                    throw new Exception("tags were gone");
                     if (tag.k == "10s") tag_info += "tens=" + Convert.ToInt16(tag.v).ToString() + ";";
                     if (tag.k == "ones") tag_info += "ones=" + Convert.ToInt16(tag.v).ToString() + ";";
                 }

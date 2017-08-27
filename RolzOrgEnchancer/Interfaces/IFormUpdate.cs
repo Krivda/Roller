@@ -1,16 +1,14 @@
-﻿using System;
-
-namespace RolzOrgEnchancer
+﻿namespace RolzOrgEnchancer.Interfaces
 {
     //
     // UI thread only
     // interace to update Form
     //
-    interface IFormUpdate
+    internal interface IFormUpdate
     {
-        void Log(string log_message); 
+        void Log(string logMessage); 
 
-        void LogRoomLog(string room_log);
+        void LogRoomLog(string roomLog);
 
         void UpdateActionQueueDepth(int depth);
 

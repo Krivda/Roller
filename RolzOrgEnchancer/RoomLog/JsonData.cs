@@ -15,7 +15,7 @@ namespace RolzOrgEnchancer.RoomLog
     {
         public string key { get; set; }
         public string name { get; set; }
-        public int created { get; set; }
+        public string created { get; set; }
         public Data data { get; set; }
 
     }

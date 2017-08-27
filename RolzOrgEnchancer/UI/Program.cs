@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace RolzOrgEnchancer
+namespace RolzOrgEnchancer.UI
 {
-    static class Program
+    internal static class Program
     {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             var form = new Form1();
-            safe_log = new SafeLog(form);
+            SafeLog = new SafeLog(form);
             Application.Run(form);
         }
 
-        static public SafeLog safe_log;
-        static public void Log(string log_message)
+        public static SafeLog SafeLog;
+        public static void Log(string logMessage)
         {
-            safe_log.Log(log_message);
+            SafeLog.LogOrEnqueue(logMessage);
         }
 
     }
