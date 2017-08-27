@@ -1,16 +1,22 @@
 using System;
 using System.Text;
 using NLog;
+using RollerEngine.Logger;
 
 namespace RollerEngine.Roller
 {
     public class OfflineDiceRoller : IRoller
     {
-        private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly IRollLogger _rollLogger;
 
         private static int _diceFace=10;
 
         private static readonly Random rnd = new Random();
+
+        public OfflineDiceRoller(IRollLogger rollLogger)
+        {
+            _rollLogger = rollLogger;
+        }
 
         public static void InitDiceFace(int diceFace)
         {
@@ -18,10 +24,12 @@ namespace RollerEngine.Roller
         }
 
 
-        public int Roll(int diceCount, int DC, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill, string description)
+        public RollData Roll(int diceCount, int DC, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill, string description)
         {
             var info = MakeRoll(diceCount, DC, removeSuccessOnOnes, hasSpecialization, hasWill);
-            
+            var rollData = new RollData();
+            rollData.Successes = info.Item1;
+
             StringBuilder bld = new StringBuilder(100);
             String delim = "";
             int face = 1;
@@ -30,11 +38,14 @@ namespace RollerEngine.Roller
                 bld.Append(string.Format("{0}{1}:{2}", delim, face, dice));
                 face++;
                 delim = ", ";
+                rollData.DiceResult.Add(info.Item1);
             }
 
-            logger.Info("{0} roll was [{1}] and gave {2} successes.", description, bld, info.Item1);
+            _rollLogger.Log(Verbosity.Details, string.Format("{0} roll was [{1}] and gave {2} successes.", description, bld, info.Item1));
+            
+            
 
-            return info.Item1;
+            return rollData;
 
         }
 

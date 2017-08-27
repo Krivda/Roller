@@ -88,6 +88,7 @@
     <Compile Include="Rolls\Gifts\Persuasion.cs" />
     <Compile Include="Logger\NLogLogger.cs" />
     <Compile Include="Logger\StringBufferLogger.cs" />
+    <Compile Include="Rolls\Gifts\TeachersEase.cs" />
     <Compile Include="SpreadSheets\ApiTest.cs" />
     <Compile Include="SpreadSheets\SpreadsheetService.cs" />
     <Compile Include="Roller\OfflineDiceRoller.cs" />

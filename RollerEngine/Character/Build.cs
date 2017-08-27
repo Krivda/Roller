@@ -108,7 +108,13 @@ namespace RollerEngine.Character
         public class Conditions
         {
             public const string AncestorSpirits = "Ancestor Spirits";
+            public const string SpiritHeritage = "Spirit Heritage";
             public const string Social = "Social";
+        }
+
+        public class DynamicTraits
+        {
+            public const string Expirience = "Expirience";
         }
 
         public Dictionary<string, int> Traits = new Dictionary<string, int>();

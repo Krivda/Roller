@@ -20,7 +20,7 @@ namespace RollerEngine.Character.Party
             Roller = roller;
         }
 
-        public void WeeklyBoostTeachersEase()
+        public void WeeklyBoostSkill(string skill)
         {
             //add caern mod (+4 ancestors)
             CommonBuffs.ApplyCaernOfVigilPower(Build, Log);
@@ -34,7 +34,7 @@ namespace RollerEngine.Character.Party
 
             //Cast Pesuasion
             var persuasionRoll = new Persuasion(Log, Roller);
-            persuasionRoll.Roll(Build, false, false);
+            persuasionRoll.Roll(Build, false, true);
 
             //Apply chiminage
             CommonBuffs.ApplyAncestorsChiminage(Build, Log);
@@ -54,7 +54,11 @@ namespace RollerEngine.Character.Party
 
             //buff Instruct
             ansestorsRoll = new Ancestors(Log, Roller);
-            ansestorsRoll.Roll(Build, Build.Abilities.Instruction);
+            ansestorsRoll.Roll(Build, skill);
+        }
+
+        public void CastTeachersEase(Build target)
+        {
 
         }
     }
