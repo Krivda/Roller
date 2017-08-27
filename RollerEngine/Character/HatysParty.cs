@@ -15,9 +15,19 @@ namespace RollerEngine.Character
         public HatysParty(Dictionary<string, Build> party, IRollLogger log, IRoller roller)
         {
             Nameless = new Nameless(party["Krivda"], log, roller, this);
-            Spirdon = new Spirdon(party["Keltur"]);
+            Spirdon = new Spirdon(party["Keltur"], log, roller, this);
             Yoki = new Yoki(party["Alisa"]);
             Kurt = new Kurt(party["Urfin"]);
+        }
+
+
+        public void WeeklyLearning()
+        {
+            //boost nameless Instruction
+            Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
+
+
+
         }
 
         
