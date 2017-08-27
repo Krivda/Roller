@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI.WebControls;
+using System.Xml.XPath;
 using Newtonsoft.Json;
 using RollerEngine.Character;
 using RollerEngine.Character.Modifiers;
@@ -15,6 +16,7 @@ using RolzOrgEnchancer.UI;
 using WOD;
 using IRollLogger = RollerEngine.Logger.IRollLogger;
 using IRoller = RollerEngine.Roller.IRoller;
+using RollData = RollerEngine.Roller.RollData;
 using Verbosity = RollerEngine.Logger.Verbosity;
 
 namespace RolzOrgEnchancer
@@ -35,7 +37,7 @@ namespace RolzOrgEnchancer
     {
         static int nRoll = 100;
         //RollerEngine.Roller.IRoller
-        public int Roll(int diceCount, int DC, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill, string description)
+        public RollData Roll(int diceCount, int DC, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill, string description)
         {
             description = description.Replace('\n', 'x');
             description = description.Replace('\r', 'x');
@@ -114,7 +116,7 @@ namespace RolzOrgEnchancer
                 throw new Exception("Invalid 6");
             }
             output.CalculateResult(input);
-            return output.result;
+            return new RollData(output.result, output._raw_dices);
         }
 
         //RollerEngine.Logger.IRollLogger
@@ -264,7 +266,7 @@ namespace RolzOrgEnchancer
                     if (int.TryParse(action.Substring(6), out n_action))
                     {
                         Program.Log("Deque action #" + n_action);
-                        res.Nameless.WeeklyBoostTeachersEase();
+                        res.Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
                     }
                 }
         }

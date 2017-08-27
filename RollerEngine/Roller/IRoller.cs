@@ -17,5 +17,11 @@ namespace RollerEngine.Roller
         {
             DiceResult = new List<int>();
         }
+
+        public RollData(int successes, List<int> diceResult)
+        {
+            Successes = successes;
+            DiceResult = diceResult;
+        }
     }
 }
