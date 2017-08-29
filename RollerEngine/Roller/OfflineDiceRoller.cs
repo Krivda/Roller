@@ -1,6 +1,5 @@
 using System;
 using System.Text;
-using NLog;
 using RollerEngine.Logger;
 
 namespace RollerEngine.Roller

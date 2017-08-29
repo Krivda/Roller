@@ -12,6 +12,7 @@ namespace RollerEngine.Character
     {
 
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static bool _expPoolStarted;
 
         public static HatysParty LoadParty(IRollLogger log, IRoller roller)
         {
@@ -27,7 +28,7 @@ namespace RollerEngine.Character
             IList<IList<object>> data;
             try
             {
-                 data = SpreadsheetService.GetNotEmptySpreadsheetRange("1tKXkAjTaUpIDkjmCi7w1QOVbnyYU2f-KOWEnl2EAIZg", "A1:J90", "Party sheet list");
+                 data = SpreadsheetService.GetNotEmptySpreadsheetRange("1tKXkAjTaUpIDkjmCi7w1QOVbnyYU2f-KOWEnl2EAIZg", "A1:J97", "Party sheet list");
             }
             catch (Exception e)
             {
@@ -62,25 +63,49 @@ namespace RollerEngine.Character
                         //load trait value for each character in party
                         foreach (var characterTuple in characters)
                         {
-                            Tuple<int, bool> traitValue = GetTraitValue(characterTuple, traitName, data[i], i);
+                            Tuple<int, int> traitValue = GetTraitValue(characterTuple, traitName, data[i], i);
 
                             if (traitValue != null)
                             {
-                                result[characterTuple.Item1].Traits[traitName] = traitValue.Item1;
+                                Build target = result[characterTuple.Item1];
 
-                                if (traitValue.Item2)
+                                //if it a common trait
+                                if (target.Traits.ContainsKey(traitName))
                                 {
-                                    //add amulet modifier
-                                    result[characterTuple.Item1].AddTraitModifer(
-                                        new TraitModifier("Amulet",
-                                            new List<string>() {traitName}, 
-                                            DurationType.Scene, 
-                                            new List<string>(), 
-                                            2, //alwais 2!
-                                            TraitModifier.BonusTypeKind.TraitModLimited,
-                                            5)
-                                    );
+                                    target.Traits[traitName] = traitValue.Item1;
+
+                                    if (traitValue.Item2 !=0)
+                                    {
+                                        //add amulet modifier
+                                        result[characterTuple.Item1].AddTraitModifer(
+                                            new TraitModifier("Amulet",
+                                                new List<string>() { traitName },
+                                                DurationType.Scene,
+                                                new List<string>(),
+                                                traitValue.Item2, //alwais 2!
+                                                TraitModifier.BonusTypeKind.TraitModLimited,
+                                                5)
+                                        );
+                                    }
                                 }
+                                else if (traitName.Contains(Build.DynamicTraits.Expirience))
+                                {
+
+                                    int limit = 0;
+
+                                    if (traitValue.Item2 != 0)
+                                    {
+
+                                        limit = traitValue.Item2;
+                                    }
+
+                                    var Xp = new Tuple<int, int>(traitValue.Item1, limit);
+
+                                    target.InstructionXp.Add(traitName, Xp);
+                                }
+                                
+
+
 
                             }
                         }
@@ -186,8 +211,30 @@ namespace RollerEngine.Character
                 case "Tribal Skills:":
                 case "Tribal Knowledges:":
                 case "Other:":
+
                     logger.Trace("line {0} skipped, becuase it is a known placeholder '{1}'", index, traitName);
                     return String.Empty;
+            }
+
+            //"Learn XP pool:":
+            if (traitName.Contains("Learn XP pool:"))
+            {
+                _expPoolStarted = true;
+                logger.Trace("line {0} skipped, becuase it is a known placeholder '{1}'", index, traitName);
+                return String.Empty;
+            }
+
+            //skip "other" skills
+            //Other:
+            //Acrobatics, Climbing, Intrigue
+            //Disguise, Escape Artistry, Fast-Draw
+            //Folk Wisdom, Garou Lore
+            if (traitName.Contains("Acrobatics") ||
+                traitName.Contains("Disguise") ||
+                traitName.Contains("Folk Wisdom"))
+            {
+                logger.Trace("line {0} skipped, becuase it is a known other skill '{1}'", index, traitName);
+                return String.Empty;
             }
 
             //fix descriptions like Archery [Firearms]
@@ -204,10 +251,18 @@ namespace RollerEngine.Character
                 return String.Empty;
             }
 
-            if (probeBuild.Traits.ContainsKey(traitName))
+            if (_expPoolStarted)
             {
-                return traitName;
+                return Build.DynamicTraits.GetKey(Build.DynamicTraits.Expirience, traitName);
             }
+            else
+            {
+                if (probeBuild.Traits.ContainsKey(traitName))
+                {
+                    return traitName;
+                }
+            }
+
 
             logger.Warn("line {0} skipped, becuase it is an unknown trait: '{1}'", index, traitName);
             return String.Empty;
@@ -226,7 +281,7 @@ namespace RollerEngine.Character
             return result;
         }
 
-        private static Tuple<int, bool> GetTraitValue(Tuple<string, int> characterTuple, string traitName, IList<object> line, int index)
+        private static Tuple<int, int> GetTraitValue(Tuple<string, int> characterTuple, string traitName, IList<object> line, int index)
         {
             if (line.Count < characterTuple.Item2+1)
             {
@@ -235,6 +290,7 @@ namespace RollerEngine.Character
             }
 
             bool addAmulet = false;
+            int maxVal = 0;
             string strValue = Convert.ToString(line[characterTuple.Item2]).Trim();
 
             //fix  empty lines
@@ -251,6 +307,7 @@ namespace RollerEngine.Character
 
                 //add amulet as a roll modifier
                 addAmulet = true;
+                maxVal = 5;
             }
 
             //try parse to int
@@ -261,7 +318,7 @@ namespace RollerEngine.Character
                 return null;
             }
 
-            return new Tuple<int, bool>(traitValue, addAmulet);
+            return new Tuple<int, int>(traitValue, maxVal);
         }
 
     }

@@ -115,13 +115,39 @@ namespace RollerEngine.Character
         public class DynamicTraits
         {
             public const string Expirience = "Expirience";
+
+            public static string GetKey(string dynamicName, string trait)
+            {
+                return string.Format("{0} {1}", dynamicName, trait);
+            }
         }
 
         public Dictionary<string, int> Traits = new Dictionary<string, int>();
-        
+
         public List<TraitModifier> TraitModifiers = new List<TraitModifier>();
         public List<DCModifer> DCModifiers = new List<DCModifer>();
         public List<BonusModifier> BonusDicePoolModifiers = new List<BonusModifier>();
+
+        public static Dictionary<int, int> GetSkillXpTable()
+        {
+            Dictionary<int, int> result = new Dictionary<int, int>();
+
+            result.Add(0, 0);
+            result.Add(1, 2);
+            result.Add(2, 2);
+            result.Add(3, 2);
+            result.Add(4, 2);
+            result.Add(5, 2);
+
+            //Exp
+            //1   3   3
+            //2   4   7
+            //3   6   13
+            //4   8   21
+            //5   10  31
+
+            return result;
+        }
 
         public List<DCModifer> BonusDCModifiers = new List<DCModifer>();
         public object Name { get; set; }
