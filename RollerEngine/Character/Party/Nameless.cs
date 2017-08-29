@@ -2,6 +2,7 @@ using RollerEngine.Roller;
 using RollerEngine.Logger;
 using RollerEngine.Rolls.Backgrounds;
 using RollerEngine.Rolls.Gifts;
+using RollerEngine.Rolls.Skills;
 
 namespace RollerEngine.Character.Party
 {
@@ -57,9 +58,18 @@ namespace RollerEngine.Character.Party
             ansestorsRoll.Roll(Build, skill);
         }
 
-        public void CastTeachersEase(Build target)
+        public void CastTeachersEase(Build target, string ability)
         {
+            //buff skill on target
+            var teachersEase = new TeachersEase(Log, Roller);
+            teachersEase.Roll(Build, target, ability, true, false);
+        }
 
+        public void Instruct(Build target, string ability)
+        {
+            //give XP to smb
+            var instruct = new InstructionTeach(Log, Roller);
+            instruct.Roll(Build, target, ability, true, false);
         }
     }
 }

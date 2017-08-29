@@ -89,13 +89,15 @@
     <Compile Include="Logger\NLogLogger.cs" />
     <Compile Include="Logger\StringBufferLogger.cs" />
     <Compile Include="Rolls\Gifts\TeachersEase.cs" />
+    <Compile Include="Rolls\SkillRoll.cs" />
+    <Compile Include="Rolls\Skills\InstructionLearn.cs" />
     <Compile Include="SpreadSheets\ApiTest.cs" />
     <Compile Include="SpreadSheets\SpreadsheetService.cs" />
     <Compile Include="Roller\OfflineDiceRoller.cs" />
     <Compile Include="Roller\IRoller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logger\IRollLogger.cs" />
-    <Compile Include="Rolls\InstructionTeach.cs" />
+    <Compile Include="Rolls\Skills\InstructionTeach.cs" />
     <Compile Include="Rolls\RollBase.cs" />
   </ItemGroup>
   <ItemGroup>

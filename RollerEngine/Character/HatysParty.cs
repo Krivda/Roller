@@ -26,10 +26,15 @@ namespace RollerEngine.Character
             //boost nameless Instruction
             Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
 
+            //teach keltur some occult
+            Nameless.Instruct(Spirdon.Build, Build.Abilities.Occult);
 
+
+            //buff keltur's occult
+            Nameless.CastTeachersEase(Spirdon.Build, Build.Abilities.Occult);
 
         }
 
-        
+
     }
 }
