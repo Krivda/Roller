@@ -114,7 +114,9 @@ namespace RollerEngine.Character
 
         public class DynamicTraits
         {
-            public const string Expirience = "Expirience";
+            public const string ExpirienceToLearn = "Expirience ToLearn";
+            public const string ExpirienceLearned = "Expirience Learned";
+
 
             public static string GetKey(string dynamicName, string trait)
             {
@@ -130,14 +132,10 @@ namespace RollerEngine.Character
 
         public static Dictionary<int, int> GetSkillXpTable()
         {
-            Dictionary<int, int> result = new Dictionary<int, int>();
-
-            result.Add(0, 0);
-            result.Add(1, 2);
-            result.Add(2, 2);
-            result.Add(3, 2);
-            result.Add(4, 2);
-            result.Add(5, 2);
+            Dictionary<int, int> result = new Dictionary<int, int>
+            {
+                {0, 0}, {1, 3}, {2, 4}, {3, 6}, {4, 8}, {5, 10}
+            };
 
             //Exp
             //1   3   3
@@ -145,6 +143,7 @@ namespace RollerEngine.Character
             //3   6   13
             //4   8   21
             //5   10  31
+
 
             return result;
         }

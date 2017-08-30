@@ -15,7 +15,7 @@ namespace UnitTests
         public void RollSimpleTest()
         {
             var roller = new OfflineDiceRoller(new StringBufferLogger());
-            IRollLogger logger = null;
+            IRollLogger logger = new StringBufferLogger();
 
             Build build = new Build("Artze");
             int dex = 4;
@@ -51,7 +51,7 @@ namespace UnitTests
         public void RollTestTraitMods()
         {
             var roller = new OfflineDiceRoller(new StringBufferLogger());
-            IRollLogger logger = null;
+            IRollLogger logger = new StringBufferLogger();
 
             Build build = new Build("Artze");
             int dex = 3;
@@ -120,7 +120,7 @@ namespace UnitTests
         public void RollTestConditionsMods()
         {
             var roller = new OfflineDiceRoller(new StringBufferLogger());
-            IRollLogger logger = null;
+            IRollLogger logger = new StringBufferLogger();
 
             Build build = new Build("Artze");
             int dex = 3;

@@ -71,6 +71,8 @@
     <Compile Include="Character\CommonBuffs.cs" />
     <Compile Include="Character\HatysParty.cs" />
     <Compile Include="Character\HatysPartyLoader.cs" />
+    <Compile Include="Character\Party\Kinfolk1.cs" />
+    <Compile Include="Character\Party\Kinfolk2.cs" />
     <Compile Include="Character\Party\Kurt.cs" />
     <Compile Include="Character\Modifiers\BonusModifier.cs" />
     <Compile Include="Character\Modifiers\DCModifer.cs" />
@@ -79,6 +81,7 @@
     <Compile Include="Character\Party\Nameless.cs" />
     <Compile Include="Character\Party\Spirdon.cs" />
     <Compile Include="Character\Party\Yoki.cs" />
+    <Compile Include="Roller\MockFixedRoller.cs" />
     <Compile Include="Rolls\Backgrounds\Ancestors.cs" />
     <Compile Include="Rolls\BackgroundRoll.cs" />
     <Compile Include="Rolls\BotchException.cs" />
