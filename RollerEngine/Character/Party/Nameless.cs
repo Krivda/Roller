@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using RollerEngine.Roller;
 using RollerEngine.Logger;
 using RollerEngine.Rolls.Backgrounds;
@@ -65,11 +66,18 @@ namespace RollerEngine.Character.Party
             teachersEase.Roll(Build, target, ability, true, false);
         }
 
-        public void Instruct(Build target, string ability)
+        public void Instruct(Build target, string ability, bool withWill)
         {
             //give XP to smb
             var instruct = new InstructionTeach(Log, Roller);
-            instruct.Roll(Build, target, ability, true, false);
+            instruct.Roll(Build, target, ability, true, withWill);
+        }
+
+        public void Learn(string ability, bool withWill)
+        {
+            //consume Xp from pool
+            var instruct = new InstructionLearn(Log, Roller, ability);
+            instruct.Roll(Build, ability, false, withWill);
         }
     }
 }

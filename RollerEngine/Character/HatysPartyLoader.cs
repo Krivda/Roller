@@ -88,25 +88,11 @@ namespace RollerEngine.Character
                                         );
                                     }
                                 }
-                                else if (traitName.Contains(Build.DynamicTraits.Expirience))
+                                else if (traitName.Contains(Build.DynamicTraits.ExpirienceToLearn))
                                 {
-
-                                    int limit = 0;
-
-                                    if (traitValue.Item2 != 0)
-                                    {
-
-                                        limit = traitValue.Item2;
-                                    }
-
-                                    var Xp = new Tuple<int, int>(traitValue.Item1, limit);
-
-                                    target.InstructionXp.Add(traitName, Xp);
+                                    target.Traits.Add(traitName, traitValue.Item1);
+                                    target.Traits.Add(Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceLearned, traitName.Replace(Build.DynamicTraits.ExpirienceToLearn, "").Trim()), traitValue.Item2);
                                 }
-                                
-
-
-
                             }
                         }
                     }
@@ -123,56 +109,6 @@ namespace RollerEngine.Character
 
 
             return result;
-        }
-
-        private static void AddKnownModifiers(Dictionary<string, Build> result)
-        {
-            foreach (KeyValuePair<string, Build> buildKvp in result)
-            {
-                //spirit heritage
-                if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur"))
-                {
-                    buildKvp.Value.Traits[Build.Backgrounds.SpiritHeritage] = 5;
-                }
-
-                //Ansestors
-                if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur"))
-                {
-                    buildKvp.Value.Traits[Build.Backgrounds.Ansestors] = 5;
-                }
-
-                if (buildKvp.Key.Equals("Alisa"))
-                {
-                    buildKvp.Value.Traits[Build.Backgrounds.Ansestors] = 2;
-                }
-                if (buildKvp.Key.Equals("Urfin"))
-                {
-                    buildKvp.Value.Traits[Build.Backgrounds.Ansestors] = 1;
-                }
-
-                //Hatys
-                if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur") || buildKvp.Key.Equals("Alisa") || buildKvp.Key.Equals("Urfin"))
-                {
-                    buildKvp.Value.DCModifiers.Add(new DCModifer(
-                        "Hatys",
-                        new List<string>() { Build.Backgrounds.Ansestors },
-                        DurationType.Scene,
-                        new List<string>(),
-                        -2
-                    ));
-                }
-
-                //Sprit heritages
-                if (buildKvp.Value.Traits[Build.Backgrounds.SpiritHeritage] !=0)
-                {
-                    buildKvp.Value.BonusDicePoolModifiers.Add(new BonusModifier(
-                        "Spirit Heritage",
-                        DurationType.Scene,
-                        new List<string>() {Build.Conditions.SpiritHeritage},
-                        buildKvp.Value.Traits[Build.Backgrounds.SpiritHeritage]
-                    ));
-                }
-            }
         }
 
         private static string ProbeLine(Build probeBuild, IList<object> line, int index)
@@ -253,7 +189,7 @@ namespace RollerEngine.Character
 
             if (_expPoolStarted)
             {
-                return Build.DynamicTraits.GetKey(Build.DynamicTraits.Expirience, traitName);
+                return Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceToLearn, traitName);
             }
             else
             {
@@ -289,8 +225,7 @@ namespace RollerEngine.Character
                 return null;
             }
 
-            bool addAmulet = false;
-            int maxVal = 0;
+            int secondVal = 0;
             string strValue = Convert.ToString(line[characterTuple.Item2]).Trim();
 
             //fix  empty lines
@@ -306,19 +241,32 @@ namespace RollerEngine.Character
                 strValue = split[0].TrimEnd();
 
                 //add amulet as a roll modifier
-                addAmulet = true;
-                maxVal = 5;
+                secondVal = 5;
+            }
+
+            //parse exp (30(5))
+            if (strValue.Contains("("))
+            {
+                string[] split = strValue.Split('(');
+                split[1] = strValue.Replace(")", "");
+                strValue = split[0].TrimEnd();
+                split[1] = split[1].TrimEnd();
+
+                //add value from bracers into sec Val
+                secondVal = int.Parse(split[1]);
             }
 
             //try parse to int
             int traitValue;
             if (! int.TryParse(strValue, out traitValue))
             {
-                logger.Error("Can't read trait '{0}' for character '{1}' from line {2}: value '{3}' is not integer.", traitName, characterTuple.Item1, index, strValue);
-                return null;
+                string err =
+                    string.Format("Can't read trait '{0}' for character '{1}' from line {2}: value '{3}' is not integer.", traitName, characterTuple.Item1, index, strValue);
+                logger.Error(err);
+                throw new Exception(err);
             }
 
-            return new Tuple<int, int>(traitValue, maxVal);
+            return new Tuple<int, int>(traitValue, secondVal);
         }
 
     }

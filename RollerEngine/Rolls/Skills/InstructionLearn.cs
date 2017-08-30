@@ -6,7 +6,7 @@ using RollerEngine.Roller;
 
 namespace RollerEngine.Rolls.Skills
 {
-    class InstructionLearn : SkillRoll
+    public class InstructionLearn : SkillRoll
     {
         private const string SKILL_NAME = "Instruction (learn)";
 
@@ -21,38 +21,67 @@ namespace RollerEngine.Rolls.Skills
         }
 
 
-        public int Roll(Build actor, Build target, string ability, bool hasSpec, bool hasWill)
+        public int Roll(Build actor, string ability, bool hasSpec, bool hasWill)
         {
-            int result = base.Roll(actor, new List<Build>() { target }, hasSpec, hasWill);
+            int result = base.Roll(actor, new List<Build>() { actor }, hasSpec, hasWill);
 
             if (result > 0)
             {
-                string traitXpName = Build.DynamicTraits.GetKey(Build.DynamicTraits.Expirience, ability);
+                string traitNameXpToLearn = Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceToLearn, ability);
+                string traitNameXpLearned = Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceLearned, ability);
 
-                int currentXp;
-                int currentLimit;
-                if (!target.InstructionXp.ContainsKey(traitXpName))
+                int consumedXp = Math.Min(result, actor.Traits[traitNameXpToLearn]);
+
+                actor.Traits[traitNameXpToLearn] = actor.Traits[traitNameXpToLearn] - consumedXp;
+                actor.Traits[traitNameXpLearned] = actor.Traits[traitNameXpLearned] + consumedXp;
+
+                if (!actor.Traits.ContainsKey(traitNameXpLearned))
                 {
-                    currentXp = 0;
-                    currentLimit = 0;
+                    actor.Traits.Add(traitNameXpLearned,0);
+                }
+
+                int xpToSpend = actor.Traits[traitNameXpLearned];
+                int currentTraitValue = actor.Traits[ability];
+
+                int spentXp = 0;
+
+                for (int i = currentTraitValue+1; i < 6; i++)
+                {
+
+                    int xpCost = Build.GetSkillXpTable()[i];
+
+                    if (xpCost <= xpToSpend)
+                    {
+                        xpToSpend -= xpCost;
+                        spentXp += xpCost;
+                        actor.Traits[ability] = actor.Traits[ability] + 1;
+                        _log.Log(Verbosity.Important, string.Format("{0} spent {1} bonus XP on {2} increasing it's value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool.", actor.Name, xpCost, ability, actor.Traits[ability], xpToSpend, actor.Traits[traitNameXpLearned] - spentXp));
+                    }
+                    else
+                    {
+                        _log.Log(Verbosity.Important, string.Format("{0} don't yet have {1}XP learned to increase {2} value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool.", actor.Name, xpCost, ability, actor.Traits[ability]+1, xpToSpend, actor.Traits[traitNameXpLearned] - spentXp));
+                        break;
+                    }
+                }
+
+                //clear xp if trait is raised to 5
+                if (actor.Traits[ability] == 5)
+                {
+                    actor.Traits[traitNameXpToLearn] = 0;
+                    actor.Traits[traitNameXpLearned] = 0;
+                    _log.Log(Verbosity.Important, string.Format("{0} maxed his ability {1}. Remaining XP burened out.", actor.Name, ability));
                 }
                 else
                 {
-                    currentXp = target.InstructionXp[traitXpName].Item1;
-                    currentLimit = target.InstructionXp[traitXpName].Item2;
+                    if (spentXp != 0)
+                    {
+                        actor.Traits[traitNameXpLearned] = actor.Traits[traitNameXpLearned] - spentXp;
+                    }
                 }
-
-
-                int newXP = currentXp + result;
-
-
-                target.InstructionXp[traitXpName] = new Tuple<int, int>(newXP, actor.Traits[ability]);
-
-                _log.Log(Verbosity.Important, string.Format("{0} got new {1} ({2} in total) bonus XP to spent on dice on {3} rolls from {4} Instruction by {5}.", target.Name, result, newXP, ability, Name, actor.Name));
             }
             else
             {
-                _log.Log(Verbosity.Important, string.Format("{0} didn't get bonus XP from {1}.", target.Name, Name));
+                _log.Log(Verbosity.Important, string.Format("{0} didn't learn anything.", actor.Name));
             }
 
             return result;

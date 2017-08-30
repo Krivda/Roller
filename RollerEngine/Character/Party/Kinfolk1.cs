@@ -3,15 +3,15 @@ using RollerEngine.Roller;
 
 namespace RollerEngine.Character.Party
 {
-    public class Kurt
+    public class Kinfolk1
     {
         private readonly HatysParty _party;
         public Build Build { get; private set; }
         public IRollLogger Log { get; private set; }
         public IRoller Roller { get; private set; }
-        public const string CharacterName = "Курт";
+        public const string CharacterName = "Кинфолк1";
 
-        public Kurt(Build build, IRollLogger log, IRoller roller, HatysParty party)
+        public Kinfolk1(Build build, IRollLogger log, IRoller roller, HatysParty party)
         {
             _party = party;
             Build = build;

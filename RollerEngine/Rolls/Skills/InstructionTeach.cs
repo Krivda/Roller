@@ -6,7 +6,7 @@ using RollerEngine.Roller;
 
 namespace RollerEngine.Rolls.Skills
 {
-    class InstructionTeach : SkillRoll
+    public class InstructionTeach : SkillRoll
     {
         private const string SKILL_NAME = "Instruction (teach)";
 
@@ -27,32 +27,65 @@ namespace RollerEngine.Rolls.Skills
 
         public int Roll(Build actor, Build target, string ability, bool hasSpec, bool hasWill)
         {
+            int actorTraitValue = actor.Traits[ability];
+            int actorInstructAbility = actor.Traits[Build.Abilities.Instruction];
+
+            int maxTeachValue = Math.Min(actorInstructAbility, actorTraitValue);
+
+            int targetTraitValue = target.Traits[ability];
+
+            if (maxTeachValue <= targetTraitValue)
+            {
+                _log.Log(Verbosity.Important, string.Format("{0} doesn't have more skill in {1} or {2} ability to teach {3}!", actor.Name, target.Name, actorInstructAbility, ability));
+                return 0;
+            }
+            
             int result = base.Roll(actor, new List<Build>() { target }, hasSpec, hasWill);
 
             if (result > 0)
             {
-                string traitXpName = Build.DynamicTraits.GetKey(Build.DynamicTraits.Expirience, ability);
-
-                int currentXp;
-                int currentLimit;
-                if (!target.InstructionXp.ContainsKey(traitXpName))
+                string traitXpConsumed = Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceLearned, ability);
+                int alreadyLearned;
+                if (!target.Traits.ContainsKey(traitXpConsumed))
                 {
-                    currentXp = 0;
-                    currentLimit = 0;
+                    target.Traits.Add(traitXpConsumed, 0);
+                    alreadyLearned = 0;
                 }
                 else
                 {
-                    currentXp = target.InstructionXp[traitXpName].Item1;
-                    currentLimit = target.InstructionXp[traitXpName].Item2;
+                    alreadyLearned= target.Traits[traitXpConsumed];
                 }
 
+                string traitNameXpInPool = Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceToLearn, ability);
+                
+                int currentXpInPool;
+                if (!target.Traits.ContainsKey(traitNameXpInPool))
+                {
+                    currentXpInPool = 0;
+                    target.Traits.Add(traitNameXpInPool, 0);
+                }
+                else
+                {
+                    currentXpInPool = target.Traits[traitNameXpInPool];
+                }
 
-                int newXP = currentXp + result;
+                int maxXpPoolFromThisTeacher = 0;
 
+                //calc total possible 
+                for (int i = targetTraitValue + 1; i < maxTeachValue + 1; i++)
+                {
+                    maxXpPoolFromThisTeacher += Build.GetSkillXpTable()[i];
+                }
 
-                target.InstructionXp[traitXpName] = new Tuple<int, int>(newXP, actor.Traits[ability]);
+                //redice max XP teacher can teach by already learned and already in pool
+                maxXpPoolFromThisTeacher = maxXpPoolFromThisTeacher - alreadyLearned - currentXpInPool;
 
-                _log.Log(Verbosity.Important, string.Format("{0} got new {1} ({2} in total) bonus XP to spent on dice on {3} rolls from {4} Instruction by {5}.", target.Name, result, newXP, ability, Name, actor.Name));
+                //limit XP by teacher's capacity
+                int newXp = Math.Min(result, maxXpPoolFromThisTeacher);
+
+                target.Traits[traitNameXpInPool] = currentXpInPool + newXp;
+
+                _log.Log(Verbosity.Important, string.Format("{0} got new {1}XP ({2}XP in total in bonus XP pool) to spent on learning {3} from {4}'s {5}.", target.Name, result, newXp, ability, actor.Name, Name));
             }
             else
             {

@@ -7,7 +7,8 @@ namespace RollerEngine.Character.Modifiers
     public enum DurationType
     {
         Roll,
-        Scene
+        Scene, 
+        Permanent
     }
 
     public abstract class ARollModifer
