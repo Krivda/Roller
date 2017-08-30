@@ -96,6 +96,7 @@ namespace RollerEngine.Character
         {
             public const string Ansestors = "Ansestors";
             public const string SpiritHeritage = "Spirit Heritage";
+
         }
 
         public class RollableTraits
@@ -108,6 +109,7 @@ namespace RollerEngine.Character
         public class Conditions
         {
             public const string AncestorSpirits = "Ancestor Spirits";
+            public const string AncestorBackground = "Ancestor Background";
             public const string SpiritHeritage = "Spirit Heritage";
             public const string Social = "Social";
         }
