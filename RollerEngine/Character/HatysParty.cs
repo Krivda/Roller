@@ -17,13 +17,14 @@ namespace RollerEngine.Character
         {
             Nameless = new Nameless(party["Krivda"], log, roller, this);
             Spirdon = new Spirdon(party["Keltur"], log, roller, this);
-            Yoki = new Yoki(party["Alisa"]);
-            Kurt = new Kurt(party["Urfin"]);
+            Yoki = new Yoki(party["Alisa"], log, roller, this);
+            Kurt = new Kurt(party["Urfin"], log, roller, this);
         }
 
         public static HatysParty LoadFromGoogle(IRollLogger log, IRoller roller)
         {
             var party = HatysPartyLoader.LoadFromGoogle(log);
+            AddKnownModifiers(party);
             return new HatysParty(party, log, roller);
         }
 
@@ -34,7 +35,7 @@ namespace RollerEngine.Character
             Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
 
             //teach keltur some occult
-            Nameless.Instruct(Spirdon.Build, Build.Abilities.Occult);
+            Nameless.Instruct(Spirdon.Build, Build.Abilities.Occult, false);
 
 
             //buff keltur's occult
@@ -74,7 +75,7 @@ namespace RollerEngine.Character
                     buildKvp.Value.DCModifiers.Add(new DCModifer(
                         "Hatys",
                         new List<string>() { Build.Backgrounds.Ansestors },
-                        DurationType.Scene,
+                        DurationType.Permanent,
                         new List<string>(),
                         -2
                     ));
@@ -85,7 +86,7 @@ namespace RollerEngine.Character
                 {
                     buildKvp.Value.BonusDicePoolModifiers.Add(new BonusModifier(
                         "Spirit Heritage",
-                        DurationType.Scene,
+                        DurationType.Permanent,
                         new List<string>() { Build.Conditions.SpiritHeritage },
                         buildKvp.Value.Traits[Build.Backgrounds.SpiritHeritage]
                     ));

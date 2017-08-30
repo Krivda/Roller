@@ -10,7 +10,7 @@ namespace RollerEngine.Rolls.Backgrounds
     {
 
         public Ancestors(IRollLogger log, IRoller roller)
-            : base(Build.Backgrounds.Ansestors, log, roller, new List<string>() {Build.Conditions.AncestorSpirits})
+            : base(Build.Backgrounds.Ansestors, log, roller, new List<string>() {Build.Conditions.AncestorSpirits, Build.Conditions.AncestorBackground})
         {}
         
 

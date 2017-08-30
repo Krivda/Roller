@@ -104,10 +104,6 @@ namespace RollerEngine.Character
                 }
             }
 
-            //add known modifiers
-            AddKnownModifiers(result);
-
-
             return result;
         }
 
