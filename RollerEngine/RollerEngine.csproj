@@ -67,23 +67,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Character\Build.cs" />
+    <Compile Include="Character\Common\Character.cs" />
+    <Compile Include="Character\Common\Build.cs" />
     <Compile Include="Character\CommonBuffs.cs" />
+    <Compile Include="Character\Party\HatysPartyMember.cs" />
     <Compile Include="Character\HatysParty.cs" />
     <Compile Include="Character\HatysPartyLoader.cs" />
+    <Compile Include="Character\Common\IStudent.cs" />
+    <Compile Include="Character\Common\ITeacher.cs" />
     <Compile Include="Character\Party\Kinfolk1.cs" />
     <Compile Include="Character\Party\Kinfolk2.cs" />
     <Compile Include="Character\Party\Kurt.cs" />
-    <Compile Include="Character\Modifiers\BonusModifier.cs" />
-    <Compile Include="Character\Modifiers\DCModifer.cs" />
-    <Compile Include="Character\Modifiers\TraitModifier.cs" />
-    <Compile Include="Character\Modifiers\ARollModifier.cs" />
+    <Compile Include="Character\TeachPlan.cs" />
+    <Compile Include="Modifiers\BonusModifier.cs" />
+    <Compile Include="Modifiers\DCModifer.cs" />
+    <Compile Include="Modifiers\TraitModifier.cs" />
+    <Compile Include="Modifiers\ARollModifier.cs" />
     <Compile Include="Character\Party\Nameless.cs" />
     <Compile Include="Character\Party\Spirdon.cs" />
     <Compile Include="Character\Party\Yoki.cs" />
     <Compile Include="Roller\MockFixedRoller.cs" />
     <Compile Include="Rolls\Backgrounds\Ancestors.cs" />
     <Compile Include="Rolls\BackgroundRoll.cs" />
+    <Compile Include="Rolls\Gifts\CaernOfVigilChannelling.cs" />
     <Compile Include="Rolls\BotchException.cs" />
     <Compile Include="Logger\CompositeLogger.cs" />
     <Compile Include="Rolls\GiftRoll.cs" />
@@ -104,6 +110,7 @@
     <Compile Include="Rolls\RollBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Party\Common\" />
     <Folder Include="Rolls\Rollchains\" />
   </ItemGroup>
   <ItemGroup>

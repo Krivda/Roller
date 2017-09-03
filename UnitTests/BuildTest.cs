@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 using RollerEngine.Character;
-using RollerEngine.Character.Modifiers;
+using RollerEngine.Character.Common;
 using RollerEngine.Logger;
+using RollerEngine.Modifiers;
 using RollerEngine.Roller;
 using RollerEngine.Rolls;
 

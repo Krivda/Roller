@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using NLog;
+using RollerEngine.Character.Common;
 
-namespace RollerEngine.Character.Modifiers
+namespace RollerEngine.Modifiers
 {
     public class TraitModifier : ARollModifer
     {

@@ -1,23 +1,16 @@
+using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
+using RollerEngine.Rolls.Skills;
 
 namespace RollerEngine.Character.Party
 {
-    public class Kinfolk1
+    public class Kinfolk1 : HatysPartyMember
     {
-        private readonly HatysParty _party;
-        public Build Build { get; private set; }
-        public IRollLogger Log { get; private set; }
-        public IRoller Roller { get; private set; }
-        public const string CharacterName = "Кинфолк1";
-
-        public Kinfolk1(Build build, IRollLogger log, IRoller roller, HatysParty party)
+        
+        public Kinfolk1(Build build, IRollLogger log, IRoller roller, HatysParty party) : base("Кинфолк 1", build, log, roller, party)
         {
-            _party = party;
-            Build = build;
-            Build.Name = CharacterName;
-            Log = log;
-            Roller = roller;
         }
+
     }
 }

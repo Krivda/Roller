@@ -1,11 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using RollerEngine.Character.Modifiers;
+using System.Linq;
+using RollerEngine.Modifiers;
 
-namespace RollerEngine.Character
+namespace RollerEngine.Character.Common
 {
     public class Build
     {
+        public class Classes
+        {
+            public const string Warewolf = "Warewolf";
+            public const string Kinfolk = "Kinfolk";
+            public const string Corax = "Corax";
+        }
+
+
         public class Atributes
         {
             public const string Strength = "Strength";
@@ -109,7 +118,6 @@ namespace RollerEngine.Character
         public class Conditions
         {
             public const string AncestorSpirits = "Ancestor Spirits";
-            public const string AncestorBackground = "Ancestor Background";
             public const string SpiritHeritage = "Spirit Heritage";
             public const string Social = "Social";
         }
@@ -125,6 +133,10 @@ namespace RollerEngine.Character
                 return string.Format("{0} {1}", dynamicName, trait);
             }
         }
+
+        public int UsedAncestorsCount { get; set; }
+
+        public string CharacterClass { get; set; }
 
         public Dictionary<string, int> Traits = new Dictionary<string, int>();
 
@@ -151,7 +163,7 @@ namespace RollerEngine.Character
         }
 
         public List<DCModifer> BonusDCModifiers = new List<DCModifer>();
-        public object Name { get; set; }
+        public string Name { get; set; }
 
         public Build(string name)
         {
@@ -189,6 +201,36 @@ namespace RollerEngine.Character
         public void AddDicePoolBonusModifer(BonusModifier modifier)
         {
             BonusDicePoolModifiers.Add(modifier);
+        }
+
+        public bool CheckBonusExists(string trait, string bonusName)
+        {
+            if (string.IsNullOrEmpty(trait))
+            {
+                if (TraitModifiers.Any(m => m.Name.Equals(bonusName)))
+                {
+                    return true;
+                }
+
+                if (DCModifiers.Any(m => m.Name.Equals(bonusName)))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (BonusDCModifiers.Any(m => m.Name.Equals(bonusName)))
+                {
+                    return true;
+                }
+
+                if (BonusDicePoolModifiers.Any(m => m.Name.Equals(bonusName)))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

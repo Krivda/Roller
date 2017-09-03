@@ -1,23 +1,22 @@
+using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
+using RollerEngine.Rolls.Gifts;
+using RollerEngine.Rolls.Skills;
 
 namespace RollerEngine.Character.Party
 {
-    public class Spirdon
+    public class Spirdon : HatysPartyMember
     {
-        private readonly HatysParty _party;
-        public Build Build { get; private set; }
-        public IRollLogger Log { get; private set; }
-        public IRoller Roller { get; private set; }
-        public const string CharacterName = "Спиридон";
-
-        public Spirdon(Build build, IRollLogger log, IRoller roller, HatysParty party)
+        public Spirdon(Build build, IRollLogger log, IRoller roller, HatysParty party) : base("Спиридон", build, log, roller, party)
         {
-            _party = party;
-            Build = build;
-            Build.Name = CharacterName;
-            Log = log;
-            Roller = roller;
+        }
+
+        public void CastPersuasion()
+        {
+            //Cast Pesuasion
+            var persuasionRoll = new Persuasion(Log, Roller);
+            persuasionRoll.Roll(Build, false, true);
         }
     }
 }

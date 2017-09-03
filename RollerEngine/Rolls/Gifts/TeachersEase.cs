@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using RollerEngine.Character;
-using RollerEngine.Character.Modifiers;
+using RollerEngine.Character.Common;
 using RollerEngine.Logger;
+using RollerEngine.Modifiers;
 using RollerEngine.Roller;
 
 namespace RollerEngine.Rolls.Gifts
@@ -11,7 +12,9 @@ namespace RollerEngine.Rolls.Gifts
     {
         private const string GIFT_NAME = "Teacher's Ease";
 
-        public TeachersEase(IRollLogger log, IRoller roller) : base(GIFT_NAME, log, roller, new List<string>() { Build.Atributes.Manipulation, Build.Abilities.Instruction}, new List<string>())
+        public TeachersEase(IRollLogger log, IRoller roller) : base(GIFT_NAME, log, roller, new List<string>()
+            { Build.Atributes.Manipulation, Build.Abilities.Instruction},
+            new List<string>(){Build.Conditions.Social})
         {
         }
 

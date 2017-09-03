@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 using System.Xml.XPath;
 using Newtonsoft.Json;
 using RollerEngine.Character;
-using RollerEngine.Character.Modifiers;
+using RollerEngine.Character.Common;
 using RolzOrgEnchancer.Interfaces;
 using RolzOrgEnchancer.UI;
 using WOD;

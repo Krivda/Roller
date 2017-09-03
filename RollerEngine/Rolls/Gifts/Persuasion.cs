@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using RollerEngine.Character;
-using RollerEngine.Character.Modifiers;
+using RollerEngine.Character.Common;
 using RollerEngine.Logger;
+using RollerEngine.Modifiers;
 using RollerEngine.Roller;
 
 namespace RollerEngine.Rolls.Gifts
@@ -16,27 +17,41 @@ namespace RollerEngine.Rolls.Gifts
 
         public int Roll(Build actor, bool hasSpec, bool hasWill)
         {
-            int result =  base.Roll(actor, new List<Build>(){actor}, hasSpec, hasWill);
-
-            if (result > 0)
+            if (!actor.CheckBonusExists(Build.Atributes.Charisma, Name))
             {
-                actor.DCModifiers.Add(
-                    new DCModifer(
-                        Name,
-                        new List<string>() {Build.Atributes.Appearance, Build.Atributes.Charisma, Build.Atributes.Manipulation},
-                        DurationType.Scene, 
-                        new List<string>() { Build.Conditions.Social },
-                        -1
-                ));
 
-                _log.Log(Verbosity.Important, string.Format("{0} obtained bonus -1 DC on social rolls from {1} gift.", actor.Name, Name));
-            }
-            else
-            {
-                _log.Log(Verbosity.Important, string.Format("{0} didn't get bonus from {1} gift.",actor.Name, Name));
+
+                int result = base.Roll(actor, new List<Build>() {actor}, hasSpec, hasWill);
+
+                if (result > 0)
+                {
+                    actor.DCModifiers.Add(
+                        new DCModifer(
+                            Name,
+                            new List<string>()
+                            {
+                                Build.Atributes.Appearance,
+                                Build.Atributes.Charisma,
+                                Build.Atributes.Manipulation
+                            },
+                            DurationType.Scene,
+                            new List<string>() {Build.Conditions.Social},
+                            -1
+                        ));
+
+                    _log.Log(Verbosity.Important,
+                        string.Format("{0} obtained bonus -1 DC on social rolls from {1} gift.", actor.Name, Name));
+                }
+                else
+                {
+                    _log.Log(Verbosity.Important,
+                        string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
+                }
+
+                return result;
             }
 
-            return result;
+            return 0;
         }
     }
 }

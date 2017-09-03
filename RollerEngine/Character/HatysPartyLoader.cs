@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Makedonsky.MapLogic.SpreadSheets;
-using RollerEngine.Character.Modifiers;
+using RollerEngine.Character.Common;
 using RollerEngine.Roller;
 using RollerEngine.Logger;
+using RollerEngine.Modifiers;
+using RollerEngine.SpreadSheets;
 
 namespace RollerEngine.Character
 {
@@ -63,36 +64,48 @@ namespace RollerEngine.Character
                         //load trait value for each character in party
                         foreach (var characterTuple in characters)
                         {
-                            Tuple<int, int> traitValue = GetTraitValue(characterTuple, traitName, data[i], i);
-
-                            if (traitValue != null)
+                            try
                             {
-                                Build target = result[characterTuple.Item1];
 
-                                //if it a common trait
-                                if (target.Traits.ContainsKey(traitName))
+                                Tuple<int, int> traitValue = GetTraitValue(characterTuple, traitName, data[i], i);
+
+                                if (traitValue != null)
                                 {
-                                    target.Traits[traitName] = traitValue.Item1;
+                                    Build target = result[characterTuple.Item1];
 
-                                    if (traitValue.Item2 !=0)
+                                    //if it a common trait
+                                    if (target.Traits.ContainsKey(traitName))
                                     {
-                                        //add amulet modifier
-                                        result[characterTuple.Item1].AddTraitModifer(
-                                            new TraitModifier("Amulet",
-                                                new List<string>() { traitName },
-                                                DurationType.Scene,
-                                                new List<string>(),
-                                                traitValue.Item2, //alwais 2!
-                                                TraitModifier.BonusTypeKind.TraitModLimited,
-                                                5)
-                                        );
+                                        target.Traits[traitName] = traitValue.Item1;
+
+                                        if (traitValue.Item2 != 0)
+                                        {
+                                            //add amulet modifier
+                                            result[characterTuple.Item1].AddTraitModifer(
+                                                new TraitModifier("Amulet",
+                                                    new List<string>() {traitName},
+                                                    DurationType.Scene,
+                                                    new List<string>(),
+                                                    traitValue.Item2, //alwais 2!
+                                                    TraitModifier.BonusTypeKind.TraitModLimited,
+                                                    5)
+                                            );
+                                        }
+                                    }
+                                    else if (traitName.Contains(Build.DynamicTraits.ExpirienceToLearn))
+                                    {
+                                        target.Traits.Add(traitName, traitValue.Item1);
+                                        target.Traits.Add(
+                                            Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceLearned,
+                                                traitName.Replace(Build.DynamicTraits.ExpirienceToLearn, "").Trim()),
+                                            traitValue.Item2);
                                     }
                                 }
-                                else if (traitName.Contains(Build.DynamicTraits.ExpirienceToLearn))
-                                {
-                                    target.Traits.Add(traitName, traitValue.Item1);
-                                    target.Traits.Add(Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceLearned, traitName.Replace(Build.DynamicTraits.ExpirienceToLearn, "").Trim()), traitValue.Item2);
-                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                string msg = string.Format("Can't parse line:{0} - value for character name {1}. Got exception {2}", i, characterTuple.Item1, ex);
+                                logger.Error(msg);
                             }
                         }
                     }

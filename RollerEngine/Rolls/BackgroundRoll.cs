@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using RollerEngine.Character;
+using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
 

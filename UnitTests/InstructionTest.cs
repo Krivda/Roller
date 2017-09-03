@@ -1,3 +1,5 @@
+using RollerEngine.Character.Common;
+
 namespace UnitTests
 {
 using NLog;

@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using NLog;
 
-namespace RollerEngine.Character.Modifiers
+namespace RollerEngine.Modifiers
 {
     public enum DurationType
     {
