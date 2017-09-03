@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using RollerEngine.Character.Modifiers;
+using RollerEngine.Character.Common;
 using RollerEngine.Logger;
+using RollerEngine.Modifiers;
 
 namespace RollerEngine.Character
 {
@@ -12,8 +13,8 @@ namespace RollerEngine.Character
 
             build.DCModifiers.Add(
                 new DCModifer(
-                    "Hatys", 
-                    new List<string>() {Build.Backgrounds.Ansestors},
+                    "Hatys",
+                    new List<string>() { Build.Backgrounds.Ansestors },
                     DurationType.Scene,
                     new List<string>(),
                     -1
@@ -35,20 +36,25 @@ namespace RollerEngine.Character
         }
 
 
-        public static void ApplyCaernOfVigilPower(Build build, IRollLogger log)
+        public static void ApplyCaernOfVigilPowerAncesctors(Build build, IRollLogger log)
         {
-            log.Log(Verbosity.Details, string.Format("Caern of Vigil power applied on {0} (+4 Ancestors)", build.Name));
+            const string caernOfVigil = "Caern of Vigil";
 
-            build.TraitModifiers.Add(
-                new TraitModifier(
-                    "Caern of Vigil",
-                    new List<string>() { Build.Backgrounds.Ansestors },
-                    DurationType.Scene,
-                    new List<string>(), 
-                    4, 
-                    TraitModifier.BonusTypeKind.AdditionalDice,
-                    -1
-                ));
+            log.Log(Verbosity.Details, string.Format("{0} power applied on {1} (+4 Ancestors)", caernOfVigil, build.Name));
+
+            if (!build.TraitModifiers.Exists(m => m.Name.Equals(caernOfVigil)))
+            {
+                build.TraitModifiers.Add(
+                    new TraitModifier(
+                        caernOfVigil,
+                        new List<string>() {Build.Backgrounds.Ansestors},
+                        DurationType.Scene,
+                        new List<string>(),
+                        4,
+                        TraitModifier.BonusTypeKind.AdditionalDice,
+                        -1
+                    ));
+            }
         }
 
         public static void ApplyBoneRythms(Build build, IRollLogger log)
@@ -61,19 +67,6 @@ namespace RollerEngine.Character
                     DurationType.Roll,
                     new List<string>(),
                     1
-                ));
-        }
-
-        public static void ApplyChannelling(Build build, IRollLogger log, int value)
-        {
-            log.Log(Verbosity.Details, string.Format("{0} Channels {1} Rage to boost his next Action (+{1} Dice on next roll)", build.Name, value));
-
-            build.BonusDicePoolModifiers.Add(
-                new BonusModifier(
-                    "Channeling",
-                    DurationType.Roll,
-                    new List<string>(),
-                    value
                 ));
         }
     }

@@ -1,31 +1,24 @@
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using RollerEngine.Character.Common;
 using RollerEngine.Roller;
 using RollerEngine.Logger;
+using RollerEngine.Modifiers;
 using RollerEngine.Rolls.Backgrounds;
 using RollerEngine.Rolls.Gifts;
 using RollerEngine.Rolls.Skills;
 
 namespace RollerEngine.Character.Party
 {
-    public class Nameless
+    public class Nameless : HatysPartyMember
     {
-        public Build Build { get; private set; }
-        public IRollLogger Log { get; private set; }
-        public IRoller Roller { get; private set; }
-        public const string CharacterName = "Безымянный";
-
-        public Nameless(Build build, IRollLogger log, IRoller roller, HatysParty party)
+        public Nameless(Build build, IRollLogger log, IRoller roller, HatysParty party) : base("Безымянный", build, log, roller, party)
         {
-            Build = build;
-            Build.Name = CharacterName;
-            Log = log;
-            Roller = roller;
         }
 
         public void WeeklyBoostSkill(string skill)
         {
             //add caern mod (+4 ancestors)
-            CommonBuffs.ApplyCaernOfVigilPower(Build, Log);
+            CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Build, Log);
 
             //Apply chiminage
             CommonBuffs.ApplyAncestorsChiminage(Build, Log);
@@ -34,9 +27,7 @@ namespace RollerEngine.Character.Party
             var ansestorsRoll = new Ancestors(Log, Roller);
             ansestorsRoll.Roll(Build, Build.Abilities.Occult);
 
-            //Cast Pesuasion
-            var persuasionRoll = new Persuasion(Log, Roller);
-            persuasionRoll.Roll(Build, false, true);
+            CastPersuasion();
 
             //Apply chiminage
             CommonBuffs.ApplyAncestorsChiminage(Build, Log);
@@ -49,14 +40,23 @@ namespace RollerEngine.Character.Party
             CommonBuffs.ApplyBoneRythms(Build, Log);
 
             //Apply Channelling for 3 Rage
-            CommonBuffs.ApplyChannelling(Build, Log, 3);
+            ApplyChannellingGift(Build, Log, 3);
 
             //Apply chiminage
             CommonBuffs.ApplyAncestorsChiminage(Build, Log);
 
-            //buff Instruct
+            //buff Instruct 
+
+            Build.UsedAncestorsCount = Build.UsedAncestorsCount - 1;
             ansestorsRoll = new Ancestors(Log, Roller);
             ansestorsRoll.Roll(Build, skill);
+        }
+
+        private void CastPersuasion()
+        {
+            //Cast Pesuasion
+            var persuasionRoll = new Persuasion(Log, Roller);
+            persuasionRoll.Roll(Build, false, true);
         }
 
         public void CastTeachersEase(Build target, string ability)
@@ -66,18 +66,17 @@ namespace RollerEngine.Character.Party
             teachersEase.Roll(Build, target, ability, true, false);
         }
 
-        public void Instruct(Build target, string ability, bool withWill)
+        public static void ApplyChannellingGift(Build build, IRollLogger log, int value)
         {
-            //give XP to smb
-            var instruct = new InstructionTeach(Log, Roller);
-            instruct.Roll(Build, target, ability, true, withWill);
-        }
+            log.Log(Verbosity.Details, string.Format("{0} Channels {1} Rage to boost his next Action (+{1} Dice on next roll)", build.Name, value));
 
-        public void Learn(string ability, bool withWill)
-        {
-            //consume Xp from pool
-            var instruct = new InstructionLearn(Log, Roller, ability);
-            instruct.Roll(Build, ability, false, withWill);
+            build.BonusDicePoolModifiers.Add(
+                new BonusModifier(
+                    "Channeling",
+                    DurationType.Roll,
+                    new List<string>(),
+                    value
+                ));
         }
     }
 }

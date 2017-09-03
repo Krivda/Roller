@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RollerEngine.Character.Modifiers
+namespace RollerEngine.Modifiers
 {
     // ReSharper disable once InconsistentNaming
     public class DCModifer : ARollModifer

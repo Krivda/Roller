@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RollerEngine.Character.Modifiers
+namespace RollerEngine.Modifiers
 {
     public class BonusModifier : ARollModifer
     {

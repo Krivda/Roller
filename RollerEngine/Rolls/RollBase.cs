@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using RollerEngine.Character;
-using RollerEngine.Character.Modifiers;
+using RollerEngine.Character.Common;
 using RollerEngine.Logger;
+using RollerEngine.Modifiers;
 using RollerEngine.Roller;
 
 namespace RollerEngine.Rolls

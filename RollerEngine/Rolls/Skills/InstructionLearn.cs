@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RollerEngine.Character;
+using RollerEngine.Character.Common;
 using RollerEngine.Logger;
+using RollerEngine.Modifiers;
 using RollerEngine.Roller;
 
 namespace RollerEngine.Rolls.Skills
@@ -20,6 +23,50 @@ namespace RollerEngine.Rolls.Skills
 
         }
 
+        public override int GetBaseDC(Build actor, List<Build> targets)
+        {
+            //It's not right, but...
+
+            var target = targets[0];
+
+            bool increaseDC = false;
+            foreach (var trait in DicePool)
+            {
+                // do it for only 0-value traits
+                if (target.Traits[trait] == 0)
+                {
+                    //
+                    var props = typeof(Build.Abilities).GetProperties();
+                    foreach (var prop in props)
+                    {
+                        if (prop.Name.Equals(trait))
+                        {
+                            //this is a zero ability
+
+                            //check if there's an buff on that ability that will cancel untrained mod.
+                            var hasSuitableMod = target.TraitModifiers.Any(modifier =>
+                                modifier.BonusType == TraitModifier.BonusTypeKind.TraitMod ||
+                                modifier.BonusType == TraitModifier.BonusTypeKind.TraitModLimited ||
+                                modifier.Value > 0);
+
+                            if (!hasSuitableMod)
+                            {
+                                increaseDC = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!increaseDC)
+                        break;
+                }
+            }
+
+            if (increaseDC)
+                return 8;
+
+            return base.GetBaseDC(actor, targets);
+        }
 
         public int Roll(Build actor, string ability, bool hasSpec, bool hasWill)
         {

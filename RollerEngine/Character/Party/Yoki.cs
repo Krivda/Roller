@@ -1,23 +1,16 @@
+using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
+using RollerEngine.Rolls.Skills;
 
 namespace RollerEngine.Character.Party
 {
-    public class Yoki
+    public class Yoki : HatysPartyMember
     {
-        private readonly HatysParty _party;
-        public Build Build { get; private set; }
-        public IRollLogger Log { get; private set; }
-        public IRoller Roller { get; private set; }
-        public const string CharacterName = "Йоки";
-
-        public Yoki(Build build, IRollLogger log, IRoller roller, HatysParty party)
+ 
+        public Yoki(Build build, IRollLogger log, IRoller roller, HatysParty party) : base("Йоки", build, log, roller, party)
         {
-            _party = party;
-            Build = build;
-            Build.Name = CharacterName;
-            Log = log;
-            Roller = roller;
         }
+
     }
 }

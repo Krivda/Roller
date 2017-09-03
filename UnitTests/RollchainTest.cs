@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using NLog;
 using NUnit.Framework;
 using RollerEngine.Character;
+using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
 
@@ -17,9 +19,28 @@ namespace UnitTests
         {
             var rollLogger = new NLogLogger(Logger);
             Logger.Info("Started");
-            var res = HatysPartyLoader.LoadParty(rollLogger, new OfflineDiceRoller(rollLogger));
+            var res = HatysParty.LoadFromGoogle(rollLogger, new OfflineDiceRoller(rollLogger));
 
             res.WeeklyLearning();
         }
+
+        [Test]
+        public void TestInstructionWeek()
+        {
+            var rollLogger = new NLogLogger(Logger);
+            Logger.Info("Started");
+
+            var res = HatysParty.LoadFromGoogle(rollLogger, new OfflineDiceRoller(rollLogger));
+
+            var plan = new List<TeachPlan>
+            {
+                new TeachPlan(res.Nameless, res.Yoki, Build.Abilities.Brawl),
+                new TeachPlan(res.Yoki, res.Kurt, Build.Abilities.Rituals),
+                new TeachPlan(res.Kinfolk1, res.Kinfolk1, Build.Abilities.Science)
+            };
+
+            res.WeeklyTeaching(plan);
+        }
+
     }
 }
