@@ -84,9 +84,9 @@ namespace RollerEngine.Character
                                             result[characterTuple.Item1].AddTraitModifer(
                                                 new TraitModifier("Amulet",
                                                     new List<string>() {traitName},
-                                                    DurationType.Scene,
+                                                    DurationType.Permanent,
                                                     new List<string>(),
-                                                    traitValue.Item2, //alwais 2!
+                                                    2, //alwais 2!
                                                     TraitModifier.BonusTypeKind.TraitModLimited,
                                                     5)
                                             );
@@ -250,7 +250,7 @@ namespace RollerEngine.Character
                 strValue = split[0].TrimEnd();
 
                 //add amulet as a roll modifier
-                secondVal = 5;
+                secondVal = int.Parse(split[1].Replace("*", ""));
             }
 
             //parse exp (30(5))

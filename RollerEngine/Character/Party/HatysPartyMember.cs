@@ -14,10 +14,12 @@ namespace RollerEngine.Character.Party
     {
         public HatysParty Party { get; private set; }
         public bool HasOpenedCaern { get; set; }
+        public bool HasSpecOnInstruction { get; set; }
 
         public HatysPartyMember(string name, Build build, IRollLogger log, IRoller roller, HatysParty party) : base(name, build, log, roller)
         {
             Party = party;
+            HasSpecOnInstruction = false;
             LearnSessions = 2;
         }
 
@@ -94,7 +96,7 @@ namespace RollerEngine.Character.Party
             }
         }
 
-        public void Instruct(Build target, string ability, bool withWill)
+        public virtual void Instruct(Build target, string ability, bool withWill)
         {
             if (Build.Traits[Build.Abilities.Instruction] > 0)
             {
@@ -107,8 +109,9 @@ namespace RollerEngine.Character.Party
 
                 //give XP to smb
                 var instruct = new InstructionTeach(Log, Roller);
-                instruct.Roll(Build, target, ability, true, withWill);
+                instruct.Roll(Build, target, ability, HasSpecOnInstruction, withWill);
             }
-        }   
+        }
+
     }
 }
