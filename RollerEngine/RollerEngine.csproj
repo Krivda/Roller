@@ -93,6 +93,7 @@
     <Compile Include="Rolls\BotchException.cs" />
     <Compile Include="Logger\CompositeLogger.cs" />
     <Compile Include="Rolls\GiftRoll.cs" />
+    <Compile Include="Rolls\Gifts\CallToWyldDirgeToTheFallen.cs" />
     <Compile Include="Rolls\Gifts\GhostPack.cs" />
     <Compile Include="Rolls\Gifts\Persuasion.cs" />
     <Compile Include="Logger\NLogLogger.cs" />
@@ -110,7 +111,6 @@
     <Compile Include="Rolls\RollBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Party\Common\" />
     <Folder Include="Rolls\Rollchains\" />
   </ItemGroup>
   <ItemGroup>

@@ -40,6 +40,9 @@ namespace RollerEngine.Character
 
 
             Spirdon.HasOpenedCaern = true;
+            Yoki.HasSpecOnInstruction = true;
+            Kinfolk1.HasSpecOnInstruction = true;
+            Kinfolk2.HasSpecOnInstruction = true;
         }
 
         public static HatysParty LoadFromGoogle(IRollLogger log, IRoller roller)

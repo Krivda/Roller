@@ -78,5 +78,7 @@ namespace RollerEngine.Character.Party
                     value
                 ));
         }
+
+
     }
 }

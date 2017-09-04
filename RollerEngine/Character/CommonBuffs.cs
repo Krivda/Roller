@@ -69,5 +69,20 @@ namespace RollerEngine.Character
                     1
                 ));
         }
+
+        public void SacredRosemary(Build build, IRollLogger log)
+        {
+            log.Log(Verbosity.Details, string.Format("Rosemary sanctified plant power applied on {0} (-2 Dice on learning to next roll)", build.Name));
+
+            build.BonusDCModifiers.Add(
+                new DCModifer(
+                    "Rosemary",
+                    new List<string>(), 
+                    DurationType.Scene,
+                    new List<string>() {Build.Conditions.Teaching},
+                    -2
+                ));
+        }
+
     }
 }
