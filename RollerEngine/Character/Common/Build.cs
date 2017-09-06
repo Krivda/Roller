@@ -121,6 +121,7 @@ namespace RollerEngine.Character.Common
             public const string SpiritHeritage = "Spirit Heritage";
             public const string Social = "Social";
             public const string Teaching = "Teaching";
+            public const string Learning = "Learning";
         }
 
         public class DynamicTraits
@@ -206,7 +207,7 @@ namespace RollerEngine.Character.Common
 
         public bool CheckBonusExists(string trait, string bonusName)
         {
-            if (string.IsNullOrEmpty(trait))
+            if (! string.IsNullOrEmpty(trait))
             {
                 if (TraitModifiers.Any(m => m.Name.Equals(bonusName)))
                 {
@@ -232,6 +233,30 @@ namespace RollerEngine.Character.Common
             }
 
             return false;
+        }
+
+        public int GetModifiedTrait(string traitName)
+        {
+            var mods = TraitModifiers.FindAll(m => m.Traits.Contains(traitName) &&
+                                                   (m.BonusType == TraitModifier.BonusTypeKind.TraitMod ||
+                                                    m.BonusType == TraitModifier.BonusTypeKind.TraitModLimited));
+
+            mods.Sort((tm1, tm2) => tm1.BonusType.CompareTo(tm2.BonusType));
+
+
+            int traitValue = Traits[traitName];
+
+            foreach (var traitModifier in mods.FindAll(m => m.BonusType == TraitModifier.BonusTypeKind.TraitMod))
+            {
+                traitValue += traitModifier.Value;
+            }
+
+            foreach (var traitModifier in mods.FindAll(m => m.BonusType == TraitModifier.BonusTypeKind.TraitModLimited))
+            {
+                traitValue += traitModifier.GetLimitedValue(this, traitValue);
+            }
+
+            return traitValue;
         }
     }
 }

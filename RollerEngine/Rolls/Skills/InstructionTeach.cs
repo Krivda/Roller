@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using RollerEngine.Character;
 using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
@@ -16,14 +15,15 @@ namespace RollerEngine.Rolls.Skills
             log,
             roller,
             new List<string>() { Build.Atributes.Manipulation, Build.Abilities.Instruction },
-            new List<string>() {Build.Conditions.Social})
+            new List<string>() { Build.Conditions.Social, Build.Conditions.Learning })
+        
         {
 
         }
 
         public override int GetBaseDC(Build actor, List<Build> targets)
         {
-            return Math.Max(9 - targets[0].Traits[Build.Atributes.Intellect], 3);
+            return Math.Max(9 - targets[0].GetModifiedTrait(Build.Atributes.Intellect), 3);
         }
 
         public int Roll(Build actor, Build target, string ability, bool hasSpec, bool hasWill)

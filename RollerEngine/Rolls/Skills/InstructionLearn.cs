@@ -18,7 +18,7 @@ namespace RollerEngine.Rolls.Skills
             log,
             roller,
             new List<string>() { Build.Atributes.Intellect, ability},
-            new List<string>())
+            new List<string>() {Build.Conditions.Learning, Build.Conditions.Social})
         {
 
         }

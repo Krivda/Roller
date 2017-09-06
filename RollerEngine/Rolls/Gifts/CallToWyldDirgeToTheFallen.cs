@@ -13,11 +13,11 @@ namespace RollerEngine.Rolls.Gifts
 
         public CallToWyldDirgeToTheFallen(IRollLogger log, IRoller roller) : base(GIFT_NAME_FULL, log, roller, 
             new List<string>() { Build.Atributes.Stamina, Build.Abilities.Empathy},
-            new List<string>() { })
+            new List<string>() )
         {
         }
 
-        public int Roll(Build actor, List<Build> targets, bool hasSpec, bool hasWill)
+        public new int Roll(Build actor, List<Build> targets, bool hasSpec, bool hasWill)
         {
             int successes = base.Roll(actor, targets, hasSpec, hasWill);
 
@@ -25,12 +25,14 @@ namespace RollerEngine.Rolls.Gifts
             {
                 foreach (var target in targets)
                 {
-                    target.BonusDicePoolModifiers.Add(
-                        new BonusModifier(
+                    target.TraitModifiers.Add(
+                        new TraitModifier(
                             GIFT_NAME,
+                            new List<string>() { Build.Abilities.Occult },
                             DurationType.Roll,
                             new List<string>() { Build.Conditions.AncestorSpirits },
-                            successes / 2
+                            successes / 2,
+                            TraitModifier.BonusTypeKind.AdditionalDice
                         ));
 
                     _log.Log(Verbosity.Important, string.Format("{0} obtained bonus {1} dices to Ansecetors Spririts related rolls for next roll from {2} gift performed by {3}.", target.Name, successes/2, Name, actor.Name));
@@ -42,7 +44,7 @@ namespace RollerEngine.Rolls.Gifts
                 _log.Log(Verbosity.Important, string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
             }
 
-            return successes;
+            return successes/2;
         }
 
         public override int GetBaseDC(Build actor, List<Build> targets)

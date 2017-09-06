@@ -38,7 +38,7 @@ namespace RollerEngine.Character.Party
                         if (!Build.Name.Equals(Party.Nameless.CharacterName))
                         {
                             //Ask Nameless to buff allertness
-                            Party.Nameless.CastTeachersEase(Build, Build.Abilities.Alertness);
+                            Party.Nameless.CastTeachersEase(Build, Build.Abilities.Alertness, false);
                         }
 
                         Party.CaernChannellingUsedTimes++;
@@ -60,7 +60,7 @@ namespace RollerEngine.Character.Party
             if (!Build.Name.Equals(Party.Nameless.CharacterName))
             {
                 //Ask Nameless to buff Ability roll
-                Party.Nameless.CastTeachersEase(Build, ability);
+                Party.Nameless.CastTeachersEase(Build, ability, false);
             }
 
             base.Learn(ability, withWill);
@@ -104,13 +104,30 @@ namespace RollerEngine.Character.Party
                 if (!Build.Name.Equals(Party.Nameless.CharacterName))
                 {
                     //Ask Nameless to buff allertness
-                    Party.Nameless.CastTeachersEase(Build, Build.Abilities.Instruction);
+                    Party.Nameless.CastTeachersEase(Build, Build.Abilities.Instruction, false);
                 }
 
+                //Apply rosemary
+                CommonBuffs.ApplySacredRosemary(Build, Log);
+
+                if (Build.Traits[Build.Backgrounds.Ansestors] > 0 && !Build.CheckBonusExists(Build.Abilities.Instruction, Build.Backgrounds.Ansestors))
+                {
+                    CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Build, Log);
+                    CommonBuffs.ApplyAncestorsChiminage(Build, Log);
+
+                    ApplyAncestors(Build.Abilities.Instruction);
+                }
+                
                 //give XP to smb
                 var instruct = new InstructionTeach(Log, Roller);
                 instruct.Roll(Build, target, ability, HasSpecOnInstruction, withWill);
             }
+        }
+
+        public void ApplyAncestors(string trait)
+        {
+            var ansestorsRoll = new Ancestors(Log, Roller);
+            ansestorsRoll.Roll(Build, trait);
         }
 
     }

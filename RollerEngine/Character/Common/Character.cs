@@ -27,5 +27,10 @@ namespace RollerEngine.Character.Common
             var instruct = new InstructionLearn(Log, Roller, ability);
             instruct.Roll(Build, ability, false, withWill);
         }
+
+        public virtual void ShiftToCrinos()
+        {
+            CommonBuffs.ShiftToCrinos(Build, Log);
+        }
     }
 }
