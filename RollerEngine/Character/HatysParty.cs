@@ -48,13 +48,23 @@ namespace RollerEngine.Character
         public static HatysParty LoadFromGoogle(IRollLogger log, IRoller roller)
         {
             var party = HatysPartyLoader.LoadFromGoogle(log);
-            AddPermanentModifiers(party);
+            AddPermanentModifiers(party, log);
             return new HatysParty(party, log, roller);
         }
 
-        public void WeeklyTeaching(List<TeachPlan> teachPlan)
+        public void TeachingWeek(List<TeachPlan> teachPlan)
         {
             StartScene();
+
+            _log.Log(Verbosity.Important, "");
+            _log.Log(Verbosity.Important, "Start TEACHING Week");
+
+            Nameless.CastPersuasion();
+
+            Spirdon.ShiftToCrinos();
+
+            //Spiridon buffs offult to Nameless
+            Spirdon.CastCallToWyld(new List<Build>() { Nameless.Build });
 
             //boost nameless Instruction
             Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
@@ -82,7 +92,7 @@ namespace RollerEngine.Character
             Nameless.Instruct(Spirdon.Build, Build.Abilities.Occult, false);
 
             //buff keltur's occult
-            Nameless.CastTeachersEase(Spirdon.Build, Build.Abilities.Occult);
+            Nameless.CastTeachersEase(Spirdon.Build, Build.Abilities.Occult, false);
         }
 
         private void StoreOriginalValues(Build bld)
@@ -160,7 +170,7 @@ namespace RollerEngine.Character
             StoreOriginalValues(Kinfolk2.Build);
         }
 
-        private static void AddPermanentModifiers(Dictionary<string, Build> result)
+        private static void AddPermanentModifiers(Dictionary<string, Build> result, IRollLogger log)
         {
             foreach (KeyValuePair<string, Build> buildKvp in result)
             {
@@ -184,6 +194,11 @@ namespace RollerEngine.Character
                 if (buildKvp.Key.Equals("Urfin"))
                 {
                     buildKvp.Value.Traits[Build.Backgrounds.Ansestors] = 1;
+                }
+
+                if (buildKvp.Key.Equals("Keltur"))
+                {
+                    CommonBuffs.ApplyMedicalBundle(buildKvp.Value, log);
                 }
 
                 //Hatys

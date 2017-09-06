@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using RollerEngine.Character;
 using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Modifiers;
@@ -20,7 +19,6 @@ namespace RollerEngine.Rolls.Gifts
             if (!actor.CheckBonusExists(Build.Atributes.Charisma, Name))
             {
 
-
                 int result = base.Roll(actor, new List<Build>() {actor}, hasSpec, hasWill);
 
                 if (result > 0)
@@ -40,12 +38,12 @@ namespace RollerEngine.Rolls.Gifts
                         ));
 
                     _log.Log(Verbosity.Important,
-                        string.Format("{0} obtained bonus -1 DC on social rolls from {1} gift.", actor.Name, Name));
+                    string.Format("{0} obtained bonus -1 DC on social rolls from {1} gift.", actor.Name, Name));
                 }
                 else
                 {
                     _log.Log(Verbosity.Important,
-                        string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
+                    string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
                 }
 
                 return result;

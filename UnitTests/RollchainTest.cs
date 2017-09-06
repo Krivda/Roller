@@ -39,7 +39,7 @@ namespace UnitTests
                 new TeachPlan(res.Kinfolk1, res.Kinfolk1, Build.Abilities.Science)
             };
 
-            res.WeeklyTeaching(plan);
+            res.TeachingWeek(plan);
         }
 
     }

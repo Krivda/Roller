@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using System.Text;
 using RollerEngine.Logger;
 
@@ -9,6 +10,39 @@ namespace RollerEngine.Roller
         private readonly IRollLogger _rollLogger;
 
         private static int _diceFace=10;
+
+        static class RNG
+        {
+            static private RNGCryptoServiceProvider _rng = null;
+
+            static public RNGCryptoServiceProvider rng
+            {
+                get { return _rng ?? (_rng = new RNGCryptoServiceProvider()); }
+            }
+
+            public static Int32 Next(Int32 minValue, Int32 maxValue)
+            {
+                byte[] uint32Buffer = new byte[4];
+
+                if (minValue > maxValue)
+                    throw new ArgumentOutOfRangeException("minValue");
+                if (minValue == maxValue) return minValue;
+                Int64 diff = maxValue - minValue;
+                while (true)
+                {
+                    rng.GetBytes(uint32Buffer);
+                    UInt32 rand = BitConverter.ToUInt32(uint32Buffer, 0);
+
+                    Int64 max = (1 + (Int64)UInt32.MaxValue);
+                    Int64 remainder = max % diff;
+                    if (rand < max - remainder)
+                    {
+                        return (Int32)(minValue + (rand % diff));
+                    }
+                }
+            }
+        }
+
 
         private static readonly Random rnd = new Random();
 
@@ -111,7 +145,7 @@ namespace RollerEngine.Roller
 
         private static int RollSingleDice(int maxDiceFace)
         {
-            return rnd.Next(1, maxDiceFace + 1);
+            return RNG.Next(1, maxDiceFace + 1);
         }
 
     }

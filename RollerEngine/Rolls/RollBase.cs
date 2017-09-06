@@ -132,10 +132,10 @@ namespace RollerEngine.Rolls
 
             foreach (var bonusModifier in info.DicePoolInfo.BonusDices.Modifires)
             {
-                    if (bonusModifier.Item2.Duration == DurationType.Roll)
-                    {
-                        actor.BonusDicePoolModifiers.Remove(bonusModifier.Item2);
-                    }
+                if (bonusModifier.Item2.Duration == DurationType.Roll)
+                {
+                    actor.BonusDicePoolModifiers.Remove(bonusModifier.Item2);
+                }
             }
 
             foreach (var traitDCModifiers in info.DCInfo.Traits.Values)
@@ -280,7 +280,7 @@ namespace RollerEngine.Rolls
             //hadle limited value
             if (adjectedDC < MIN_DC)
             {
-                _log.Log(Verbosity.Warning, string.Format("DC was lesser then min, adjusted to ${0}.", MIN_DC));
+                _log.Log(Verbosity.Warning, string.Format("DC was lesser then min, adjusted to {0}.", MIN_DC));
                 dcInfo.AdjustedDC = MIN_DC;
             }
             else

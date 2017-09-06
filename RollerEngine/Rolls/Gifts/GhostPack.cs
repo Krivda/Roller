@@ -26,9 +26,9 @@ namespace RollerEngine.Rolls.Gifts
                     new TraitModifier(
                         Name,
                         new List<string>() { Build.Backgrounds.Ansestors },
-                        DurationType.Scene,
+                        DurationType.Roll,
                         new List<string>(),
-                        4, TraitModifier.BonusTypeKind.AdditionalDice, -1
+                        successes, TraitModifier.BonusTypeKind.AdditionalDice, -1
                     ));
 
                 _log.Log(Verbosity.Important, string.Format("{0} obtained bonus {1} to Ancestors from {2} gift.", actor.Name, successes, Name));

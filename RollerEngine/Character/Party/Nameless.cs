@@ -3,9 +3,8 @@ using RollerEngine.Character.Common;
 using RollerEngine.Roller;
 using RollerEngine.Logger;
 using RollerEngine.Modifiers;
-using RollerEngine.Rolls.Backgrounds;
 using RollerEngine.Rolls.Gifts;
-using RollerEngine.Rolls.Skills;
+using RollerEngine.Rolls.Rites;
 
 namespace RollerEngine.Character.Party
 {
@@ -15,7 +14,7 @@ namespace RollerEngine.Character.Party
         {
         }
 
-        public void WeeklyBoostSkill(string skill)
+        public void WeeklyBoostSkill(string trait)
         {
             //add caern mod (+4 ancestors)
             CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Build, Log);
@@ -24,13 +23,15 @@ namespace RollerEngine.Character.Party
             CommonBuffs.ApplyAncestorsChiminage(Build, Log);
 
             //buff Occult
-            var ansestorsRoll = new Ancestors(Log, Roller);
-            ansestorsRoll.Roll(Build, Build.Abilities.Occult);
+            ApplyAncestors(Build.Abilities.Occult);
 
             CastPersuasion();
 
             //Apply chiminage
             CommonBuffs.ApplyAncestorsChiminage(Build, Log);
+
+            //cast rite of Anscestor Seeking
+            CaseAnscestorSeeking();
 
             //roll Ghost Pack
             var ghostPackRoll = new GhostPack(Log, Roller);
@@ -48,22 +49,22 @@ namespace RollerEngine.Character.Party
             //buff Instruct 
 
             Build.UsedAncestorsCount = Build.UsedAncestorsCount - 1;
-            ansestorsRoll = new Ancestors(Log, Roller);
-            ansestorsRoll.Roll(Build, skill);
+            ApplyAncestors(trait);
+
         }
 
-        private void CastPersuasion()
+        public void CastPersuasion()
         {
             //Cast Pesuasion
             var persuasionRoll = new Persuasion(Log, Roller);
             persuasionRoll.Roll(Build, false, true);
         }
 
-        public void CastTeachersEase(Build target, string ability)
+        public void CastTeachersEase(Build target, string ability, bool withWill)
         {
-            //buff skill on target
+            //buff trait on target
             var teachersEase = new TeachersEase(Log, Roller);
-            teachersEase.Roll(Build, target, ability, true, false);
+            teachersEase.Roll(Build, target, ability, true, withWill);
         }
 
         public static void ApplyChannellingGift(Build build, IRollLogger log, int value)
@@ -79,6 +80,21 @@ namespace RollerEngine.Character.Party
                 ));
         }
 
+        public override void Instruct(Build target, string ability, bool withWill)
+        {
+
+            //Cast persuasion before teaching
+            CastPersuasion();
+
+            base.Instruct(target, ability, withWill);
+        }
+
+        private void CaseAnscestorSeeking()
+        {
+            //Cast Pesuasion
+            var ancestorSeeking = new AncestorSeeking(Log, Roller);
+            ancestorSeeking.Roll(Build, false, true);
+        }
 
     }
 }

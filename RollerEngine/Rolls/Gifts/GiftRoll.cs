@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
 
-namespace RollerEngine.Rolls
+namespace RollerEngine.Rolls.Gifts
 {
     public class GiftRoll : RollBase
     {
