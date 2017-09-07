@@ -20,7 +20,7 @@ namespace RollerEngine.Character.Party
         {
             Party = party;
             HasSpecOnInstruction = false;
-            LearnSessions = 2;
+            LearnSessions = 1;
         }
 
         public override void Learn(string ability, bool withWill)
@@ -66,13 +66,13 @@ namespace RollerEngine.Character.Party
             base.Learn(ability, withWill);
         }
 
-        public void HatysAutoLearn()
+        public void AutoLearn()
         {
             var xpPoolTraits = new List<Tuple<string, int>>();
 
             foreach (var traitKvp in Build.Traits)
             {
-                if (traitKvp.Key.Contains(Build.DynamicTraits.ExpirienceLearned))
+                if (traitKvp.Key.Contains(Build.DynamicTraits.ExpirienceToLearn))
                 {
                     if (traitKvp.Value != 0)
                     {
@@ -90,7 +90,7 @@ namespace RollerEngine.Character.Party
                     string trait = xpPoolTrait.Item1.Replace(Build.DynamicTraits.ExpirienceToLearn, "").Trim();
                     bool hasWill = Build.Traits[trait] < 3;
 
-                    Learn(xpPoolTrait.Item1, hasWill);
+                    Learn(trait, hasWill);
                     LearnSessions--;
                 }
             }

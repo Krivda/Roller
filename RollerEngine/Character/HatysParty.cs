@@ -11,7 +11,9 @@ namespace RollerEngine.Character
 {
     public class HatysParty
     {
-        private readonly Dictionary<string, Build> _party;
+        private readonly Dictionary<string, Build> _partyBuilds;
+        private readonly Dictionary<string, HatysPartyMember> _party;
+
         private readonly IRollLogger _log;
         public Nameless Nameless { get; private set; }
         public Spirdon Spirdon { get; private set; }
@@ -26,21 +28,34 @@ namespace RollerEngine.Character
 
         public HatysParty(Dictionary<string, Build> party, IRollLogger log, IRoller roller)
         {
-            _party = party;
+            _partyBuilds = party;
+            _party  = new Dictionary<string, HatysPartyMember>();
+
             _log = log;
             Nameless = new Nameless(party["Krivda"], log, roller, this);
+            _party.Add(Nameless.CharacterName, Nameless);
+
             Spirdon = new Spirdon(party["Keltur"], log, roller, this);
+            _party.Add(Spirdon.CharacterName, Spirdon);
+
             Yoki = new Yoki(party["Alisa"], log, roller, this);
+            _party.Add(Yoki.CharacterName, Yoki);
+
             Kurt = new Kurt(party["Urfin"], log, roller, this);
+            _party.Add(Kurt.CharacterName, Kurt);
 
             Kinfolk1 = new Kinfolk1(party["Kinfolk 1"], log, roller, this);
+            _party.Add(Kinfolk1.CharacterName, Kinfolk1);
+
             Kinfolk2 = new Kinfolk2(party["Kinfolk 2"], log, roller, this);
+            _party.Add(Kinfolk2.CharacterName, Kinfolk2);
 
             OriginalStats = new Dictionary<string, Dictionary<string, int>>();
 
 
             Spirdon.HasOpenedCaern = true;
             Yoki.HasSpecOnInstruction = true;
+            Yoki.LearnSessions = 2;
             Kinfolk1.HasSpecOnInstruction = true;
             Kinfolk2.HasSpecOnInstruction = true;
         }
@@ -54,10 +69,36 @@ namespace RollerEngine.Character
 
         public void TeachingWeek(List<TeachPlan> teachPlan)
         {
-            StartScene();
-
             _log.Log(Verbosity.Important, "");
             _log.Log(Verbosity.Important, "Start TEACHING Week");
+
+            WeeklyBuff();
+
+            foreach (var teachingPlan in teachPlan)
+            {
+                _log.Log(Verbosity.Important, "");
+                _log.Log(Verbosity.Important, string.Format("{0} startered learning {1} to {2}.", teachingPlan.Teacher.CharacterName, teachingPlan.Trait, teachingPlan.Student.CharacterName));
+                teachingPlan.Teacher.Instruct(teachingPlan.Student.Build, teachingPlan.Trait, false);
+            }
+
+            AutoLearn();
+        }
+
+        public void LearnWeek()
+        {
+
+            _log.Log(Verbosity.Important, "");
+            _log.Log(Verbosity.Important, "Start LEARNING Week");
+
+            WeeklyBuff();
+
+            AutoLearn();
+
+        }
+
+        private void WeeklyBuff()
+        {
+            StartScene();
 
             Nameless.CastPersuasion();
 
@@ -70,30 +111,22 @@ namespace RollerEngine.Character
             Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
 
             Spirdon.CastPersuasion();
-
-            foreach (var teachingPlan in teachPlan)
-            {
-                _log.Log(Verbosity.Important, "");
-                _log.Log(Verbosity.Important, string.Format("{0} startered learning {1} to {2}.", teachingPlan.Teacher.CharacterName, teachingPlan.Trait, teachingPlan.Student.CharacterName));
-                teachingPlan.Teacher.Instruct(teachingPlan.Student.Build, teachingPlan.Trait, false);
-            }
-
-            ShowLearningResults();
+            Yoki.CastPersuasion();
         }
 
-        public void WeeklyLearning()
+        private void AutoLearn()
         {
-            StartScene();
-            
-            //boost nameless Instruction
-            Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
+            _log.Log(Verbosity.Important, "");
+            _log.Log(Verbosity.Important, "Start LEARNING");
 
-            //teach keltur some occult
-            Nameless.Instruct(Spirdon.Build, Build.Abilities.Occult, false);
+            foreach (var partyKvp in _party)
+            {
+                partyKvp.Value.AutoLearn();
+            }
+            ShowLearningResults();
 
-            //buff keltur's occult
-            Nameless.CastTeachersEase(Spirdon.Build, Build.Abilities.Occult, false);
         }
+
 
         private void StoreOriginalValues(Build bld)
         {
@@ -110,7 +143,7 @@ namespace RollerEngine.Character
         {
             foreach (var origKvp in OriginalStats)
             {
-                var activeTraits = _party.First(p => p.Value.Name.Equals(origKvp.Key)).Value.Traits;
+                var activeTraits = _partyBuilds.First(p => p.Value.Name.Equals(origKvp.Key)).Value.Traits;
 
                 foreach (var activeTrait in activeTraits)
                 {
@@ -123,10 +156,28 @@ namespace RollerEngine.Character
 
                     if (currTraitValue != origTraitValue)
                     {
-                        _log.Log(Verbosity.Important, "");
-                        _log.Log(Verbosity.Important, string.Format("{0} learned {1} from {2} to {3}!", origKvp.Key, activeTrait.Key, origTraitValue, currTraitValue));
+                        if (activeTrait.Key.Equals(Build.Atributes.Strength) ||
+                            activeTrait.Key.Equals(Build.Atributes.Dexterity) ||
+                            activeTrait.Key.Equals(Build.Atributes.Stamina)
+                            )
+                        {
+                        }
+                        else if (activeTrait.Key.Contains(Build.DynamicTraits.ExpirienceLearned))
+                        {
+                            _log.Log(Verbosity.Important, string.Format("{0} changed known XP for {1} trait from {2} to {3}!", origKvp.Key, activeTrait.Key, origTraitValue, currTraitValue));
+                        }
+                        else if (activeTrait.Key.Contains(Build.DynamicTraits.ExpirienceToLearn))
+                        {
+                            _log.Log(Verbosity.Important, string.Format("{0} XP pool (to consume) for {1} trait from {2} to {3}!", origKvp.Key, activeTrait.Key, origTraitValue, currTraitValue));
+                        }
+                        else 
+                        {
+                            _log.Log(Verbosity.Important, string.Format("{0} increased {1} trait from {2} to {3}!", origKvp.Key, activeTrait.Key, origTraitValue, currTraitValue));
+                        }
                     }
                 }
+
+                _log.Log(Verbosity.Important, "");
             }
         }
 
@@ -134,7 +185,7 @@ namespace RollerEngine.Character
         {
             CaernChannellingUsedTimes = 0;
 
-            foreach (var build in _party)
+            foreach (var build in _partyBuilds)
             {
                 var bDcMods = build.Value.BonusDCModifiers.FindAll(m => m.Duration != DurationType.Permanent);
                 foreach (var bDcMod in bDcMods)
