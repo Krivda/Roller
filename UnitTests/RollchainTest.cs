@@ -21,7 +21,7 @@ namespace UnitTests
             Logger.Info("Started");
             var res = HatysParty.LoadFromGoogle(rollLogger, new OfflineDiceRoller(rollLogger));
 
-            res.WeeklyLearning();
+            
         }
 
         [Test]
@@ -41,6 +41,5 @@ namespace UnitTests
 
             res.TeachingWeek(plan);
         }
-
     }
 }
