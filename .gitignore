@@ -4,6 +4,7 @@
 
 *.suo
 *.sdf
+/.vs
 /ConsoleTest/obj
 /ConsoleTest/bin
 /ConsoleTest/.vs
