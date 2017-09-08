@@ -33,7 +33,7 @@ namespace RolzOrgEnchancer.UI
                 }
             }
 
-            uint mode; 
+            uint mode;
             switch (browserVersion)
             {
                 case 7:
@@ -113,7 +113,7 @@ namespace RolzOrgEnchancer.UI
 
         private static void Window_Error(object sender, HtmlElementErrorEventArgs e)
         {
-            // Ignore the error and suppress the error dialog box 
+            // Ignore the error and suppress the error dialog box
             e.Handled = true;
         }
 
@@ -129,7 +129,7 @@ namespace RolzOrgEnchancer.UI
             if (null == Document.Window) return;
 
             var completedUrl = e.Url;
-            
+
             //almost not interested in child documents
             if (Document.Window.Frames != null && Document.Window.Frames.Count != 0)
             {
@@ -180,9 +180,9 @@ namespace RolzOrgEnchancer.UI
         private void InitializeComponent()
         {
             SuspendLayout();
-            // 
+            //
             // RolzWebBrowser
-            // 
+            //
             Dock = DockStyle.Fill;
             IsWebBrowserContextMenuEnabled = false;
             TabStop = false;

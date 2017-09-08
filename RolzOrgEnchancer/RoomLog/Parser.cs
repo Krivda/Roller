@@ -4,6 +4,7 @@ using System.Net;
 using Newtonsoft.Json;
 using RolzOrgEnchancer.UI;
 
+//TODO add parsing of Item here or in Parser
 namespace RolzOrgEnchancer.RoomLog
 {
     //
@@ -14,6 +15,11 @@ namespace RolzOrgEnchancer.RoomLog
         private const string RoomLogPrefix = "https://rolz.org/api/roomlog?room=";
         private readonly Uri _roomLog;
         private long _sessionTime;
+
+        public static string RollIdToComment(uint rollId)
+        {
+          return "roll_id=" + rollId;
+        }
 
         public Parser(string roomName)
         {
@@ -38,7 +44,7 @@ namespace RolzOrgEnchancer.RoomLog
             return ret;
         }
 
-        public Item MatchMessage(string message)
+        private Item MatchMessageInternal(string type, string text, string comment)
         {
             try
             {
@@ -46,9 +52,9 @@ namespace RolzOrgEnchancer.RoomLog
                 if (x == null) return null;
                 return x.LastOrDefault(m => m != null &&
                                             m.type != null &&
-                                            m.type.Equals("txtmsg") &&
-                                            m.text != null &&
-                                            m.text.Equals(message) &&
+                                            m.type.Equals(type) &&
+                                            (text == null || m.text != null && m.text == text) &&
+                                            (comment == null || m.comment != null && m.comment == comment) &&
                                             m.time >= _sessionTime);
             }
             catch (InvalidOperationException)
@@ -57,23 +63,14 @@ namespace RolzOrgEnchancer.RoomLog
             return null;
         }
 
+        public Item MatchMessage(string message)
+        {
+            return MatchMessageInternal("txtmsg", message, null);
+        }
+
         public Item MatchRoll(uint rollId)
         {
-            try
-            {
-                var x = GetRoomLog().items;
-                if (x == null) return null;
-                return x.LastOrDefault(m => m != null &&
-                                            m.type != null &&
-                                            m.type.Equals("dicemsg") &&
-                                            m.comment != null &&
-                                            m.comment.Equals("roll_id=" + rollId.ToString()) &&
-                                            m.time >= _sessionTime);
-            }
-            catch (InvalidOperationException)
-            {
-            }
-            return null;
+            return MatchMessageInternal("dicemsg", null, RollIdToComment(rollId));
         }
 
         public string GetSessionRoomLogParsed()
@@ -96,15 +93,15 @@ namespace RolzOrgEnchancer.RoomLog
             return res;
         }
 
-        public string ParseRoomLogMessage(Item item)
+        private static string ParseRoomLogMessage(Item item)
         {
             return item.time + ": " + item.text + "\r\n";
         }
 
-        public string ParseRoomLogRoll(Item item)
+        private static string ParseRoomLogRoll(Item item)
         {
-            string id = item.comment ?? "roll_id=<no>";
-            return item.time + ": " + id + ", " + item.input + "= " + Convert.ToInt16(item.result) + " : " + item.details + "\r\n";
+            var id = item.comment ?? "roll_id=<no>";
+            return item.time + ": " + id + ", " + item.input + "= " + item.result + " : " + item.details + "\r\n";
         }
 
     }

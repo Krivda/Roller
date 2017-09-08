@@ -6,7 +6,7 @@
     //
     internal interface IFormUpdate
     {
-        void AddToLog(string logMessage); 
+        void AddToLog(string logMessage);
 
         void UpdateRoomLog(string roomLog);
 

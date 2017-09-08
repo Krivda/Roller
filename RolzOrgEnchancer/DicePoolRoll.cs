@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+//TODO add parsing of Item here or in Parser
 namespace RolzOrgEnchancer
 {
     internal struct RollInput
@@ -64,15 +65,15 @@ namespace RolzOrgEnchancer
         readonly RollInput input;
         RollOutput _output;
 
-        public DicePoolRoll(RollInput _input) 
+        public DicePoolRoll(RollInput _input)
         {
             _input.Validate();
             input = _input;
         }
 
         public DicePoolRoll(DicePoolRoll roll, RollOutput output)
-        { 
-            input = roll.input; 
+        {
+            input = roll.input;
             this._output = output;
             this._output.CalculateResult(input);
         }

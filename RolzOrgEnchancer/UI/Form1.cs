@@ -5,9 +5,9 @@ using RolzOrgEnchancer.Interfaces;
 namespace RolzOrgEnchancer.UI
 {
     public partial class Form1 : Form, IFormUpdate
-    {                      
+    {
         public Form1()
-        {            
+        {
             RolzWebBrowser.SetBrowserFeatureControl();
             InitializeComponent();
         }
@@ -33,27 +33,27 @@ namespace RolzOrgEnchancer.UI
         #region Handlers
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            RoomBot.OnGuiAction("Action1");
+            RoomBot.OnGuiAction(1);
         }
 
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
-            RoomBot.OnGuiAction("Action2");
+            RoomBot.OnGuiAction(2);
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
-            RoomBot.OnGuiAction("Action3");
+            RoomBot.OnGuiAction(3);
         }
 
         private void toolStripButton4_Click(object sender, EventArgs e)
         {
-            RoomBot.OnGuiAction("Action4");
+            RoomBot.OnGuiAction(4);
         }
 
         private void toolStripButton5_Click(object sender, EventArgs e)
         {
-            RoomBot.OnGuiAction("Action5");
+            RoomBot.OnGuiAction(5);
         }
 
         private void timer1_Tick(object sender, EventArgs e)

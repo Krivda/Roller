@@ -1,7 +1,5 @@
 ﻿namespace RolzOrgEnchancer.Interfaces
 {
-
-
     //
     // UI thread only (except RoomEntered)
     // Rolz.Org interface for javascript
