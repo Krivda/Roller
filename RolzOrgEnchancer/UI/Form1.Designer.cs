@@ -1,4 +1,4 @@
-﻿namespace RolzOrgEnchancer
+﻿namespace RolzOrgEnchancer.UI
 {
     partial class Form1
     {
@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.webBrowser1 = new RolzOrgEnchancer.RolzWebBrowser();
+            this.webBrowser1 = new RolzOrgEnchancer.UI.RolzWebBrowser();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
@@ -167,7 +167,7 @@
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStrip1.Size = new System.Drawing.Size(398, 23);
+            this.toolStrip1.Size = new System.Drawing.Size(614, 23);
             this.toolStrip1.TabIndex = 0;
             // 
             // toolStripLabel1
@@ -186,8 +186,8 @@
             this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(52, 19);
-            this.toolStripButton1.Text = "Action1";
+            this.toolStripButton1.Size = new System.Drawing.Size(126, 19);
+            this.toolStripButton1.Text = "Action1=Teach_Learn";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // toolStripButton2
@@ -195,8 +195,8 @@
             this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(52, 19);
-            this.toolStripButton2.Text = "Action2";
+            this.toolStripButton2.Size = new System.Drawing.Size(127, 19);
+            this.toolStripButton2.Text = "Action2=CacaoTalens";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
             // toolStripButton3
@@ -213,8 +213,8 @@
             this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton4.Name = "toolStripButton4";
-            this.toolStripButton4.Size = new System.Drawing.Size(52, 19);
-            this.toolStripButton4.Text = "Action4";
+            this.toolStripButton4.Size = new System.Drawing.Size(105, 19);
+            this.toolStripButton4.Text = "Action4=MsgTest";
             this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
             // 
             // toolStripButton5
@@ -222,8 +222,8 @@
             this.toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton5.Name = "toolStripButton5";
-            this.toolStripButton5.Size = new System.Drawing.Size(119, 19);
-            this.toolStripButton5.Text = "Action5=SampleRoll";
+            this.toolStripButton5.Size = new System.Drawing.Size(102, 19);
+            this.toolStripButton5.Text = "Action5=RollTest";
             this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
             // 
             // timer1

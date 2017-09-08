@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using RollerEngine.SpreadSheets;
 using RolzOrgEnchancer.Interfaces;
 
-namespace RolzOrgEnchancer
+namespace RolzOrgEnchancer.UI
 {
     public partial class Form1 : Form, IFormUpdate
     {                      
@@ -14,20 +13,20 @@ namespace RolzOrgEnchancer
         }
 
         #region IFormUpdate interface
-        public void Log(string log_message)
+        public void AddToLog(string logMessage)
         {
-            textBox2.AppendText(log_message + "\r\n");
+            textBox2.AppendText(logMessage + "\r\n");
         }
 
-        public void LogRoomLog(string room_log)
+        public void UpdateRoomLog(string roomLog)
         {
             textBox1.Text = "";
-            textBox1.AppendText(room_log);
+            textBox1.AppendText(roomLog);
         }
 
         public void UpdateActionQueueDepth(int depth)
         {
-            toolStripLabel1.Text = "depth=" + depth.ToString("000");
+            toolStripLabel1.Text = @"depth=" + depth.ToString("000");
         }
         #endregion
 
@@ -50,14 +49,11 @@ namespace RolzOrgEnchancer
         private void toolStripButton4_Click(object sender, EventArgs e)
         {
             RoomBot.OnGuiAction("Action4");
-            ApiTest.Test();
         }
 
         private void toolStripButton5_Click(object sender, EventArgs e)
         {
             RoomBot.OnGuiAction("Action5");
-            var data = SpreadsheetService.GetNotEmptySpreadsheetRange("1tKXkAjTaUpIDkjmCi7w1QOVbnyYU2f-KOWEnl2EAIZg", "A1:J93", "Party sheet list");
-            MessageBox.Show("Attributes:" + data[0][0]);
         }
 
         private void timer1_Tick(object sender, EventArgs e)

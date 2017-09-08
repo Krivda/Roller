@@ -6,9 +6,9 @@
     //
     internal interface IFormUpdate
     {
-        void Log(string logMessage); 
+        void AddToLog(string logMessage); 
 
-        void LogRoomLog(string roomLog);
+        void UpdateRoomLog(string roomLog);
 
         void UpdateActionQueueDepth(int depth);
 

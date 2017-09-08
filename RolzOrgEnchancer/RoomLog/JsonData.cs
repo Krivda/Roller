@@ -6,6 +6,7 @@ namespace RolzOrgEnchancer.RoomLog
     //
     //json2csharp for https://rolz.org/api/roomlog?room=...
     //
+
     public class Data
     {
         public string creator { get; set; }

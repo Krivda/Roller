@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System.Linq;
-//using System.Text;
+using System.Drawing.Drawing2D;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.UI.WebControls;
-using System.Xml.XPath;
-using Newtonsoft.Json;
 using RollerEngine.Character;
 using RollerEngine.Character.Common;
 using RolzOrgEnchancer.Interfaces;
+using RolzOrgEnchancer.RoomLog;
 using RolzOrgEnchancer.UI;
-using WOD;
 using IRollLogger = RollerEngine.Logger.IRollLogger;
 using IRoller = RollerEngine.Roller.IRoller;
 using RollData = RollerEngine.Roller.RollData;
@@ -21,21 +17,35 @@ using Verbosity = RollerEngine.Logger.Verbosity;
 
 namespace RolzOrgEnchancer
 {
-    /*
-    class IRoomBot
+    internal enum Color
     {
-        void PerformRoll();
-        void SendMessage();
-        void ChangeRoom();
+        Black,  //Verbosity.Details
+        Red,    //Roll Description
+        Green,                          //command
+        Blue,   //Verbosity.Important
+        Gray,   //Verbosity.Debug
+        Maroon,
+        Olive,  
+        Orange,
+        Purple, //Session
+        Teal,   
+        Pink    //Verbosity.Warning
     }
-    */
-    //TODO: ask what roll to make (buttons will put high-level requests to action queue
-    //                             while GetNextRoll will take action and perform sequence of rolls)
-    //bool = GetNextRoll(roll);
 
-    class RoomBootImpl : IRollLogger, IRoller
+    internal class Message
     {
-        static int nRoll = 100;
+        
+
+        string SetString(string message, Color color, bool isRoll)
+        {
+            //string[] messageStrings = message.Split()
+            return null;
+        }
+    }
+
+    internal class RoomBootImpl : IRollLogger, IRoller
+    {
+        static uint nRoll = 100;
         //RollerEngine.Roller.IRoller
         public RollData Roll(int diceCount, int DC, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill, string description)
         {
@@ -45,11 +55,11 @@ namespace RolzOrgEnchancer
             description = description.Replace(']', '}');
             description = description.Replace('\'', '`');
             Program.Log("RoomBootImpl: Rolling description: " + description);
-            RoomBot.SetMessage(description, true);
+            RoomBot.QueueMessage(description);
             RoomLog.Item item;
             for (; ; )
             {
-                item = RoomBot.parser.MatchMessage(description);
+                item = RoomBot.Parser.MatchMessage(description);
                 if (null != item) break;
                 Task.Delay(100);
             }
@@ -57,66 +67,43 @@ namespace RolzOrgEnchancer
 
             var input = new RollInput();
             input.Initialize(diceCount, DC, removeSuccessOnOnes, hasSpecialization, hasWill);
-            RoomBot.SetMessage("#" +diceCount + "d10f" + DC + " #roll_id=" + nRoll.ToString(), false);
-            item = null;
-            for (; ; )
-            {
-                item = RoomBot.parser.MatchRoll(nRoll);
-                if (null != item)
-                {
-                    Program.Log("RoomBootImpl: roll was found");
-                    break;
-                }
-                Task.Delay(100);
-            }
-            Task.Delay(500);
+            item = RoomBot.MakeRoll((uint)diceCount, (uint)DC, nRoll);
             nRoll++;
 
-            int tens = 0;
-            int ones = 0;
-            if (null != item.tags)
-            {
-                throw new Exception("tags were gone");
-                foreach (var tag in item.tags)
-                {
-                    if (tag.k == "10s") tens = Convert.ToInt16(tag.v);
-                    if (tag.k == "ones") ones = Convert.ToInt16(tag.v);
-                }
-            }
             var output = new RollOutput();
             if (!item.details.StartsWith("( (")) throw new Exception("Invalid 1");
-            int index = item.details.IndexOf('→', 0);
+            var index = item.details.IndexOf('→', 0);
             if (index == -1) throw new Exception("Invalid 2");
-            string res = item.details.Substring(0, index);
+            var res = item.details.Substring(0, index);
             res = res.Substring(3);
-            string[] res2 = res.Split(new[] {',', ' '}, StringSplitOptions.RemoveEmptyEntries);
+            var res2 = res.Split(new[] {',', ' '}, StringSplitOptions.RemoveEmptyEntries);
             if (res2.Length != diceCount) throw new Exception("Invalid 3");
-            output._raw_dices = new List<int>();
+            output.RawDices = new List<int>();
             foreach (var r in res2)
             {
                 int i;
                 if (!int.TryParse(r, out i)) throw new Exception("Invalid 4");
-                output._raw_dices.Add(i);
+                output.RawDices.Add(i);
             }
 
-            output._raw_number_of_ones = 0;
-            output._raw_number_of_tens = 0;
-            output._raw_result = 0;
-            foreach (var x in output._raw_dices)
+            output.RawNumberOfOnes = 0;
+            output.RawNumberOfTens = 0;
+            output.RawResult = 0;
+            foreach (var x in output.RawDices)
             {
                 if ((x < 1) || (x > 10)) throw new Exception("Invalid 5");
-                if (x == 1) output._raw_number_of_ones++;
-                if (x == 10) output._raw_number_of_tens++;
-                if (x >= input.DC) output._raw_result++;
+                if (x == 1) output.RawNumberOfOnes++;
+                if (x == 10) output.RawNumberOfTens++;
+                if (x >= input.DC) output.RawResult++;
             }
-            output._raw_result -= output._raw_number_of_ones;
-            var check_r = Convert.ToInt16(item.result);
-            if (check_r != output._raw_result)
+            output.RawResult -= output.RawNumberOfOnes;
+            var checkR = Convert.ToInt16(item.result);
+            if (checkR != output.RawResult)
             {
                 throw new Exception("Invalid 6");
             }
             output.CalculateResult(input);
-            return new RollData(output.result, output._raw_dices);
+            return new RollData(output.Result, output.RawDices);
         }
 
         //RollerEngine.Logger.IRollLogger
@@ -128,10 +115,10 @@ namespace RolzOrgEnchancer
             record = record.Replace(']', '}');
             record = record.Replace('\'', '`');
             Program.Log("RoomBootImpl: Logging message: " + verbosity.ToString() + record);
-            RoomBot.SetMessage(record, false);
+            RoomBot.QueueMessage(record);
             for (; ; )
             {
-                var item = RoomBot.parser.MatchMessage(record);
+                var item = RoomBot.Parser.MatchMessage(record);
                 if (null != item) break;
                 Task.Delay(100);
             }
@@ -140,167 +127,164 @@ namespace RolzOrgEnchancer
 
     }
 
-    static class RoomBot 
+    internal static class RoomBot 
     {
-        static Thread thread;
-        static IRolzOrg browser;
-        static IFormUpdate updater;
-        static public RoomLog.Parser parser = new RoomLog.Parser(default_room_name);
-        const string default_room_name = "Hatys%20Test";
+        private static Thread _thread;
+        private static IRolzOrg _browser;
+        private static IFormUpdate _updater;
+        private static int _ticks;
+        private static ConcurrentQueue<string> _actionQueue;
+        private static ConcurrentQueue<string> _messageQueue;
 
-        static int ticks = 0;
+        public static Parser Parser = new Parser(DefaultRoomName);
+        private const string DefaultRoomName = "Hatys%20Test";
 
-        static bool is_system_message;
-        static object _lock = new object();
-        static string current_message = null;
-        static Tuple<string, bool> null_tuple = new Tuple<string, bool>(null, false);
-
-        static ConcurrentQueue<string> action_queue;
-
-        static Tuple<string,bool> UpdateMessage(Tuple<string,bool> tuple)
+        private static void Worker()
         {
-            Tuple<string, bool> ret = null_tuple;
-            lock (_lock)
-            {
-                if (tuple.Item1 == null)
-                {
-                    //this is get
-                    if (current_message != null)
-                    {
-                        ret = new Tuple<string, bool>(current_message, is_system_message);
-                        current_message = null;
-                    }
-                }
-                else 
-                {
-                    //this is set
-                    current_message = tuple.Item1;
-                    is_system_message = tuple.Item2;
-                }
-            }
-            return ret;
-        }
-
-        static string GetMessage()
-        {
-            Tuple<string, bool> tuple = UpdateMessage(null_tuple);
-            return tuple.Item1;
-        }
-
-        public static void SetMessage(string message, bool is_system_message)
-        {
-            var ret = new Tuple<string, bool>(message, is_system_message);
-            UpdateMessage(ret);
-        }
-
-        static async void Worker()
-        {
-            while (!browser.RoomEntered())
-                await Task.Delay(100);
+            while (!_browser.RoomEntered()) Task.Delay(100);
             Program.Log("Worker: Inside room");
 
             //Establish session
-            int connection_attempt = 0;
-            string connection_message;
-            do //check for random uniqueness in room
-            {
-                Random n = new Random(unchecked((int)DateTime.Now.Ticks));
-                connection_message = "establishing session #" + n.Next().ToString() + "...";
-            } while (null != parser.MatchMessage(connection_message));
-            for (;;)
-            {
-                //repeat message each 5 secs
-                if (0 == connection_attempt % 50)
-                {
-                    SetMessage(connection_message, true);
-                }
+            var sessId = new Random(unchecked((int)DateTime.Now.Ticks));
+            var connectionMessage = "establishing session #" + sessId.Next() + "...";
+            var item = MakeSingleMessage(Color.Purple, connectionMessage);
+            Program.Log("Worker: session was established");
+            Parser.SetSessionTime(item.time);
 
-                var item = parser.MatchMessage(connection_message);
-                if (null != item)
-                {
-                    Program.Log("Worker: session was established");
-                    parser.SetSessionTime(item.time);
-                    break;
-                    //return true;
-                }
-                
-                connection_attempt++;
-                await Task.Delay(100);
-                //if (connection_attempt == 500)
-                    //return false;
+            MakeCommand("/opt autoexpand=on");
+            MakeCommand("/nick HatysBot");
+
+            for (var n = 0; n < 11; n++)
+            {
+                MakeSingleMessage((Color)n, "color message");
             }
 
-            SetMessage("/opt autoexpand=on", false);
-            await Task.Delay(500);
-            SetMessage("/nick HatysBot", false);
-            await Task.Delay(500);
+            //MakeMessage(Color.Red, "String 1 \r\nString 2\n\rString 3\r\nString 4\rString 5\n\n\r\r");
 
-            for (int n = 0; n < 3; n++)
+            for (uint n = 0; n < 3; n++)
             {
-                SetMessage("#8d10f5 #roll_id=" + n.ToString(), false);
-                for (; ; )
-                {
-                    if (null != parser.MatchRoll(n))
-                    {
-                        Program.Log("Worker: roll was found");
-                        break;
-                    }
-                    await Task.Delay(100);
-                }
-                await Task.Delay(500);
+                MakeRoll(8, 5, 10+n);
+                Program.Log("Worker: roll was found");
             }
 
             //InitializeKrivda(IRoomBot)
             //EmulateKrivda()
 
-            RoomBootImpl interfaces = new RoomBootImpl();
+            var interfaces = new RoomBootImpl();
             var res = HatysPartyLoader.LoadParty(interfaces, interfaces);            
 
             string action;
             for(;;)
-                while (action_queue.TryDequeue(out action))
+                while (_actionQueue.TryDequeue(out action))
                 {
-                    await Task.Delay(100);
+                    Task.Delay(100);
                     if (!action.StartsWith("Action")) continue;
-                    int n_action;
-                    if (int.TryParse(action.Substring(6), out n_action))
+                    int nAction;
+                    if (int.TryParse(action.Substring(6), out nAction))
                     {
-                        Program.Log("Deque action #" + n_action);
+                        Program.Log("Worker: Deque action #" + nAction);
                         res.Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
                     }
                 }
         }
 
-        static public void OnGuiTick()
-        {            
-            Program.SafeLog.ProcessLogQueue();
-            if (0 == ticks++ % 30) updater.LogRoomLog(parser.GetSessionRoomLogParsed());
-            updater.UpdateActionQueueDepth(action_queue.Count);
-            var message = GetMessage();
-            if (null != message)
+        public static void MakeMessage(Color color, string message)
+        {
+            //record = record.Replace('\n', 'x');
+            //record = record.Replace('\r', 'x');
+            //record = record.Replace('[', '{');
+            //record = record.Replace(']', '}');
+            //record = record.Replace('\'', '`');
+            // starts with #
+            // starts with /
+            // starts with spaces
+            var line = message;
+            Program.Log(line);
+            MakeSingleMessage(color, line);
+        }
+
+        public static Item MakeSingleMessage(Color color, string message)
+        {
+            var attempt = 0;
+            for (; ; )
             {
-                if (is_system_message)
-                    browser.SendSystemMessage(message);
-                else
-                    browser.SendMessage(message);
+                //repeat message each 10 secs
+                if (0 == attempt % 100)
+                {
+                    QueueColorMessage(color, message);
+                }
+                
+                var item = Parser.MatchMessage(message);
+                if (null != item) return item;
+                attempt++;
+                Task.Delay(100);
             }
         }
 
-        static public void OnGuiAction(string action)
+        public static Item MakeRoll(uint diceCount, uint dc, uint rollId)
         {
-            Program.Log("added to queue action=" + action);
-            action_queue.Enqueue(action);
+            var rollmsg = "#" + diceCount + "d10f" + dc + " #roll_id=" + rollId;
+            var attempt = 0;
+            for (; ; )
+            {
+                //repeat message each 10 secs
+                if (0 == attempt % 100)
+                {
+                    QueueMessage(rollmsg);
+                }
+
+                var item = Parser.MatchRoll(rollId);
+                if (null != item) return item;
+                attempt++;
+                Task.Delay(100);
+            }
         }
 
-        static public void OnGuiStarted(IRolzOrg _browser, IFormUpdate _updater)
+        private static void MakeCommand(string command)
         {
-            thread = new Thread(Worker);
-            thread.IsBackground = true;
-            browser = _browser;
-            updater = _updater;
-            action_queue = new ConcurrentQueue<string>();
-            browser.JoinRoom(default_room_name);
-            thread.Start();
+            QueueMessage(command);
+            Task.Delay(1000);
+        }
+
+        private static readonly string[] ColorPrefix = { "", "red:", "green:", "blue:", "gray:", "maroon:", "olive:", "orange:", "purple:", "teal:", "pink:" };
+        private static void QueueColorMessage(Color color, string message)
+        {
+            QueueMessage(ColorPrefix[(int) color] + message);
+        }
+
+        //TODO private
+        public static void QueueMessage(string message)
+        {
+            _messageQueue.Enqueue(message);
+        }
+
+        public static void OnGuiTick()
+        {            
+            Program.SafeLog.ProcessLogQueue();
+            if (0 == _ticks++ % 30) _updater.UpdateRoomLog(Parser.GetSessionRoomLogParsed());
+            _updater.UpdateActionQueueDepth(_actionQueue.Count);
+            string message;
+            if (_messageQueue.TryDequeue(out message))
+            {
+                _browser.SendMessage(message);
+            }
+        }
+
+        public static void OnGuiAction(string action)
+        {
+            Program.Log("Bot: added to queue action=" + action);
+            _actionQueue.Enqueue(action);
+        }
+
+        public static void OnGuiStarted(IRolzOrg browser, IFormUpdate updater)
+        {
+            _thread = new Thread(Worker) {IsBackground = true};
+            _browser = browser;
+            _updater = updater;
+            _actionQueue = new ConcurrentQueue<string>();
+            _messageQueue = new ConcurrentQueue<string>();
+            _browser.JoinRoom(DefaultRoomName);
+            _thread.Start();
         }
 
     }
