@@ -13,7 +13,9 @@
 /RolzOrgEnchancer/obj
 /RolzOrgEnchancer/bin
 /RolzOrgEnchancer/.vs
+/UnitTests/bin
+/UnitTests/obj
+/UnitTests/.vs
+/.vs
 /packages
-/UnitTests/bin/Debug
-/UnitTests/obj/Debug
 /RollerEngine/SpreadSheets/client_secret.json

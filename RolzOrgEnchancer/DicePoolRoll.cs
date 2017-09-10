@@ -1,44 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace WOD
+//TODO add parsing of Item here or in Parser
+namespace RolzOrgEnchancer
 {
-    struct RollInput
+    internal struct RollInput
     {
-        public const int max = 99;     //let support max=99 dice pool
-        public const int baseDC = 6;
+        public const int Max = 99;     //let support max=99 dice pool
+        public const int BaseDC = 6;
 
-        public int diceCount;
+        public int DiceCount;
         public int DC;                  //you should cut it to 3..9/10
-        public bool hasSpecialization;  // 2 successes  for each 10
-        public bool negateBotch;        // botch usually negated by spending Willpower
-        public bool noFailures;         //no -1 success for each 1 (ex. damage roll)
+        public bool HasSpecialization;  // 2 successes  for each 10
+        public bool NegateBotch;        // botch usually negated by spending Willpower
+        public bool NoFailures;         //no -1 success for each 1 (ex. damage roll)
 
-        public void Initialize(int _diceCount, int _DC = baseDC, bool _hasSpecialization = false, bool _negateBotch = false, bool _noFailures = false)
+        public void Initialize(int diceCount, int dc = BaseDC, bool hasSpecialization = false, bool negateBotch = false, bool noFailures = false)
         {
-            diceCount = _diceCount;
-            DC = _DC;
-            hasSpecialization = _hasSpecialization;
-            negateBotch = _negateBotch;
-            noFailures = _noFailures;
+            DiceCount = diceCount;
+            DC = dc;
+            HasSpecialization = hasSpecialization;
+            NegateBotch = negateBotch;
+            NoFailures = noFailures;
         }
 
         public void Validate()
         {
-            if (diceCount <= 0) throw new System.ArgumentOutOfRangeException();
-            if (diceCount > max) throw new System.ArgumentOutOfRangeException();
+            if (DiceCount <= 0) throw new System.ArgumentOutOfRangeException();
+            if (DiceCount > Max) throw new System.ArgumentOutOfRangeException();
             if ((DC < 3) || (DC > 10)) throw new System.ArgumentOutOfRangeException();
         }
     }
 
-    partial struct RollOutput
+    internal struct RollOutput
     {
         //provide simple counting; for more complicated use cases process raw fields by yourself
-        public int _raw_result;
-        public int _raw_number_of_ones;
-        public int _raw_number_of_tens;
-        public List<int> _raw_dices;
-        public int result;      // <0 botch
+        public int RawResult;
+        public int RawNumberOfOnes;
+        public int RawNumberOfTens;
+        public List<int> RawDices;
+        public int Result;      // <0 botch
                                 // =0 simple failure
                                 // >0 successes
 
@@ -53,29 +53,29 @@ namespace WOD
 
         public void CalculateResult(RollInput input)
         {
-            result = _raw_result;                                        // success - failures
-            if (input.hasSpecialization) result += _raw_number_of_tens;  // double successes if specialized
-            if (input.noFailures) result += _raw_number_of_ones;         // negate failures
-            if ((result < 0) && (input.negateBotch)) result = 0;         // negate botch
+            Result = RawResult;                                        // success - failures
+            if (input.HasSpecialization) Result += RawNumberOfTens;  // double successes if specialized
+            if (input.NoFailures) Result += RawNumberOfOnes;         // negate failures
+            if ((Result < 0) && (input.NegateBotch)) Result = 0;         // negate botch
         }
     }
 
-    class DicePoolRoll
+    internal class DicePoolRoll
     {
-        RollInput input;
-        RollOutput output;
+        readonly RollInput input;
+        RollOutput _output;
 
-        public DicePoolRoll(RollInput _input) 
+        public DicePoolRoll(RollInput _input)
         {
             _input.Validate();
             input = _input;
         }
 
-        public DicePoolRoll(DicePoolRoll _roll, RollOutput _output)
-        { 
-            input = _roll.input; 
-            output = _output;
-            output.CalculateResult(input);
+        public DicePoolRoll(DicePoolRoll roll, RollOutput output)
+        {
+            input = roll.input;
+            this._output = output;
+            this._output.CalculateResult(input);
         }
 
         /*public RollOutput GetRollOutput()
@@ -85,7 +85,7 @@ namespace WOD
 
         public int GetRollResult()
         {
-            return output.result;
+            return _output.Result;
         }
     }
 }

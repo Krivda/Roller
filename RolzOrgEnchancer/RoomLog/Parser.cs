@@ -1,30 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Newtonsoft.Json;
 using RolzOrgEnchancer.UI;
 
+//TODO add parsing of Item here or in Parser
 namespace RolzOrgEnchancer.RoomLog
 {
     //
     // RoomLog parser
     //
-    class Parser
+    internal class Parser
     {
-        private const string room_log_prefix = "https://rolz.org/api/roomlog?room=";
-        private Uri room_log;
-        private long session_time = 0;
+        private const string RoomLogPrefix = "https://rolz.org/api/roomlog?room=";
+        private readonly Uri _roomLog;
+        private long _sessionTime;
 
-        public Parser(string room_name)
+        public static string RollIdToComment(uint rollId)
         {
-            this.room_log = new Uri(room_log_prefix + room_name, UriKind.Absolute);
+          return "roll_id=" + rollId;
+        }
+
+        public Parser(string roomName)
+        {
+            _roomLog = new Uri(RoomLogPrefix + roomName, UriKind.Absolute);
         }
 
         public void SetSessionTime(long time)
         {
-            Program.Log("Parser: session_time is " + time.ToString());
-            session_time = time;
+            Program.Log("Parser: session_time is " + time);
+            _sessionTime = time;
         }
 
         private RootObject GetRoomLog()
@@ -32,28 +37,25 @@ namespace RolzOrgEnchancer.RoomLog
             RootObject ret;
             using (var webClient = new WebClient())
             {
-                var json = webClient.DownloadString(room_log);
+                var json = webClient.DownloadString(_roomLog);
                 //Now parse with JSON.Net
                 ret = JsonConvert.DeserializeObject<RootObject>(json);
             }
             return ret;
         }
 
-        public Item MatchMessage(string message)
+        private Item MatchMessageInternal(string type, string text, string comment)
         {
             try
             {
-                //LastOrDefault
                 var x = GetRoomLog().items;
                 if (x == null) return null;
-                return x.LastOrDefault(m => (
-                    m != null &&
-                    m.type != null &&
-                    m.type.Equals("txtmsg") &&
-                    m.text != null &&
-                    m.text.Equals(message) &&
-                    m.time >= session_time
-                ));
+                return x.LastOrDefault(m => m != null &&
+                                            m.type != null &&
+                                            m.type.Equals(type) &&
+                                            (text == null || m.text != null && m.text == text) &&
+                                            (comment == null || m.comment != null && m.comment == comment) &&
+                                            m.time >= _sessionTime);
             }
             catch (InvalidOperationException)
             {
@@ -61,70 +63,45 @@ namespace RolzOrgEnchancer.RoomLog
             return null;
         }
 
-        public Item MatchRoll(int roll_id)
+        public Item MatchMessage(string message)
         {
-            try
-            {   //LastOrDefault
-                var x = GetRoomLog().items;
-                if (x == null) return null;
-                return x.LastOrDefault(m => (
-                    m != null &&
-                    m.type != null &&
-                    m.type.Equals("dicemsg") &&
-                    m.comment != null &&
-                    m.comment.Equals("roll_id=" + roll_id.ToString()) &&
-                    m.time >= session_time
-                    ));
-            }
-            catch (InvalidOperationException)
-            {
-            }
-            return null;
+            return MatchMessageInternal("txtmsg", message, null);
+        }
+
+        public Item MatchRoll(uint rollId)
+        {
+            return MatchMessageInternal("dicemsg", null, RollIdToComment(rollId));
         }
 
         public string GetSessionRoomLogParsed()
         {
-            string res = "";
-            if (session_time != 0)
+            var res = "";
+            if (_sessionTime == 0) return res;
+            try
             {
-                try
+                var items = GetRoomLog().items.Where(m => m.time >= _sessionTime);
+                foreach(var item in items)
                 {
-                    var items = GetRoomLog().items.Where(m => (
-                            (m.time >= session_time)
-                            ));
-                    foreach(Item item in items)
-                    {
-                        if (item.type == null) continue;
-                        if (item.type.Equals("txtmsg")) res += ParseRoomLogMessage(item);
-                        if (item.type.Equals("dicemsg")) res += ParseRoomLogRoll(item);
-                    }
+                    if (item.type == null) continue;
+                    if (item.type.Equals("txtmsg")) res += ParseRoomLogMessage(item);
+                    if (item.type.Equals("dicemsg")) res += ParseRoomLogRoll(item);
                 }
-                catch (InvalidOperationException)
-                {
-                }
+            }
+            catch (InvalidOperationException)
+            {
             }
             return res;
         }
 
-        public string ParseRoomLogMessage(Item item)
+        private static string ParseRoomLogMessage(Item item)
         {
-            return item.time.ToString() + ": " + item.text + "\r\n";
+            return item.time + ": " + item.text + "\r\n";
         }
 
-        public string ParseRoomLogRoll(Item item)
+        private static string ParseRoomLogRoll(Item item)
         {
-            string id = (item.comment == null) ? "roll_id=<no>" : item.comment;
-            string tag_info = "";
-            if (null != item.tags)
-            {
-                foreach (var tag in item.tags)
-                {
-                    throw new Exception("tags were gone");
-                    if (tag.k == "10s") tag_info += "tens=" + Convert.ToInt16(tag.v).ToString() + ";";
-                    if (tag.k == "ones") tag_info += "ones=" + Convert.ToInt16(tag.v).ToString() + ";";
-                }
-            }
-            return item.time.ToString() + ": " + id + ", " + item.input + "= " + Convert.ToInt16(item.result).ToString() + " (" + tag_info + ") <<" + item.details + "\r\n";
+            var id = item.comment ?? "roll_id=<no>";
+            return item.time + ": " + id + ", " + item.input + "= " + item.result + " : " + item.details + "\r\n";
         }
 
     }

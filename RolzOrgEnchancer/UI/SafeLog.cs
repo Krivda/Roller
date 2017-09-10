@@ -5,8 +5,8 @@ using RolzOrgEnchancer.Interfaces;
 namespace RolzOrgEnchancer.UI
 {
     //
-    // provides Log method that can be called from any thread
-    // everything except Log should be called from UI thread
+    // provides LogOrEnqueue method that can be called from any thread
+    // everything except LogOrEnqueue should be called from UI thread
     //
     internal class SafeLog
     {
@@ -24,13 +24,13 @@ namespace RolzOrgEnchancer.UI
         public void LogOrEnqueue(string logMessage)
         {
             if (Thread.CurrentThread != _uiThread) _logQueue.Enqueue(logMessage);
-            else _updater.Log(logMessage);
+            else _updater.AddToLog(logMessage);
         }
 
         public void ProcessLogQueue()
         {
             string logMessage;
-            while (_logQueue.TryDequeue(out logMessage)) _updater.Log(logMessage);
+            while (_logQueue.TryDequeue(out logMessage)) _updater.AddToLog(logMessage);
         }
 
     }

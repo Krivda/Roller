@@ -12,7 +12,5 @@
 
         void SendMessage(string message);
 
-        void SendSystemMessage(string message);
-
     }
 }

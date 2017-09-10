@@ -1,36 +1,39 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using RolzOrgEnchancer.Interfaces;
-using RolzOrgEnchancer.UI;
 
-namespace RolzOrgEnchancer
+namespace RolzOrgEnchancer.UI
 {
-    class RolzWebBrowser : WebBrowser, IRolzOrg
+    internal class RolzWebBrowser : WebBrowser, IRolzOrg
     {
 
         //
         // These static metods are required to configure ie settings
         //
         #region IE settings
-        static private UInt32 GetBrowserEmulationMode()
+        private static uint GetBrowserEmulationMode()
         {
-            int browserVersion = 7;
+            var browserVersion = 7;
             using (var ieKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Internet Explorer",
                 RegistryKeyPermissionCheck.ReadSubTree,
                 System.Security.AccessControl.RegistryRights.QueryValues))
             {
-                var version = ieKey.GetValue("svcVersion");
-                if (null == version)
+                if (null != ieKey)
                 {
-                    version = ieKey.GetValue("Version");
+                    var version = ieKey.GetValue("svcVersion");
                     if (null == version)
-                        throw new ApplicationException("Microsoft Internet Explorer is required!");
+                    {
+                        version = ieKey.GetValue("Version");
+                        if (null == version)
+                            throw new ApplicationException("Microsoft Internet Explorer is required!");
+                    }
+                    int.TryParse(version.ToString().Split('.')[0], out browserVersion);
                 }
-                int.TryParse(version.ToString().Split('.')[0], out browserVersion);
             }
 
-            UInt32 mode = 11000; // Internet Explorer 11. Webpages containing standards-based !DOCTYPE directives are displayed in IE11 Standards mode. Default value for Internet Explorer 11.
+            uint mode;
             switch (browserVersion)
             {
                 case 7:
@@ -47,29 +50,32 @@ namespace RolzOrgEnchancer
                     break;
                 default:
                     // use IE11 mode by default
+                    mode = 11000; // Internet Explorer 11. Webpages containing standards-based !DOCTYPE directives are displayed in IE11 Standards mode. Default value for Internet Explorer 11.
                     break;
             }
 
             return mode;
         }
-        static private void SetBrowserFeatureControlKey(string feature, string appName, uint value)
+
+        private static void SetBrowserFeatureControlKey(string feature, string appName, uint value)
         {
             using (var key = Registry.CurrentUser.CreateSubKey(
-                String.Concat(@"Software\Microsoft\Internet Explorer\Main\FeatureControl\", feature),
+                string.Concat(@"Software\Microsoft\Internet Explorer\Main\FeatureControl\", feature),
                 RegistryKeyPermissionCheck.ReadWriteSubTree))
             {
-                key.SetValue(appName, (UInt32)value, RegistryValueKind.DWord);
+                if (key != null) key.SetValue(appName, value, RegistryValueKind.DWord);
             }
         }
-        static public void SetBrowserFeatureControl()
+
+        public static void SetBrowserFeatureControl()
         {
             // http://msdn.microsoft.com/en-us/library/ee330720(v=vs.85).aspx
 
             // FeatureControl settings are per-process
-            var fileName = System.IO.Path.GetFileName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+            var fileName = System.IO.Path.GetFileName(Process.GetCurrentProcess().MainModule.FileName);
 
             // make the control is not running inside Visual Studio Designer
-            if (String.Compare(fileName, "devenv.exe", true) == 0 || String.Compare(fileName, "XDesProc.exe", true) == 0)
+            if (string.Compare(fileName, "devenv.exe", StringComparison.OrdinalIgnoreCase) == 0 || string.Compare(fileName, "XDesProc.exe", StringComparison.OrdinalIgnoreCase) == 0)
                 return;
 
             SetBrowserFeatureControlKey("FEATURE_BROWSER_EMULATION", fileName, GetBrowserEmulationMode()); // Webpages containing standards-based !DOCTYPE directives are displayed in IE10 Standards mode.
@@ -99,119 +105,113 @@ namespace RolzOrgEnchancer
         }
         #endregion
 
-        private const string inframe_prefix = "https://rolz.org/wiki/inframe";
-        private const string room_prefix = "https://rolz.org/dr?room=";
-        private Uri inframe_entered = new Uri("https://rolz.org/wiki/inframe?w=help&n=index", System.UriKind.Absolute);
-        private Uri room;
-        private volatile bool room_entered = false;
+        private const string InframePrefix = "https://rolz.org/wiki/inframe";
+        private const string RoomPrefix = "https://rolz.org/dr?room=";
+        private readonly Uri _inframeEntered = new Uri("https://rolz.org/wiki/inframe?w=help&n=index", UriKind.Absolute);
+        private Uri _room;
+        private volatile bool _roomEntered;
 
-        private void Window_Error(object sender, HtmlElementErrorEventArgs e)
+        private static void Window_Error(object sender, HtmlElementErrorEventArgs e)
         {
-            // Ignore the error and suppress the error dialog box 
+            // Ignore the error and suppress the error dialog box
             e.Handled = true;
         }
 
-        private void onDocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        private void OnDocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             //should be never
             if (sender != this)
             {
-                Program.Log("ERROR: Invalid sender");
+                Program.Log("ERROR: Browser: Invalid sender");
+                return;
             }
+            if (null == Document) return;
+            if (null == Document.Window) return;
 
-            Uri base_url = this.Url;
-            Uri completed_url = e.Url;
-            
+            var completedUrl = e.Url;
+
             //almost not interested in child documents
-            if (this.Document.Window.Frames.Count != 0)
+            if (Document.Window.Frames != null && Document.Window.Frames.Count != 0)
             {
-                if (completed_url.Equals(this.inframe_entered))
+                if (completedUrl.Equals(_inframeEntered))
                 {
-                    Program.Log("on DocumentCompleted: Room Entered - InFrame (" + completed_url.ToString() + ")");
+                    Program.Log("Browser: on DocumentCompleted: Room Entered - InFrame (" + completedUrl + ")");
                 }
-                this.room_entered = true;
+                _roomEntered = true;
                 return;
             }
 
             //should be never
-            if (base_url != this.room)
+            if (Url != _room)
             {
-                Program.Log("ERROR: Invalid base_url (" + base_url.ToString() + ")");
+                Program.Log("ERROR: Browser: Invalid base_url (" + Url + ")");
             }
 
             //set our error handler that will silence all java script errors
-            ((WebBrowser)sender).Document.Window.Error += new HtmlElementErrorEventHandler(Window_Error);
-
-            Program.Log("on DocumentCompleted: Entering Room (" + base_url.ToString() + ")");
+            Document.Window.Error += Window_Error;
+            Program.Log("Browser: on DocumentCompleted: Entering Room (" + Url + ")");
         }
 
-        private void onNavigating(object sender, WebBrowserNavigatingEventArgs e)
+        private void OnNavigating(object sender, WebBrowserNavigatingEventArgs e)
         {
             //navigation inside iframe is not interesting
-            if (e.TargetFrameName == "") 
+            if (e.TargetFrameName != "") return;
+
+            var url = e.Url.ToString();
+            if (url.StartsWith(InframePrefix))
             {
-                string url = e.Url.ToString();
-                if (url.StartsWith(inframe_prefix))
-                {
-                    Program.Log("on prefix Navigating: url= " + url);
-                    return;
-                }
-                if (url == "about:blank")
-                {
-                    Program.Log("on blank Navigating: url= " + url);
-                    return;
-                }
-                if (url == this.room.ToString())
-                {
-                    Program.Log("on room Navigating: url= " + url);
-                    return;
-                }
-                Program.Log("CANCEL on Navigating: url= " + url);
-                e.Cancel = true;
+                Program.Log("Browser: on prefix Navigating: url= " + url);
+                return;
             }
+            if (url == "about:blank")
+            {
+                Program.Log("Browser: on blank Navigating: url= " + url);
+                return;
+            }
+            if (url == _room.ToString())
+            {
+                Program.Log("Browser: on room Navigating: url= " + url);
+                return;
+            }
+            Program.Log("Browser: CANCEL on Navigating: url= " + url);
+            e.Cancel = true;
         }
 
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
+            SuspendLayout();
+            //
             // RolzWebBrowser
-            // 
-            this.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.IsWebBrowserContextMenuEnabled = false;
-            this.TabStop = false;
-            this.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.onDocumentCompleted);
-            this.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.onNavigating);
-            this.ResumeLayout(false);
-
+            //
+            Dock = DockStyle.Fill;
+            IsWebBrowserContextMenuEnabled = false;
+            TabStop = false;
+            DocumentCompleted += OnDocumentCompleted;
+            Navigating += OnNavigating;
+            ResumeLayout(false);
         }
 
-        public RolzWebBrowser() : base()
+        public RolzWebBrowser()
         {
             InitializeComponent();
         }
 
         #region IRolzOrg interface
-        public void JoinRoom(string room_name)
+        public void JoinRoom(string roomName)
         {
-            this.room = new Uri(room_prefix + room_name, UriKind.Absolute);
-            this.room_entered = false;
-            Url = room;
+            _room = new Uri(RoomPrefix + roomName, UriKind.Absolute);
+            _roomEntered = false;
+            Url = _room;
         }
 
         public bool RoomEntered()
         {
-            return this.room_entered;
+            return _roomEntered;
         }
 
         public void SendMessage(string message)
         {
-            Document.InvokeScript("eval", new object[] { "window.sendLine('" + message + "');" });
-        }
-
-        public void SendSystemMessage(string message)
-        {
-            Document.InvokeScript("eval", new object[] { "window.sendLine('red:" + message + "');" });
+            if (Document != null) Document.InvokeScript("eval", new object[] { "window.sendLine('" + message + "');" });
         }
         #endregion
 
