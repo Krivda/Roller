@@ -15,6 +15,7 @@ namespace RollerEngine.Character
         private readonly Dictionary<string, HatysPartyMember> _party;
 
         private readonly IRollLogger _log;
+        private readonly IRoller _roller;
         public Nameless Nameless { get; private set; }
         public Spirdon Spirdon { get; private set; }
         public Yoki Yoki { get; private set; }
@@ -32,6 +33,7 @@ namespace RollerEngine.Character
             _party  = new Dictionary<string, HatysPartyMember>();
 
             _log = log;
+            _roller = roller;
             Nameless = new Nameless(party["Krivda"], log, roller, this);
             _party.Add(Nameless.CharacterName, Nameless);
 
@@ -82,6 +84,8 @@ namespace RollerEngine.Character
             }
 
             AutoLearn();
+
+            OfflineDiceRoller.LogStats(_log);
         }
 
         public void LearnWeek()
@@ -94,6 +98,7 @@ namespace RollerEngine.Character
 
             AutoLearn();
 
+            OfflineDiceRoller.LogStats(_log);
         }
 
         private void WeeklyBuff()
@@ -103,6 +108,10 @@ namespace RollerEngine.Character
             Nameless.CastPersuasion();
 
             Spirdon.ShiftToCrinos();
+
+            Nameless.CastTeachersEase(Spirdon.Build, Build.Abilities.Rituals, true);
+
+            Spirdon.CastSacredFire();
 
             //Spiridon buffs offult to Nameless
             Spirdon.CastCallToWyld(new List<Build>() { Nameless.Build });
@@ -288,6 +297,5 @@ namespace RollerEngine.Character
                 }
             }
         }
-
     }
 }

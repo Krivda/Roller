@@ -12,7 +12,7 @@ namespace RollerEngine.Rolls.Rites
 
         public AncestorSeeking(IRollLogger log, IRoller roller) : base(RITE_NAME, log, roller, 
             new List<string>() {Build.Atributes.Wits, Build.Abilities.Rituals },
-            new List<string>() )
+            new List<string>() {Build.Conditions.MysticRite} )
         {
         }
 

@@ -3,6 +3,7 @@ using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
 using RollerEngine.Rolls.Gifts;
+using RollerEngine.Rolls.Rites;
 
 namespace RollerEngine.Character.Party
 {
@@ -35,6 +36,14 @@ namespace RollerEngine.Character.Party
             CastPersuasion();
 
             base.Instruct(target, ability, withWill);
+        }
+
+        public void CastSacredFire()
+        {
+            var sacredFire = new SacredFire(Log, Roller);
+            sacredFire.Roll(Build,
+                new List<Build>() {Party.Spirdon.Build, Party.Nameless.Build, Party.Yoki.Build, Party.Kurt.Build}, true,
+                false);
         }
     }
 }

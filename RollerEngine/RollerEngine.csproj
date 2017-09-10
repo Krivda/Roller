@@ -101,6 +101,7 @@
     <Compile Include="Rolls\Gifts\TeachersEase.cs" />
     <Compile Include="Rolls\Rites\AncestorSeeking.cs" />
     <Compile Include="Rolls\Rites\RiteRoll.cs" />
+    <Compile Include="Rolls\Rites\SacredFire.cs" />
     <Compile Include="Rolls\SkillRoll.cs" />
     <Compile Include="Rolls\Skills\InstructionLearn.cs" />
     <Compile Include="SpreadSheets\ApiTest.cs" />

@@ -122,6 +122,8 @@ namespace RollerEngine.Character.Common
             public const string Social = "Social";
             public const string Teaching = "Teaching";
             public const string Learning = "Learning";
+            public const string MysticRite = "Mysctic Rite";
+            public const string SpiritRite = "Spirit Rite";
         }
 
         public class DynamicTraits

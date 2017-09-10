@@ -10,6 +10,21 @@ namespace RollerEngine.Roller
         private readonly IRollLogger _rollLogger;
 
         private static int _diceFace=10;
+        private static int[] _diceFaceStat;
+
+        public static void LogStats(IRollLogger rollLogger)
+        {
+            int sum = 0;
+            foreach (var i in _diceFaceStat)
+            {
+                sum += i;
+            }
+
+            for (var index = 0; index < _diceFaceStat.Length; index++)
+            {
+                rollLogger.Log(Verbosity.Important, string.Format("Percetage of {0} is {1:P2} (of {2} dices)", index+1, decimal.Divide(_diceFaceStat[index], sum), sum));  
+            }
+        }
 
         static class RNG
         {
@@ -49,6 +64,10 @@ namespace RollerEngine.Roller
         public OfflineDiceRoller(IRollLogger rollLogger)
         {
             _rollLogger = rollLogger;
+
+            if (_diceFaceStat == null)
+                _diceFaceStat = new int[10];
+
         }
 
         public static void InitDiceFace(int diceFace)
@@ -100,6 +119,7 @@ namespace RollerEngine.Roller
             {
                 int resultOnDiceRoll = RollSingleDice(_diceFace);
                 rollValues[resultOnDiceRoll - 1]++;
+                _diceFaceStat[resultOnDiceRoll - 1]++;
             }
 
             int successCount = GetRollSuccesses(rollValues, DC, removeSuccessOnOnes, hasSpecialization, hasWill);
