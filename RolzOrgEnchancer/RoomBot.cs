@@ -20,13 +20,13 @@ namespace RolzOrgEnchancer
     internal enum Color
     {
         Black,  //Verbosity.Details
-        Red,    //Roll Description
+        Red,    
         Green,                          //command
         Blue,   //Verbosity.Important
         Gray,   //Verbosity.Debug
         Maroon,
         Olive,
-        Orange,
+        Orange, //Roll Description
         Purple, //Session
         Teal,
         Pink    //Verbosity.Warning
@@ -42,7 +42,7 @@ namespace RolzOrgEnchancer
             RoomBot.MakeMessage(Color.Orange, description);
 
             var input = new RollInput();
-            input.Initialize(diceCount, DC, removeSuccessOnOnes, hasSpecialization, hasWill);
+            input.Initialize(diceCount, DC, hasSpecialization, hasWill, !removeSuccessOnOnes);
             var item = RoomBot.MakeRoll((uint)diceCount, (uint)DC, nRoll);
             nRoll++;
 
@@ -79,6 +79,7 @@ namespace RolzOrgEnchancer
                 throw new Exception("Invalid 6");
             }
             output.CalculateResult(input);
+            Program.Log("Result = " + output.Result);
             return new RollData(output.Result, output.RawDices);
         }
 
@@ -86,7 +87,26 @@ namespace RolzOrgEnchancer
         public void Log(Verbosity verbosity, string record)
         {
             Program.Log("RoomBootImpl: Logging message: " + verbosity + record);
-            RoomBot.MakeMessage(Color.Blue, record);
+            Color color;
+            switch (verbosity)
+            {
+                case Verbosity.Details:
+                    color = Color.Black;
+                    break;
+                case Verbosity.Debug:
+                    color = Color.Gray;
+                    break;
+                case Verbosity.Warning:
+                    color = Color.Pink;
+                    break;
+                case Verbosity.Important:
+                    color = Color.Blue;
+                    break;
+                default:
+                    color = Color.Red;
+                    break;
+            }
+            RoomBot.MakeMessage(color, record);
         }
 
     }
@@ -101,7 +121,7 @@ namespace RolzOrgEnchancer
     private static ConcurrentQueue<string> _messageQueue;
 
     public static Parser Parser = new Parser(DefaultRoomName);
-    private const string DefaultRoomName = "Hatys%20Test";
+    private const string DefaultRoomName = "Hatys%20Test2";
 
     private static void Worker()
     {
@@ -118,24 +138,18 @@ namespace RolzOrgEnchancer
       MakeCommand("/opt autoexpand=on");
       MakeCommand("/nick HatysBot");
 
-      for (var n = 0; n < 11; n++)
-      {
-        MakeSingleMessage((Color) n, "color message");
-      }
-
-      MakeMessage(Color.Red, "String 1 \r\nString 2\n\rString 3\r\n  #//#//##/ String 4\rString 5\n\n\r\r");
-
-      for (uint n = 0; n < 3; n++)
-      {
-        MakeRoll(8, 5, 10 + n);
-        Program.Log("Worker: roll was found");
-      }
-
       //InitializeKrivda(IRoomBot)
       //EmulateKrivda()
 
       var interfaces = new RoomBootImpl();
-      var res = HatysPartyLoader.LoadParty(interfaces, interfaces);
+      var res = HatysParty.LoadFromGoogle(interfaces, interfaces);
+
+        var plan = new List<TeachPlan>
+        {
+            new TeachPlan(res.Nameless, res.Yoki, Build.Abilities.Brawl),
+            new TeachPlan(res.Yoki, res.Kurt, Build.Abilities.Rituals),
+            new TeachPlan(res.Kinfolk1, res.Kinfolk1, Build.Abilities.Science)
+        };
 
       uint action;
       for (;;)
@@ -143,7 +157,7 @@ namespace RolzOrgEnchancer
         {
           Thread.Sleep(100);
           Program.Log("Worker: Deque action #" + action);
-          res.Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
+            res.TeachingWeek(plan);
         }
     }
 
