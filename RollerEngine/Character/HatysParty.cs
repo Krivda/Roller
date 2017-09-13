@@ -85,6 +85,8 @@ namespace RollerEngine.Character
 
             AutoLearn();
 
+            _log.Log(Verbosity.Warning, "END TEACHING Week");
+
             //OfflineDiceRoller.LogStats(_log);
         }
 
@@ -119,11 +121,17 @@ namespace RollerEngine.Character
             //boost nameless Instruction
             Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
 
+            Nameless.CastTeachersEase(Spirdon.Build, Build.Abilities.Subterfuge, false);
             Spirdon.CastPersuasion();
+
+            Nameless.CastTeachersEase(Yoki.Build, Build.Abilities.Subterfuge, false);
             Yoki.CastPersuasion();
 
+            Nameless.CastTeachersEase(Kinfolk1.Build, Build.Abilities.Subterfuge, false);
             Kinfolk1.CastPersuasion();
-            Kinfolk1.CastPersuasion();
+
+            Nameless.CastTeachersEase(Kinfolk2.Build, Build.Abilities.Subterfuge, false);
+            Kinfolk2.CastPersuasion();
         }
 
         private void AutoLearn()
