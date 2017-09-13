@@ -90,8 +90,13 @@ namespace RollerEngine.Character.Party
                     string trait = xpPoolTrait.Item1.Replace(Build.DynamicTraits.ExpirienceToLearn, "").Trim();
                     bool hasWill = Build.Traits[trait] < 3;
 
-                    Learn(trait, hasWill);
-                    LearnSessions--;
+                    
+                    for (int i = 0; i < LearnSessions; i++)
+                    {
+                        Learn(trait, hasWill);
+                    }
+                    LearnSessions=0;
+
                 }
             }
         }
