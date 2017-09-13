@@ -78,11 +78,22 @@ namespace RollerEngine.Character
 
             _log.Log(Verbosity.Warning, "Buffs Done, starting REAL job!");
 
-            foreach (var teachingPlan in teachPlan)
+            foreach (var item in teachPlan)
             {
-                _log.Log(Verbosity.Important, "");
-                _log.Log(Verbosity.Important, string.Format("{0} startered learning {1} to {2}.", teachingPlan.Teacher.CharacterName, teachingPlan.Trait, teachingPlan.Student.CharacterName));
-                teachingPlan.Teacher.Instruct(teachingPlan.Student.Build, teachingPlan.Trait, false);
+                //instruction
+                if (item.Student != null)
+                {
+                    
+                    _log.Log(Verbosity.Important, "");
+                    _log.Log(Verbosity.Important, string.Format("{0} startered learning {1} to {2}.", item.Teacher.CharacterName, item.Trait, item.Student.CharacterName));
+                    item.Teacher.Instruct(item.Student.Build, item.Trait, false);
+                }
+                else if (item.RiteName != null)
+                {
+                    _log.Log(Verbosity.Important, "");
+                    _log.Log(Verbosity.Important, string.Format("{0} startered learning {1} to {2}.", item.Teacher.CharacterName, item.Trait, item.Student.CharacterName));
+                    item.Teacher.LearnRite(item.RiteName, item.RiteLevel, false);
+                }
             }
 
             AutoLearn();
@@ -309,6 +320,35 @@ namespace RollerEngine.Character
                     ));
                 }
             }
+        }
+
+        public void Week(int weekNo)
+        {
+            List<TeachPlan> plan = new List<TeachPlan>();
+
+            switch (weekNo)
+            {
+                case 1:
+                    plan.Add(new TeachPlan(Nameless, Yoki, Build.Abilities.Brawl));
+                    plan.Add(new TeachPlan(Yoki, Kurt, Build.Abilities.Rituals));
+                    plan.Add(new TeachPlan(Kinfolk1, Kinfolk2, Build.Abilities.Science));
+                    break;
+                case 2:
+                    break;
+
+
+            }
+
+
+            if (plan.Count > 0)
+            {
+                TeachingWeek(plan);
+            }
+            else
+            {
+                LearnWeek();
+            }
+            
         }
     }
 }

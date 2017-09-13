@@ -135,5 +135,13 @@ namespace RollerEngine.Character.Party
             ansestorsRoll.Roll(Build, trait);
         }
 
+        public void LearnRite(string riteName, int riteLevel, bool hasSpec)
+        {
+            if (! (Build.CharacterClass.Equals(Build.Classes.Warewolf) || Build.CharacterClass.Equals(Build.Classes.Corax)))
+            {
+                throw new Exception(string.Format("{0} is {1}, and they can't learn rites", Build.Name, Build.CharacterClass));
+            }
+            
+        }
     }
 }

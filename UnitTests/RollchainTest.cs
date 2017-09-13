@@ -20,8 +20,6 @@ namespace UnitTests
             var rollLogger = new NLogLogger(Logger);
             Logger.Info("Started");
             var res = HatysParty.LoadFromGoogle(rollLogger, new OfflineDiceRoller(rollLogger));
-
-            
         }
 
         [Test]

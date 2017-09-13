@@ -130,11 +130,12 @@ namespace RollerEngine.Character.Common
         {
             public const string ExpirienceToLearn = "Expirience ToLearn";
             public const string ExpirienceLearned = "Expirience Learned";
+            public const string RiteSuccesses = "Successes towards rite";
 
 
-            public static string GetKey(string dynamicName, string trait)
+            public static string GetKey(string dynamicName, string baseName)
             {
-                return string.Format("{0} {1}", dynamicName, trait);
+                return string.Format("{0} {1}", dynamicName, baseName);
             }
         }
 
