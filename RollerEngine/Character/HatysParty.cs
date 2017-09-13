@@ -72,7 +72,7 @@ namespace RollerEngine.Character
         public void TeachingWeek(List<TeachPlan> teachPlan)
         {
             _log.Log(Verbosity.Important, "");
-            _log.Log(Verbosity.Important, "Start TEACHING Week");
+            _log.Log(Verbosity.Warning, "Start TEACHING Week");
 
             WeeklyBuff();
 
@@ -85,14 +85,14 @@ namespace RollerEngine.Character
 
             AutoLearn();
 
-            OfflineDiceRoller.LogStats(_log);
+            //OfflineDiceRoller.LogStats(_log);
         }
 
         public void LearnWeek()
         {
 
             _log.Log(Verbosity.Important, "");
-            _log.Log(Verbosity.Important, "Start LEARNING Week");
+            _log.Log(Verbosity.Warning, "Start LEARNING Week");
 
             WeeklyBuff();
 

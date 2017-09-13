@@ -29,6 +29,8 @@ namespace RollerEngine.Rolls.Skills
 
             var target = targets[0];
 
+            string learningTrait = "";
+
             bool increaseDC = false;
             foreach (var trait in DicePool)
             {
@@ -36,17 +38,18 @@ namespace RollerEngine.Rolls.Skills
                 if (target.Traits[trait] == 0)
                 {
                     //
-                    var props = typeof(Build.Abilities).GetProperties();
+                    var props = typeof(Build.Abilities).GetFields();
                     foreach (var prop in props)
                     {
                         if (prop.Name.Equals(trait))
                         {
                             //this is a zero ability
+                            learningTrait = trait;
 
                             //check if there's an buff on that ability that will cancel untrained mod.
                             var hasSuitableMod = target.TraitModifiers.Any(modifier =>
-                                modifier.BonusType == TraitModifier.BonusTypeKind.TraitMod ||
-                                modifier.BonusType == TraitModifier.BonusTypeKind.TraitModLimited ||
+                                modifier.Traits.Any(mm => mm.Equals(prop.Name)) &&
+                                (modifier.BonusType == TraitModifier.BonusTypeKind.TraitMod || modifier.BonusType == TraitModifier.BonusTypeKind.TraitModLimited) &&
                                 modifier.Value > 0);
 
                             if (!hasSuitableMod)
@@ -63,7 +66,12 @@ namespace RollerEngine.Rolls.Skills
             }
 
             if (increaseDC)
-                return 8;
+            {
+                int dc = 8;
+                Log.Log(Verbosity.Warning, string.Format("{0} will roll learning ({1}) as untrained at DC {2}", actor.Name, learningTrait, dc));
+                return dc;
+            }
+                
 
             return base.GetBaseDC(actor, targets);
         }

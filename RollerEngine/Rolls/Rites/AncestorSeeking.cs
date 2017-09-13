@@ -46,7 +46,7 @@ namespace RollerEngine.Rolls.Rites
                         ));
 
                     Log.Log(Verbosity.Important,
-                    string.Format("{0} obtained bonus {1} dice on social rolls from {2} rite to all Ancestor spirit related rolls.", actor.Name, result/2, Name));
+                    string.Format("{0} obtained bonus {1} dice on social rolls from {2} rite to Occult, Enigmas, Investigation for next Ancestor spirit related rolls.", actor.Name, result/2, Name));
                 }
                 else
                 {

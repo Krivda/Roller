@@ -36,7 +36,7 @@ namespace UnitTests
             {
                 new TeachPlan(res.Nameless, res.Yoki, Build.Abilities.Brawl),
                 new TeachPlan(res.Yoki, res.Kurt, Build.Abilities.Rituals),
-                new TeachPlan(res.Kinfolk1, res.Kinfolk1, Build.Abilities.Science)
+                new TeachPlan(res.Kinfolk1, res.Kinfolk2, Build.Abilities.Science)
             };
 
             res.TeachingWeek(plan);
