@@ -76,6 +76,8 @@ namespace RollerEngine.Character
 
             WeeklyBuff();
 
+            _log.Log(Verbosity.Warning, "Buffs Done, starting REAL job!");
+
             foreach (var teachingPlan in teachPlan)
             {
                 _log.Log(Verbosity.Important, "");

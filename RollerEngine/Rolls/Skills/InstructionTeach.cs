@@ -86,7 +86,7 @@ namespace RollerEngine.Rolls.Skills
 
                 target.Traits[traitNameXpInPool] = currentXpInPool + newXp;
 
-                Log.Log(Verbosity.Important, string.Format("{0} got new {1}XP ({2}XP in total in bonus XP pool) to spent on learning {3} from {4}'s {5}.", target.Name, result, newXp, ability, actor.Name, Name));
+                Log.Log(Verbosity.Warning, string.Format("{0} got new {1}XP ({2}XP in total in bonus XP pool) to spent on learning {3} from {4}'s {5}.", target.Name, result, newXp, ability, actor.Name, Name));
             }
             else
             {
