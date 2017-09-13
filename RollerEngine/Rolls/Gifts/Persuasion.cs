@@ -37,12 +37,12 @@ namespace RollerEngine.Rolls.Gifts
                             -1
                         ));
 
-                    _log.Log(Verbosity.Important,
+                    Log.Log(Verbosity.Important,
                     string.Format("{0} obtained bonus -1 DC on social rolls from {1} gift.", actor.Name, Name));
                 }
                 else
                 {
-                    _log.Log(Verbosity.Important,
+                    Log.Log(Verbosity.Important,
                     string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
                 }
 

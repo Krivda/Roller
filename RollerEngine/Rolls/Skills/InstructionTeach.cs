@@ -37,7 +37,7 @@ namespace RollerEngine.Rolls.Skills
 
             if (maxTeachValue <= targetTraitValue)
             {
-                _log.Log(Verbosity.Important, string.Format("{0} doesn't have more skill in {1} ability ({2}vs{3}) or Instruct {4}  to teach {5}!", actor.Name, ability, actorTraitValue, targetTraitValue, actorInstructAbility, target.Name));
+                Log.Log(Verbosity.Important, string.Format("{0} doesn't have more skill in {1} ability ({2}vs{3}) or Instruct {4}  to teach {5}!", actor.Name, ability, actorTraitValue, targetTraitValue, actorInstructAbility, target.Name));
                 return 0;
             }
             
@@ -86,11 +86,11 @@ namespace RollerEngine.Rolls.Skills
 
                 target.Traits[traitNameXpInPool] = currentXpInPool + newXp;
 
-                _log.Log(Verbosity.Important, string.Format("{0} got new {1}XP ({2}XP in total in bonus XP pool) to spent on learning {3} from {4}'s {5}.", target.Name, result, newXp, ability, actor.Name, Name));
+                Log.Log(Verbosity.Important, string.Format("{0} got new {1}XP ({2}XP in total in bonus XP pool) to spent on learning {3} from {4}'s {5}.", target.Name, result, newXp, ability, actor.Name, Name));
             }
             else
             {
-                _log.Log(Verbosity.Important, string.Format("{0} didn't get bonus XP from {1}.", target.Name, Name));
+                Log.Log(Verbosity.Important, string.Format("{0} didn't get bonus XP from {1}.", target.Name, Name));
             }
 
             return result;

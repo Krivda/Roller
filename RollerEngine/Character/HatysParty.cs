@@ -98,7 +98,7 @@ namespace RollerEngine.Character
 
             AutoLearn();
 
-            OfflineDiceRoller.LogStats(_log);
+            //OfflineDiceRoller.LogStats(_log);
         }
 
         private void WeeklyBuff()

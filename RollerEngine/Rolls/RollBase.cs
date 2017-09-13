@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using RollerEngine.Character;
 using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Modifiers;
@@ -15,8 +14,8 @@ namespace RollerEngine.Rolls
         private const int MIN_DC = 3;
         //private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        protected readonly IRollLogger _log;
-        protected readonly IRoller _roller;
+        protected readonly IRollLogger Log;
+        protected readonly IRoller Roller;
 
         public string Name { get; private set; }
         public List<string> DicePool { get; private set; }
@@ -77,8 +76,8 @@ namespace RollerEngine.Rolls
 
         public RollBase(string name, IRollLogger log, IRoller roller,  List<String> dicePool, bool removeSuccessesOn1, bool canBotch, List<string> conditions)
         {
-            _log = log;
-            _roller = roller;
+            Log = log;
+            Roller = roller;
             Name = name;
             DicePool = dicePool;
             RemoveSuccessesOn1 = removeSuccessesOn1;
@@ -109,14 +108,15 @@ namespace RollerEngine.Rolls
 
             logMessageBefore.Append(".");
 
-            _log.Log(Verbosity.Details, logMessageBefore.ToString());
+            Log.Log(Verbosity.Details, logMessageBefore.ToString());
 
             RollInfo info = GetRollInfo(actor, targets);
 
             string logMessage = GetLogForRoll(actor, targets, info, hasSpec, hasWill);
-            _log.Log(Verbosity.Important, string.Format(logMessage));
+            Log.Log(Verbosity.Important, string.Format(logMessage));
 
-            int successes = _roller.Roll(info.DicePoolInfo.Dices, info.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill, Name).Successes;
+            int successes = Roller.Roll(info.DicePoolInfo.Dices, info.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill, Name).Successes;
+            Log.Log(Verbosity.Details, string.Format("And got {0} successes.", successes));
 
             //remove used modifiers
             foreach (var traitValueInfo in info.DicePoolInfo.Traits)
@@ -209,7 +209,7 @@ namespace RollerEngine.Rolls
             {
                 if (!modifier.ConditionsMet(conditions))
                 {
-                    _log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
+                    Log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {
@@ -225,7 +225,7 @@ namespace RollerEngine.Rolls
                     {
                         triatValue += modValueLimitedValue;
                         modValue = modValueLimitedValue;
-                        _log.Log(Verbosity.Warning, string.Format("Modifer {0} is overcapped. Value set to {1}.", modifier.Name, modValueLimitedValue));
+                        Log.Log(Verbosity.Warning, string.Format("Modifer {0} is overcapped. Value set to {1}.", modifier.Name, modValueLimitedValue));
                     }
 
                     appliedMods.Add(new Tuple<int, TraitModifier>(modValue, modifier));
@@ -246,7 +246,7 @@ namespace RollerEngine.Rolls
             {
                 if (!modifier.ConditionsMet(conditions))
                 {
-                    _log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
+                    Log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {
@@ -280,7 +280,7 @@ namespace RollerEngine.Rolls
             //hadle limited value
             if (adjectedDC < MIN_DC)
             {
-                _log.Log(Verbosity.Warning, string.Format("DC was lesser then min, adjusted to {0}.", MIN_DC));
+                Log.Log(Verbosity.Warning, string.Format("DC was lesser then min, adjusted to {0}.", MIN_DC));
                 dcInfo.AdjustedDC = MIN_DC;
             }
             else
@@ -312,7 +312,7 @@ namespace RollerEngine.Rolls
             {
                 if (!modifier.ConditionsMet(conditions))
                 {
-                    _log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
+                    Log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {
@@ -338,7 +338,7 @@ namespace RollerEngine.Rolls
             {
                 if (!modifier.ConditionsMet(conditions))
                 {
-                    _log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
+                    Log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {

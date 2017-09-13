@@ -35,13 +35,13 @@ namespace RollerEngine.Rolls.Gifts
                             TraitModifier.BonusTypeKind.AdditionalDice
                         ));
 
-                    _log.Log(Verbosity.Important, string.Format("{0} obtained bonus {1} dices to Ansecetors Spririts related rolls for next roll from {2} gift performed by {3}.", target.Name, successes/2, Name, actor.Name));
+                    Log.Log(Verbosity.Important, string.Format("{0} obtained bonus {1} dices to Ansecetors Spririts related rolls for next roll from {2} gift performed by {3}.", target.Name, successes/2, Name, actor.Name));
                 }
 
             }
             else
             {
-                _log.Log(Verbosity.Important, string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
+                Log.Log(Verbosity.Important, string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
             }
 
             return successes/2;

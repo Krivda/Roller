@@ -44,12 +44,12 @@ namespace RollerEngine.Rolls.Rites
                                 -result 
                             ));
 
-                        _log.Log(Verbosity.Important, string.Format("{0} obtained -{1}DC on Mystic/Spirit-related rites from {2} rite .", target.Name, result, Name));
+                        Log.Log(Verbosity.Important, string.Format("{0} obtained -{1}DC on Mystic/Spirit-related rites from {2} rite .", target.Name, result, Name));
                     }
                 }
                 else
                 {
-                    _log.Log(Verbosity.Important,
+                    Log.Log(Verbosity.Important,
                         string.Format("{0} didn't get bonus from {1} rite.", "Anybody", Name));
                 }
 

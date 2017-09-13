@@ -31,11 +31,11 @@ namespace RollerEngine.Rolls.Gifts
                         successes, TraitModifier.BonusTypeKind.AdditionalDice, -1
                     ));
 
-                _log.Log(Verbosity.Important, string.Format("{0} obtained bonus {1} to Ancestors from {2} gift.", actor.Name, successes, Name));
+                Log.Log(Verbosity.Important, string.Format("{0} obtained bonus {1} to Ancestors from {2} gift.", actor.Name, successes, Name));
             }
             else
             {
-                _log.Log(Verbosity.Important, string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
+                Log.Log(Verbosity.Important, string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
             }
 
             return successes;

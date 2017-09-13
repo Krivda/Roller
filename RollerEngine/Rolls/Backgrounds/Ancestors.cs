@@ -32,11 +32,11 @@ namespace RollerEngine.Rolls.Backgrounds
                     )
                 );
 
-                _log.Log(Verbosity.Details, string.Format("{0} obtained bonus {1} dies on {2} for a scence from {3} Background.", actor.Name, successes, targetTrait ,Name));
+                Log.Log(Verbosity.Details, string.Format("{0} obtained bonus {1} dies on {2} for a scence from {3} Background.", actor.Name, successes, targetTrait ,Name));
             }
             else
             {
-                _log.Log(Verbosity.Details, string.Format("{0} didn't get bonus from {1} Background.", actor.Name, Name));
+                Log.Log(Verbosity.Details, string.Format("{0} didn't get bonus from {1} Background.", actor.Name, Name));
             }
 
             return successes;
