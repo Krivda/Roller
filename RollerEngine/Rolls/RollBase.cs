@@ -116,7 +116,7 @@ namespace RollerEngine.Rolls
             Log.Log(Verbosity.Important, string.Format(logMessage));
 
             int successes = Roller.Roll(info.DicePoolInfo.Dices, info.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill, Name).Successes;
-            Log.Log(Verbosity.Details, string.Format("And got {0} successes.", successes));
+            Log.Log(Verbosity.Debug, string.Format("...and got {0} successes.", successes));
 
             //remove used modifiers
             foreach (var traitValueInfo in info.DicePoolInfo.Traits)
