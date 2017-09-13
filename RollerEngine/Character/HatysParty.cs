@@ -121,6 +121,9 @@ namespace RollerEngine.Character
 
             Spirdon.CastPersuasion();
             Yoki.CastPersuasion();
+
+            Kinfolk1.CastPersuasion();
+            Kinfolk1.CastPersuasion();
         }
 
         private void AutoLearn()

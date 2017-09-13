@@ -4,7 +4,6 @@ namespace UnitTests
 {
 using NLog;
 using NUnit.Framework;
-using RollerEngine.Character;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
 using RollerEngine.Rolls.Skills;

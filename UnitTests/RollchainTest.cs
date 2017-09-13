@@ -41,5 +41,13 @@ namespace UnitTests
 
             res.TeachingWeek(plan);
         }
+
+
+        [Test]
+        public void Mutiweek()
+        {
+            
+        }
+
     }
 }
