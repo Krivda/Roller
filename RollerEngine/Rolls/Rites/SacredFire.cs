@@ -10,9 +10,10 @@ namespace RollerEngine.Rolls.Rites
     {
         private const string RITE_NAME = "Sacred Fire";
 
-        public SacredFire(IRollLogger log, IRoller roller) : base(RITE_NAME, log, roller,
+        public SacredFire(IRollLogger log, IRoller roller) : 
+            base(RITE_NAME, log, roller,
             new List<string>() { Build.Atributes.Wits, Build.Abilities.Rituals },
-            new List<string>() { Build.Conditions.MysticRite })
+            new List<string>() { Build.Conditions.MysticRite }, null, Verbosity.Details)
         {
         }
 
@@ -44,7 +45,7 @@ namespace RollerEngine.Rolls.Rites
                                 -result 
                             ));
 
-                        Log.Log(Verbosity.Important, string.Format("{0} obtained -{1}DC on Mystic/Spirit-related rites from {2} rite .", target.Name, result, Name));
+                        Log.Log(Verbosity, string.Format("{0} obtained -{1}DC on Mystic/Spirit-related rites from {2} rite .", target.Name, result, Name));
                     }
                 }
                 else

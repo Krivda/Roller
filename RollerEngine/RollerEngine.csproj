@@ -78,7 +78,7 @@
     <Compile Include="Character\Party\Kinfolk1.cs" />
     <Compile Include="Character\Party\Kinfolk2.cs" />
     <Compile Include="Character\Party\Kurt.cs" />
-    <Compile Include="Character\TeachPlan.cs" />
+    <Compile Include="Character\WeeklyActivity.cs" />
     <Compile Include="Modifiers\BonusModifier.cs" />
     <Compile Include="Modifiers\DCModifer.cs" />
     <Compile Include="Modifiers\TraitModifier.cs" />
@@ -88,7 +88,7 @@
     <Compile Include="Character\Party\Yoki.cs" />
     <Compile Include="Roller\MockFixedRoller.cs" />
     <Compile Include="Rolls\Backgrounds\Ancestors.cs" />
-    <Compile Include="Rolls\BackgroundRoll.cs" />
+    <Compile Include="Rolls\Backgrounds\BackgroundRoll.cs" />
     <Compile Include="Rolls\Gifts\CaernOfVigilChannelling.cs" />
     <Compile Include="Rolls\BotchException.cs" />
     <Compile Include="Logger\CompositeLogger.cs" />
@@ -102,7 +102,7 @@
     <Compile Include="Rolls\Rites\AncestorSeeking.cs" />
     <Compile Include="Rolls\Rites\RiteRoll.cs" />
     <Compile Include="Rolls\Rites\SacredFire.cs" />
-    <Compile Include="Rolls\SkillRoll.cs" />
+    <Compile Include="Rolls\Skills\SkillRoll.cs" />
     <Compile Include="Rolls\Skills\InstructionLearn.cs" />
     <Compile Include="Rolls\Skills\RitualsLearn.cs" />
     <Compile Include="SpreadSheets\ApiTest.cs" />

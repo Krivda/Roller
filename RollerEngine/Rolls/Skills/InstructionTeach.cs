@@ -15,7 +15,7 @@ namespace RollerEngine.Rolls.Skills
             log,
             roller,
             new List<string>() { Build.Atributes.Manipulation, Build.Abilities.Instruction },
-            new List<string>() { Build.Conditions.Social, Build.Conditions.Learning })
+            new List<string>() { Build.Conditions.Social, Build.Conditions.Learning }, null, Verbosity.Important)
         
         {
 
@@ -28,6 +28,8 @@ namespace RollerEngine.Rolls.Skills
 
         public int Roll(Build actor, Build target, string ability, bool hasSpec, bool hasWill)
         {
+            AdditionalInfo = ability;
+
             int actorTraitValue = actor.Traits[ability];
             int actorInstructAbility = actor.Traits[Build.Abilities.Instruction];
 

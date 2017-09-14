@@ -23,7 +23,7 @@ namespace RollerEngine.Character.Party
         public void CastCallToWyld(List<Build> target)
         {
             //Nameless buffs Empthy
-            Party.Nameless.CastTeachersEase(Build, Build.Abilities.Empathy, true);
+            Party.Nameless.CastTeachersEase(Build, Build.Abilities.Empathy, true, Verbosity.Details);
             
             //Cast Call to Wyld
             var callToWyld = new CallToWyldDirgeToTheFallen(Log, Roller);

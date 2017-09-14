@@ -144,11 +144,11 @@ namespace RolzOrgEnchancer
       var interfaces = new RoomBootImpl();
       var res = HatysParty.LoadFromGoogle(interfaces, interfaces);
 
-        var plan = new List<TeachPlan>
+        var plan = new List<WeeklyActivity>
         {
-            new TeachPlan(res.Nameless, res.Yoki, Build.Abilities.Brawl),
-            new TeachPlan(res.Yoki, res.Kurt, Build.Abilities.Rituals),
-            new TeachPlan(res.Kinfolk1, res.Kinfolk1, Build.Abilities.Science)
+            new WeeklyActivity(res.Nameless, res.Yoki, Build.Abilities.Brawl),
+            new WeeklyActivity(res.Yoki, res.Kurt, Build.Abilities.Rituals),
+            new WeeklyActivity(res.Kinfolk1, res.Kinfolk1, Build.Abilities.Science)
         };
 
       uint action;

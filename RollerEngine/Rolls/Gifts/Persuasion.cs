@@ -10,7 +10,8 @@ namespace RollerEngine.Rolls.Gifts
     {
         private const string GIFT_NAME = "Persuasion";
 
-        public Persuasion(IRollLogger log, IRoller roller) : base(GIFT_NAME, log, roller, new List<string>(){Build.Atributes.Charisma, Build.Abilities.Subterfuge}, new List<string>())
+        public Persuasion(IRollLogger log, IRoller roller) 
+            : base(GIFT_NAME, log, roller, new List<string>(){Build.Atributes.Charisma, Build.Abilities.Subterfuge}, new List<string>(), null, Verbosity.Details)
         {
         }
 
@@ -37,12 +38,12 @@ namespace RollerEngine.Rolls.Gifts
                             -1
                         ));
 
-                    Log.Log(Verbosity.Important,
+                    Log.Log(Verbosity,
                     string.Format("{0} obtained bonus -1 DC on social rolls from {1} gift.", actor.Name, Name));
                 }
                 else
                 {
-                    Log.Log(Verbosity.Important,
+                    Log.Log(Verbosity,
                     string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
                 }
 

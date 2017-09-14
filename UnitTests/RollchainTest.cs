@@ -30,11 +30,11 @@ namespace UnitTests
 
             var res = HatysParty.LoadFromGoogle(rollLogger, new OfflineDiceRoller(rollLogger));
 
-            var plan = new List<TeachPlan>
+            var plan = new List<WeeklyActivity>
             {
-                new TeachPlan(res.Nameless, res.Yoki, Build.Abilities.Brawl),
-                new TeachPlan(res.Yoki, res.Kurt, Build.Abilities.Rituals),
-                new TeachPlan(res.Kinfolk1, res.Kinfolk2, Build.Abilities.Science)
+                new WeeklyActivity(res.Nameless, res.Yoki, Build.Abilities.Brawl),
+                new WeeklyActivity(res.Yoki, res.Kurt, Build.Abilities.Rituals),
+                new WeeklyActivity(res.Kinfolk1, res.Kinfolk2, Build.Abilities.Science)
             };
 
             res.TeachingWeek(plan);

@@ -2,7 +2,7 @@ using RollerEngine.Character.Party;
 
 namespace RollerEngine.Character
 {
-    public class TeachPlan
+    public class WeeklyActivity
     {
         public HatysPartyMember Teacher { get; private set; }
         public Common.Character Student { get; private set; }
@@ -10,14 +10,14 @@ namespace RollerEngine.Character
         public string RiteName { get; private set; }
         public int RiteLevel { get; private set; }
 
-        public TeachPlan(HatysPartyMember teacher, Common.Character student, string trait)
+        public WeeklyActivity(HatysPartyMember teacher, Common.Character student, string trait)
         {
             Teacher = teacher;
             Student = student;
             Trait = trait;
         }
 
-        public TeachPlan(HatysPartyMember teacher, string riteName, int riteLevel)
+        public WeeklyActivity(HatysPartyMember teacher, string riteName, int riteLevel)
         {
             Teacher = teacher;
             RiteName = riteName;

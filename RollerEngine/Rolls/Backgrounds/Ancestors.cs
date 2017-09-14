@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using RollerEngine.Character;
 using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Modifiers;
@@ -11,12 +10,14 @@ namespace RollerEngine.Rolls.Backgrounds
     {
 
         public Ancestors(IRollLogger log, IRoller roller)
-            : base(Build.Backgrounds.Ansestors, log, roller, new List<string>() {Build.Conditions.AncestorSpirits})
+            : base(Build.Backgrounds.Ansestors, log, roller, new List<string>() {Build.Conditions.AncestorSpirits}, null, Verbosity.Details)
         {}
         
 
         public int Roll(Build actor, string targetTrait)
         {
+            AdditionalInfo = targetTrait;
+
             int successes = base.Roll(actor, new List<Build>() {actor}, false, false);
 
             if (successes > 0)

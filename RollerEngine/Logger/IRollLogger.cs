@@ -7,6 +7,11 @@
 
     public enum Verbosity
     {
-        Warning, Important, Details, Debug
+        Error =5,
+        Warning =4,
+        Critical=3,
+        Important=2,
+        Details =1,
+        Debug =0 
     }
 }

@@ -38,7 +38,7 @@ namespace RollerEngine.Character.Party
                         if (!Build.Name.Equals(Party.Nameless.CharacterName))
                         {
                             //Ask Nameless to buff allertness
-                            Party.Nameless.CastTeachersEase(Build, Build.Abilities.Alertness, false);
+                            Party.Nameless.CastTeachersEase(Build, Build.Abilities.Alertness, false, Verbosity.Details);
                         }
 
                         Party.CaernChannellingUsedTimes++;
@@ -60,7 +60,7 @@ namespace RollerEngine.Character.Party
             if (!Build.Name.Equals(Party.Nameless.CharacterName))
             {
                 //Ask Nameless to buff Ability roll
-                Party.Nameless.CastTeachersEase(Build, ability, false);
+                Party.Nameless.CastTeachersEase(Build, ability, false, Verbosity.Important);
             }
 
             base.Learn(ability, withWill);
@@ -109,7 +109,7 @@ namespace RollerEngine.Character.Party
                 if (!Build.Name.Equals(Party.Nameless.CharacterName))
                 {
                     //Ask Nameless to buff allertness
-                    Party.Nameless.CastTeachersEase(Build, Build.Abilities.Instruction, false);
+                    Party.Nameless.CastTeachersEase(Build, Build.Abilities.Instruction, false, Verbosity.Important);
                 }
 
                 //Apply rosemary

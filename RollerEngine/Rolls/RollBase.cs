@@ -16,12 +16,14 @@ namespace RollerEngine.Rolls
 
         protected readonly IRollLogger Log;
         protected readonly IRoller Roller;
+        public string AdditionalInfo { get; protected set; }
 
         public string Name { get; private set; }
         public List<string> DicePool { get; private set; }
         public bool RemoveSuccessesOn1 { get; private set; }
         public bool CanBotch { get; private set; }
         public List<string> Conditions { get; private set; }
+        public Verbosity Verbosity { get; private set; }
 
         public class TraitValueInfo
         {
@@ -73,11 +75,18 @@ namespace RollerEngine.Rolls
             public DCInfo DCInfo;
         }
 
+        public RollBase(string name, IRollLogger log, IRoller roller, List<String> dicePool, bool removeSuccessesOn1, bool canBotch, List<string> conditions) : 
+            this (name, log, roller, dicePool, removeSuccessesOn1, canBotch, conditions, null, Verbosity.Important)
+        {
+            
+        }
 
-        public RollBase(string name, IRollLogger log, IRoller roller,  List<String> dicePool, bool removeSuccessesOn1, bool canBotch, List<string> conditions)
+        public RollBase(string name, IRollLogger log, IRoller roller,  List<String> dicePool, bool removeSuccessesOn1, bool canBotch, List<string> conditions, string additionalInfo, Verbosity verbosity)
         {
             Log = log;
             Roller = roller;
+            AdditionalInfo = additionalInfo;
+            Verbosity = verbosity;
             Name = name;
             DicePool = dicePool;
             RemoveSuccessesOn1 = removeSuccessesOn1;
@@ -101,19 +110,24 @@ namespace RollerEngine.Rolls
             //Artze is rolling bless in Artze, Keltur with Specialization, with Will
             logMessageBefore.AppendFormat("{0} is rolling {1} on {2}", actor.Name, Name, targetsStr);
 
+            if (AdditionalInfo != null)
+                logMessageBefore.Append(string.Format(" (for {0}) ", AdditionalInfo));
+
+
             if (hasSpec)
                 logMessageBefore.Append(" with Specilization");
             if (hasWill)
                 logMessageBefore.Append(" with Will");
 
+
             logMessageBefore.Append(".");
 
-            Log.Log(Verbosity.Details, logMessageBefore.ToString());
+            Log.Log(Verbosity, logMessageBefore.ToString());
 
             RollInfo info = GetRollInfo(actor, targets);
 
             string logMessage = GetLogForRoll(actor, targets, info, hasSpec, hasWill);
-            Log.Log(Verbosity.Important, string.Format(logMessage));
+            Log.Log(Verbosity, string.Format(logMessage));
 
             int successes = Roller.Roll(info.DicePoolInfo.Dices, info.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill, Name).Successes;
             Log.Log(Verbosity.Debug, string.Format("...and got {0} successes.", successes));
@@ -225,7 +239,7 @@ namespace RollerEngine.Rolls
                     {
                         triatValue += modValueLimitedValue;
                         modValue = modValueLimitedValue;
-                        Log.Log(Verbosity.Warning, string.Format("Modifer {0} is overcapped. Value set to {1}.", modifier.Name, modValueLimitedValue));
+                        Log.Log(Verbosity.Important, string.Format("Modifer {0} is overcapped. Value set to {1}.", modifier.Name, modValueLimitedValue));
                     }
 
                     appliedMods.Add(new Tuple<int, TraitModifier>(modValue, modifier));
@@ -280,7 +294,7 @@ namespace RollerEngine.Rolls
             //hadle limited value
             if (adjectedDC < MIN_DC)
             {
-                Log.Log(Verbosity.Warning, string.Format("DC was lesser then min, adjusted to {0}.", MIN_DC));
+                Log.Log(Verbosity.Important, string.Format("DC was lesser then min, adjusted to {0}.", MIN_DC));
                 dcInfo.AdjustedDC = MIN_DC;
             }
             else

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RollerEngine.Character;
 using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Modifiers;
@@ -18,7 +17,7 @@ namespace RollerEngine.Rolls.Skills
             log,
             roller,
             new List<string>() { Build.Atributes.Intellect, ability},
-            new List<string>() {Build.Conditions.Learning, Build.Conditions.Social})
+            new List<string>() {Build.Conditions.Learning, Build.Conditions.Social}, null, Verbosity.Important)
         {
 
         }
@@ -26,7 +25,6 @@ namespace RollerEngine.Rolls.Skills
         public override int GetBaseDC(Build actor, List<Build> targets)
         {
             //It's not right, but...
-
             var target = targets[0];
 
             string learningTrait = "";
@@ -78,6 +76,9 @@ namespace RollerEngine.Rolls.Skills
 
         public int Roll(Build actor, string ability, bool hasSpec, bool hasWill)
         {
+            AdditionalInfo = ability;
+
+
             int result = base.Roll(actor, new List<Build>() { actor }, hasSpec, hasWill);
 
             if (result > 0)
@@ -110,11 +111,11 @@ namespace RollerEngine.Rolls.Skills
                         xpToSpend -= xpCost;
                         spentXp += xpCost;
                         actor.Traits[ability] = actor.Traits[ability] + 1;
-                        Log.Log(Verbosity.Warning, string.Format("{0} spent {1} bonus XP on {2} increasing it's value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool.", actor.Name, xpCost, ability, actor.Traits[ability], xpToSpend, actor.Traits[traitNameXpLearned] - spentXp));
+                        Log.Log(Verbosity, string.Format("{0} spent {1} bonus XP on {2} increasing it's value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool.", actor.Name, xpCost, ability, actor.Traits[ability], xpToSpend, actor.Traits[traitNameXpLearned] - spentXp));
                     }
                     else
                     {
-                        Log.Log(Verbosity.Warning, string.Format("{0} don't yet have {1}XP learned to increase {2} value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool.", actor.Name, xpCost, ability, actor.Traits[ability]+1, xpToSpend, actor.Traits[traitNameXpLearned] - spentXp));
+                        Log.Log(Verbosity, string.Format("{0} don't yet have {1}XP learned to increase {2} value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool.", actor.Name, xpCost, ability, actor.Traits[ability]+1, xpToSpend, actor.Traits[traitNameXpLearned] - spentXp));
                         break;
                     }
                 }
@@ -124,7 +125,7 @@ namespace RollerEngine.Rolls.Skills
                 {
                     actor.Traits[traitNameXpToLearn] = 0;
                     actor.Traits[traitNameXpLearned] = 0;
-                    Log.Log(Verbosity.Important, string.Format("{0} maxed his ability {1}. Remaining XP burened out.", actor.Name, ability));
+                    Log.Log(Verbosity, string.Format("{0} maxed his ability {1}. Remaining XP burened out.", actor.Name, ability));
                 }
                 else
                 {
@@ -136,7 +137,7 @@ namespace RollerEngine.Rolls.Skills
             }
             else
             {
-                Log.Log(Verbosity.Important, string.Format("{0} didn't learn anything.", actor.Name));
+                Log.Log(Verbosity, string.Format("{0} didn't learn anything.", actor.Name));
             }
 
             return result;

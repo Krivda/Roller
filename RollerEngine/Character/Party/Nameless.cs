@@ -60,10 +60,10 @@ namespace RollerEngine.Character.Party
             persuasionRoll.Roll(Build, false, true);
         }
 
-        public void CastTeachersEase(Build target, string ability, bool withWill)
+        public void CastTeachersEase(Build target, string ability, bool withWill, Verbosity verbosity)
         {
             //buff trait on target
-            var teachersEase = new TeachersEase(Log, Roller);
+            var teachersEase = new TeachersEase(Log, Roller, verbosity);
             teachersEase.Roll(Build, target, ability, true, withWill);
         }
 

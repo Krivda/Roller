@@ -69,7 +69,7 @@ namespace RollerEngine.Character
             return new HatysParty(party, log, roller);
         }
 
-        public void TeachingWeek(List<TeachPlan> teachPlan)
+        public void TeachingWeek(List<WeeklyActivity> teachPlan)
         {
             _log.Log(Verbosity.Important, "");
             _log.Log(Verbosity.Warning, "Start TEACHING Week");
@@ -124,7 +124,7 @@ namespace RollerEngine.Character
 
             Spirdon.ShiftToCrinos();
 
-            Nameless.CastTeachersEase(Spirdon.Build, Build.Abilities.Rituals, true);
+            Nameless.CastTeachersEase(Spirdon.Build, Build.Abilities.Rituals, true, Verbosity.Details);
 
             Spirdon.CastSacredFire();
 
@@ -134,16 +134,16 @@ namespace RollerEngine.Character
             //boost nameless Instruction
             Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
 
-            Nameless.CastTeachersEase(Spirdon.Build, Build.Abilities.Subterfuge, false);
+            Nameless.CastTeachersEase(Spirdon.Build, Build.Abilities.Subterfuge, false, Verbosity.Details);
             Spirdon.CastPersuasion();
 
-            Nameless.CastTeachersEase(Yoki.Build, Build.Abilities.Subterfuge, false);
+            Nameless.CastTeachersEase(Yoki.Build, Build.Abilities.Subterfuge, false, Verbosity.Details);
             Yoki.CastPersuasion();
 
-            Nameless.CastTeachersEase(Kinfolk1.Build, Build.Abilities.Subterfuge, false);
+            Nameless.CastTeachersEase(Kinfolk1.Build, Build.Abilities.Subterfuge, false, Verbosity.Details);
             Kinfolk1.CastPersuasion();
 
-            Nameless.CastTeachersEase(Kinfolk2.Build, Build.Abilities.Subterfuge, false);
+            Nameless.CastTeachersEase(Kinfolk2.Build, Build.Abilities.Subterfuge, false, Verbosity.Details);
             Kinfolk2.CastPersuasion();
         }
 
@@ -324,17 +324,17 @@ namespace RollerEngine.Character
 
         public void Week(int weekNo)
         {
-            List<TeachPlan> plan = new List<TeachPlan>();
+            List<WeeklyActivity> plan = new List<WeeklyActivity>();
 
             switch (weekNo)
             {
                 case 1:
-                    plan.Add(new TeachPlan(Nameless, Kinfolk1, Build.Abilities.Leadership));
-                    //plan.Add(new TeachPlan(Yoki, Ptitsa, Build.Abilities.Stealth)); //done
-                    //plan.Add(new TeachPlan(Spirdon, Kurt, Build.Abilities.Rituals)); //can't tesch that week
-                    plan.Add(new TeachPlan(Kurt, Yoki, Build.Abilities.Demolitions));
-                    plan.Add(new TeachPlan(Kinfolk1, Kurt, Build.Abilities.Firearms));
-                    //plan.Add(new TeachPlan(Kinfolk2, Nameless, Build.Abilities.Brawl)); //done
+                    plan.Add(new WeeklyActivity(Nameless, Kinfolk1, Build.Abilities.Leadership));
+                    //plan.Add(new WeeklyActivity(Yoki, Ptitsa, Build.Abilities.Stealth)); //done
+                    //plan.Add(new WeeklyActivity(Spirdon, Kurt, Build.Abilities.Rituals)); //can't tesch that week
+                    plan.Add(new WeeklyActivity(Kurt, Yoki, Build.Abilities.Demolitions));
+                    plan.Add(new WeeklyActivity(Kinfolk1, Kurt, Build.Abilities.Firearms));
+                    //plan.Add(new WeeklyActivity(Kinfolk2, Nameless, Build.Abilities.Brawl)); //done
 
                     Yoki.LearnSessions =1; //made talens this week 
                     break;
@@ -345,15 +345,22 @@ namespace RollerEngine.Character
 
             }
 
+            try
+            {
+                if (plan.Count > 0)
+                {
+                    TeachingWeek(plan);
+                }
+                else
+                {
+                    LearnWeek();
+                }
+            }
+            catch (Exception e)
+            {
+                _log.Log(Verbosity.Warning, e.Message);
+            }
 
-            if (plan.Count > 0)
-            {
-                TeachingWeek(plan);
-            }
-            else
-            {
-                LearnWeek();
-            }
             
         }
     }

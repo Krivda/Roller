@@ -17,15 +17,21 @@ namespace RollerEngine.Logger
 
             switch (verbosity)
             {
+                case Verbosity.Error:
+                    level = LogLevel.Error;
+                    break;
                 case Verbosity.Warning:
+                case Verbosity.Critical:
                     level = LogLevel.Warn;
                     break;
                 case Verbosity.Important:
-                case Verbosity.Details:
                     level = LogLevel.Info;
                     break;
-                case Verbosity.Debug:
+                case Verbosity.Details:
                     level = LogLevel.Debug;
+                    break;
+                case Verbosity.Debug:
+                    level = LogLevel.Trace;
                     break;
                 default:
                     level = LogLevel.Error;

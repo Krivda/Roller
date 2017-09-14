@@ -17,7 +17,7 @@ namespace RollerEngine.Rolls.Skills
             log,
             roller,
             new List<string>() { Build.Atributes.Intellect, Build.Abilities.Rituals },
-            conditions)
+            conditions, null, Verbosity.Important)
         {
 
         }
@@ -42,13 +42,13 @@ namespace RollerEngine.Rolls.Skills
                 if (successesRequired > successesAlreadyTowardsRite + result)
                 {
                     //not enought yet!
-                    Log.Log(Verbosity.Warning, string.Format("{0} has advanced in learning rite {1} on {2} more success. Now he has {3} of {4} successes!",
+                    Log.Log(Verbosity, string.Format("{0} has advanced in learning rite {1} on {2} more success. Now he has {3} of {4} successes!",
                         actor.Name, riteName, result, successesTotal, successesRequired));
                 }
                 else
                 {
                     successesTotal = 0;
-                    Log.Log(Verbosity.Warning, string.Format("{0} has finally learned rite {1}!",
+                    Log.Log(Verbosity, string.Format("{0} has finally learned rite {1}!",
                         actor.Name, riteName));
                 }
 
@@ -57,7 +57,7 @@ namespace RollerEngine.Rolls.Skills
             }
             else
             {
-                Log.Log(Verbosity.Warning, string.Format("{0} didn't learn anything.", actor.Name));
+                Log.Log(Verbosity, string.Format("{0} didn't learn anything.", actor.Name));
             }
             
 
