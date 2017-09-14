@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System.Drawing.Drawing2D;
-using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using RollerEngine.Character;
-using RollerEngine.Character.Common;
 using RolzOrgEnchancer.Interfaces;
 using RolzOrgEnchancer.RoomLog;
 using RolzOrgEnchancer.UI;
@@ -34,59 +29,28 @@ namespace RolzOrgEnchancer
 
     internal class RoomBootImpl : IRollLogger, IRoller
     {
-        static uint nRoll = 100;
+        private static uint _idRoll = 100;
         //RollerEngine.Roller.IRoller
-        public RollData Roll(int diceCount, int DC, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill, string description)
+        public RollData Roll(int diceCount, int dc, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill, string description)
         {
-            Program.Log("RoomBootImpl: Rolling description: " + description);
+            Program.Log("RoomBootImpl: Rolling description: " + description); //TODO Fromat
             RoomBot.MakeMessage(Color.Orange, description);
 
-            var input = new RollInput();
-            input.Initialize(diceCount, DC, hasSpecialization, hasWill, !removeSuccessOnOnes);
-            var item = RoomBot.MakeRoll((uint)diceCount, (uint)DC, nRoll);
-            nRoll++;
+            var specialization = hasSpecialization ? Specialization.UsingSpecialization : Specialization.False;
+            var negateBotch = hasWill ? NegateBotch.UsingWillpower : NegateBotch.False;
+            var ignoreFailures = removeSuccessOnOnes ? IgnoreFailures.IgnoreFailures : IgnoreFailures.False;
 
-            var output = new RollOutput();
-            if (!item.details.StartsWith("( (")) throw new Exception("Invalid 1");
-            var index = item.details.IndexOf('→', 0);
-            if (index == -1) throw new Exception("Invalid 2");
-            var res = item.details.Substring(0, index);
-            res = res.Substring(3);
-            var res2 = res.Split(new[] {',', ' '}, StringSplitOptions.RemoveEmptyEntries);
-            if (res2.Length != diceCount) throw new Exception("Invalid 3");
-            output.RawDices = new List<int>();
-            foreach (var r in res2)
-            {
-                int i;
-                if (!int.TryParse(r, out i)) throw new Exception("Invalid 4");
-                output.RawDices.Add(i);
-            }
-
-            output.RawNumberOfOnes = 0;
-            output.RawNumberOfTens = 0;
-            output.RawResult = 0;
-            foreach (var x in output.RawDices)
-            {
-                if ((x < 1) || (x > 10)) throw new Exception("Invalid 5");
-                if (x == 1) output.RawNumberOfOnes++;
-                if (x == 10) output.RawNumberOfTens++;
-                if (x >= input.DC) output.RawResult++;
-            }
-            output.RawResult -= output.RawNumberOfOnes;
-            var checkR = Convert.ToInt16(item.result); //TODO exception
-            if (checkR != output.RawResult)
-            {
-                throw new Exception("Invalid 6");
-            }
-            output.CalculateResult(input);
-            Program.Log("Result = " + output.Result);
+            var input = new RollInput(diceCount, dc, specialization, negateBotch, ignoreFailures);
+            var item = RoomBot.MakeRoll((uint)diceCount, (uint)dc, _idRoll++);
+            var output = new RollOutput(item, input);   
+            Program.Log("Result = " + output.Result); //TODO Format
             return new RollData(output.Result, output.RawDices);
         }
 
         //RollerEngine.Logger.IRollLogger
         public void Log(Verbosity verbosity, string record)
         {
-            Program.Log("RoomBootImpl: Logging message: " + verbosity + record);
+            Program.Log("RoomBootImpl: Logging message: " + verbosity + record); //TODO Format
             Color color;
             switch (verbosity)
             {
@@ -121,45 +85,40 @@ namespace RolzOrgEnchancer
     private static ConcurrentQueue<string> _messageQueue;
 
     public static Parser Parser = new Parser(DefaultRoomName);
-    private const string DefaultRoomName = "Hatys%20Test2";
+    private const string DefaultRoomName = "Hatys%20Test7";
 
-    private static void Worker()
-    {
-      while (!_browser.RoomEntered()) Thread.Sleep(100);
-      Program.Log("Worker: Inside room");
-
-      //Establish session
-      var sessId = new Random(unchecked((int) DateTime.Now.Ticks));
-      var connectionMessage = "establishing session #" + sessId.Next() + "...";
-      var item = MakeSingleMessage(Color.Purple, connectionMessage);
-      Program.Log("Worker: session was established");
-      Parser.SetSessionTime(item.time);
-
-      MakeCommand("/opt autoexpand=on");
-      MakeCommand("/nick HatysBot");
-
-      //InitializeKrivda(IRoomBot)
-      //EmulateKrivda()
-
-      var interfaces = new RoomBootImpl();
-      var res = HatysParty.LoadFromGoogle(interfaces, interfaces);
-
-        var plan = new List<WeeklyActivity>
+        private static void Worker()
         {
-            new WeeklyActivity(res.Nameless, res.Yoki, Build.Abilities.Brawl),
-            new WeeklyActivity(res.Yoki, res.Kurt, Build.Abilities.Rituals),
-            new WeeklyActivity(res.Kinfolk1, res.Kinfolk1, Build.Abilities.Science)
-        };
+          while (!_browser.RoomEntered()) Thread.Sleep(100);
+          Program.Log("Worker: Inside room");
 
-      uint action;
-      for (;;)
-        while (_actionQueue.TryDequeue(out action))
-        {
-          Thread.Sleep(100);
-          Program.Log("Worker: Deque action #" + action);
-            res.TeachingWeek(plan);
+          //Establish session
+          var sessId = new Random(unchecked((int) DateTime.Now.Ticks));
+          var connectionMessage = "establishing session #" + sessId.Next() + "..."; //TODO Format
+          var item = MakeSingleMessage(Color.Purple, connectionMessage);
+          Program.Log("Worker: session was established");
+          Parser.SetSessionTime(item.time);
+
+          MakeCommand("/opt autoexpand=on");
+          MakeCommand("/nick HatysBot");
+
+          //InitializeKrivda(IRoomBot)
+          //EmulateKrivda()
+
+          var interfaces = new RoomBootImpl();
+          var res = HatysParty.LoadFromGoogle(interfaces, interfaces);
+
+          uint action;
+          for (;;)
+            while (_actionQueue.TryDequeue(out action))
+            {
+              Thread.Sleep(100);
+              Program.Log("Worker: Deque action #" + action); //TODO Format
+                res.Week(1);
+                res.Week(2);
+              MakeMessage(Color.Red, "=== END OF ACTION ===");
+            }
         }
-    }
 
         private static readonly char[] LineSeparators = { '\n', '\r' };
         public static void MakeMessage(Color color, string message)
@@ -184,7 +143,7 @@ namespace RolzOrgEnchancer
               var line = el.Trim();
               //fifth stage: remove starting spaces and special characters for commands and rolls
               line = line.TrimStart(' ', '/', '#', '-');
-              if (line != el) Program.Log("Bot: replaced '" + el + "' with '" + line + "'");
+              if (line != el) Program.Log("Bot: replaced '" + el + "' with '" + line + "'"); //TODO Format
               MakeSingleMessage(color, line);
           }
         }
@@ -213,7 +172,7 @@ namespace RolzOrgEnchancer
 
         public static Item MakeRoll(uint diceCount, uint dc, uint rollId)
         {
-            var rollmsg = "#" + diceCount + "d10f" + dc + " #" + Parser.RollIdToComment(rollId);
+            var rollmsg = "#" + diceCount + "d10f" + dc + " #" + Parser.RollIdToComment(rollId); //TODO Format
             var attempt = 0;
             for (; ; )
             {
@@ -265,7 +224,7 @@ namespace RolzOrgEnchancer
 
         public static void OnGuiAction(uint action)
         {
-            Program.Log("Bot: added to queue action=" + action);
+            Program.Log("Bot: added to queue action=" + action); //TODO Format
             _actionQueue.Enqueue(action);
         }
 

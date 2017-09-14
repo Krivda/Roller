@@ -1,91 +1,111 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using RolzOrgEnchancer.RoomLog;
 
-//TODO add parsing of Item here or in Parser
 namespace RolzOrgEnchancer
 {
+    //with specialization every 10 counts as 2 successes
+    internal enum Specialization
+    {
+        False,
+        UsingSpecialization
+    }
+
+    //using Willpower negates botch
+    internal enum NegateBotch
+    {
+        False,
+        UsingWillpower
+    }
+
+    //(ex. damage rolls) every 1 do not count as failure
+    internal enum IgnoreFailures
+    {
+        False,
+        IgnoreFailures
+    }
+
+    //may throw exceptions
     internal struct RollInput
     {
-        public const int Max = 99;     //let support max=99 dice pool
-        public const int BaseDC = 6;
+        public const int Max = 99; //let support max=99 dice pool
+        public const int BaseDc = 6;
 
-        public int DiceCount;
-        public int DC;                  //you should cut it to 3..9/10
-        public bool HasSpecialization;  // 2 successes  for each 10
-        public bool NegateBotch;        // botch usually negated by spending Willpower
-        public bool NoFailures;         //no -1 success for each 1 (ex. damage roll)
+        public readonly int DiceCount;
+        public readonly int Dc; // you should cut it to 3..9/10
+        public readonly Specialization HasSpecialization; // 2 successes  for each 10
+        public readonly NegateBotch NegateBotch; // botch usually negated by spending Willpower
+        public readonly IgnoreFailures IgnoreFailures; // no -1 success for each 1 (ex. damage roll)
 
-        public void Initialize(int diceCount, int dc = BaseDC, bool hasSpecialization = false, bool negateBotch = false, bool noFailures = false)
+        public RollInput(int diceCount, int dc = BaseDc,
+            Specialization hasSpecialization = Specialization.False,
+            NegateBotch negateBotch = NegateBotch.False,
+            IgnoreFailures noFailures = IgnoreFailures.False)
         {
             DiceCount = diceCount;
-            DC = dc;
+            Dc = dc;
             HasSpecialization = hasSpecialization;
             NegateBotch = negateBotch;
-            NoFailures = noFailures;
+            IgnoreFailures = noFailures;
+            Validate();
         }
 
-        public void Validate()
+        private void Validate()
         {
-            if (DiceCount <= 0) throw new System.ArgumentOutOfRangeException();
-            if (DiceCount > Max) throw new System.ArgumentOutOfRangeException();
-            if ((DC < 3) || (DC > 10)) throw new System.ArgumentOutOfRangeException();
+            if (DiceCount <= 0) throw new ArgumentOutOfRangeException();
+            if (DiceCount > Max) throw new ArgumentOutOfRangeException();
+            if (Dc < 3 || Dc > 10) throw new ArgumentOutOfRangeException();
         }
     }
 
+    //may throw exceptions
     internal struct RollOutput
     {
-        //provide simple counting; for more complicated use cases process raw fields by yourself
-        public int RawResult;
-        public int RawNumberOfOnes;
-        public int RawNumberOfTens;
+        public int Result;
         public List<int> RawDices;
-        public int Result;      // <0 botch
-                                // =0 simple failure
-                                // >0 successes
+        public int RawSuccesses;
+        public int RawFailures;
+        public int RawResult;
+        public int RawNumberOfTens;
 
-        /*public RollOutput(RollOutput output)
+        //provides simple counting; for more complicated use cases process raw fields by yourself
+        public RollOutput(Item item, RollInput input)
         {
-            _raw_result = output._raw_result;
-            _raw_number_of_ones = output._raw_number_of_ones;
-            _raw_number_of_tens = output._raw_number_of_tens;
-            _raw_dices = new List<int>(output._raw_dices);
-            result = 0;
-        }*/
+            RawSuccesses = 0;
+            RawFailures = 0;
+            RawNumberOfTens = 0;
 
-        public void CalculateResult(RollInput input)
-        {
-            Result = RawResult;                                        // success - failures
-            if (input.HasSpecialization) Result += RawNumberOfTens;  // double successes if specialized
-            if (input.NoFailures) Result += RawNumberOfOnes;         // negate failures
-            if ((Result < 0) && (input.NegateBotch)) Result = 0;         // negate botch
+            if (!item.details.StartsWith("( (")) throw new Exception("Invalid details 1");
+            var index = item.details.IndexOf('→', 0);
+            if (index == -1) throw new Exception("Invalid details 2");
+            var res = item.details.Substring(0, index);
+            res = res.Substring(3);
+            var res2 = res.Split(new[] {',', ' '}, StringSplitOptions.RemoveEmptyEntries);
+            if (res2.Length != input.DiceCount) throw new Exception("Invalid dice count");
+
+            RawDices = new List<int>();
+            foreach (var r in res2)
+            {
+                int i;
+                if (!int.TryParse(r, out i)) throw new Exception("Not a number dice value");
+                if (i < 1 || i > 10) throw new Exception("Invalid dice value");
+                RawDices.Add(i);
+                if (i == 10) RawNumberOfTens++;
+                if (i == 1) RawFailures++;
+                if (i >= input.Dc) RawSuccesses++;
+            }
+
+            RawResult = RawSuccesses - RawFailures; // success - failures
+
+            var res3 = Convert.ToInt16(item.result); //May throw exception
+            if (res3 != RawResult) throw new Exception("Raw result mismatch");
+
+            Result = RawResult;
+            if (input.HasSpecialization == Specialization.UsingSpecialization)
+                Result += RawNumberOfTens; // double successes if specialized
+            if (input.IgnoreFailures == IgnoreFailures.IgnoreFailures) Result += RawFailures; // negate failures
+            if (Result < 0 && input.NegateBotch == NegateBotch.UsingWillpower) Result = 0; // negate botch
         }
-    }
 
-    internal class DicePoolRoll
-    {
-        readonly RollInput input;
-        RollOutput _output;
-
-        public DicePoolRoll(RollInput _input)
-        {
-            _input.Validate();
-            input = _input;
-        }
-
-        public DicePoolRoll(DicePoolRoll roll, RollOutput output)
-        {
-            input = roll.input;
-            this._output = output;
-            this._output.CalculateResult(input);
-        }
-
-        /*public RollOutput GetRollOutput()
-        {
-            return new RollOutput(output);
-        }*/
-
-        public int GetRollResult()
-        {
-            return _output.Result;
-        }
     }
 }

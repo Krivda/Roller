@@ -4,7 +4,6 @@ using System.Net;
 using Newtonsoft.Json;
 using RolzOrgEnchancer.UI;
 
-//TODO add parsing of Item here or in Parser
 namespace RolzOrgEnchancer.RoomLog
 {
     //
@@ -28,7 +27,7 @@ namespace RolzOrgEnchancer.RoomLog
 
         public void SetSessionTime(long time)
         {
-            Program.Log("Parser: session_time is " + time);
+            Program.Log(string.Format("Parser: session_time is {0}", time));
             _sessionTime = time;
         }
 
@@ -95,13 +94,13 @@ namespace RolzOrgEnchancer.RoomLog
 
         private static string ParseRoomLogMessage(Item item)
         {
-            return item.time + ": " + item.text + "\r\n";
+            return string.Format("{0}: {1}\r\n", item.time, item.text);
         }
 
         private static string ParseRoomLogRoll(Item item)
         {
             var id = item.comment ?? "roll_id=<no>";
-            return item.time + ": " + id + ", " + item.input + "= " + item.result + " : " + item.details + "\r\n";
+            return string.Format("{0}: {1}, {2}= {3} : {4}\r\n", item.time, id, item.input, item.result, item.details);
         }
 
     }

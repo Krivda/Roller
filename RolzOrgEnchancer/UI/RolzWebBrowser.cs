@@ -135,7 +135,7 @@ namespace RolzOrgEnchancer.UI
             {
                 if (completedUrl.Equals(_inframeEntered))
                 {
-                    Program.Log("Browser: on DocumentCompleted: Room Entered - InFrame (" + completedUrl + ")");
+                    Program.Log(string.Format("Browser: on DocumentCompleted: Room Entered - InFrame ({0})", completedUrl));
                 }
                 _roomEntered = true;
                 return;
@@ -144,12 +144,12 @@ namespace RolzOrgEnchancer.UI
             //should be never
             if (Url != _room)
             {
-                Program.Log("ERROR: Browser: Invalid base_url (" + Url + ")");
+                Program.Log(string.Format("ERROR: Browser: Invalid base_url ({0})", Url));
             }
 
             //set our error handler that will silence all java script errors
             Document.Window.Error += Window_Error;
-            Program.Log("Browser: on DocumentCompleted: Entering Room (" + Url + ")");
+            Program.Log(string.Format("Browser: on DocumentCompleted: Entering Room ({0})", Url));
         }
 
         private void OnNavigating(object sender, WebBrowserNavigatingEventArgs e)
@@ -160,20 +160,20 @@ namespace RolzOrgEnchancer.UI
             var url = e.Url.ToString();
             if (url.StartsWith(InframePrefix))
             {
-                Program.Log("Browser: on prefix Navigating: url= " + url);
+                Program.Log(string.Format("Browser: on prefix Navigating: url= {0}", url));
                 return;
             }
             if (url == "about:blank")
             {
-                Program.Log("Browser: on blank Navigating: url= " + url);
+                Program.Log(string.Format("Browser: on blank Navigating: url= {0}", url));
                 return;
             }
             if (url == _room.ToString())
             {
-                Program.Log("Browser: on room Navigating: url= " + url);
+                Program.Log(string.Format("Browser: on room Navigating: url= {0}", url));
                 return;
             }
-            Program.Log("Browser: CANCEL on Navigating: url= " + url);
+            Program.Log(string.Format("Browser: CANCEL on Navigating: url= {0}", url));
             e.Cancel = true;
         }
 
@@ -211,7 +211,7 @@ namespace RolzOrgEnchancer.UI
 
         public void SendMessage(string message)
         {
-            if (Document != null) Document.InvokeScript("eval", new object[] { "window.sendLine('" + message + "');" });
+            if (Document != null) Document.InvokeScript("eval", new object[] { string.Format("window.sendLine('{0}');", message) });
         }
         #endregion
 
