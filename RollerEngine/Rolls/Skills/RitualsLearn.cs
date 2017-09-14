@@ -28,63 +28,36 @@ namespace RollerEngine.Rolls.Skills
 
             if (result > 0)
             {
-                string traitNameXpToLearn = Build.DynamicTraits.GetKey(Build.DynamicTraits.RiteSuccesses, riteName);
+                string keyRiteName = Build.DynamicTraits.GetKey(Build.DynamicTraits.RiteSuccesses, riteName);
 
-                int required = riteLevel * 10;
-
-/*
-                int consumedXp = Math.Min(result, actor.Traits[traitNameXpToLearn]);
-
-                actor.Traits[traitNameXpToLearn] = actor.Traits[traitNameXpToLearn] - consumedXp;
-                actor.Traits[traitNameXpLearned] = actor.Traits[traitNameXpLearned] + consumedXp;
-
-                if (!actor.Traits.ContainsKey(traitNameXpLearned))
+                if (!actor.Traits.ContainsKey(keyRiteName))
                 {
-                    actor.Traits.Add(traitNameXpLearned, 0);
+                    actor.Traits.Add(keyRiteName,0);
                 }
 
-                int xpToSpend = actor.Traits[traitNameXpLearned];
-                int currentTraitValue = actor.Traits[ability];
+                int successesAlreadyTowardsRite = actor.Traits[keyRiteName];
+                int successesRequired = riteLevel * 10;
+                int successesTotal = successesAlreadyTowardsRite + result;
 
-                int spentXp = 0;
-
-                for (int i = currentTraitValue + 1; i < 6; i++)
+                if (successesRequired > successesAlreadyTowardsRite + result)
                 {
-
-                    int xpCost = Build.GetSkillXpTable()[i];
-
-                    if (xpCost <= xpToSpend)
-                    {
-                        xpToSpend -= xpCost;
-                        spentXp += xpCost;
-                        actor.Traits[ability] = actor.Traits[ability] + 1;
-                        Log.Log(Verbosity.Warning, string.Format("{0} spent {1} bonus XP on {2} increasing it's value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool.", actor.Name, xpCost, ability, actor.Traits[ability], xpToSpend, actor.Traits[traitNameXpLearned] - spentXp));
-                    }
-                    else
-                    {
-                        Log.Log(Verbosity.Warning, string.Format("{0} don't yet have {1}XP learned to increase {2} value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool.", actor.Name, xpCost, ability, actor.Traits[ability] + 1, xpToSpend, actor.Traits[traitNameXpLearned] - spentXp));
-                        break;
-                    }
-                }
-
-                //clear xp if trait is raised to 5
-                if (actor.Traits[ability] == 5)
-                {
-                    actor.Traits[traitNameXpToLearn] = 0;
-                    actor.Traits[traitNameXpLearned] = 0;
-                    Log.Log(Verbosity.Important, string.Format("{0} maxed his ability {1}. Remaining XP burened out.", actor.Name, ability));
+                    //not enought yet!
+                    Log.Log(Verbosity.Warning, string.Format("{0} has advanced in learning rite {1} on {2} more success. Now he has {3} of {4} successes!",
+                        actor.Name, riteName, result, successesTotal, successesRequired));
                 }
                 else
                 {
-                    if (spentXp != 0)
-                    {
-                        actor.Traits[traitNameXpLearned] = actor.Traits[traitNameXpLearned] - spentXp;
-                    }
-                }*/
+                    successesTotal = 0;
+                    Log.Log(Verbosity.Warning, string.Format("{0} has finally learned rite {1}!",
+                        actor.Name, riteName));
+                }
+
+                actor.Traits[keyRiteName] = successesTotal;
+
             }
             else
             {
-                Log.Log(Verbosity.Important, string.Format("{0} didn't learn anything.", actor.Name));
+                Log.Log(Verbosity.Warning, string.Format("{0} didn't learn anything.", actor.Name));
             }
             
 

@@ -329,11 +329,17 @@ namespace RollerEngine.Character
             switch (weekNo)
             {
                 case 1:
-                    plan.Add(new TeachPlan(Nameless, Yoki, Build.Abilities.Brawl));
-                    plan.Add(new TeachPlan(Yoki, Kurt, Build.Abilities.Rituals));
-                    plan.Add(new TeachPlan(Kinfolk1, Kinfolk2, Build.Abilities.Science));
+                    plan.Add(new TeachPlan(Nameless, Kinfolk1, Build.Abilities.Leadership));
+                    //plan.Add(new TeachPlan(Yoki, Ptitsa, Build.Abilities.Stealth)); //done
+                    //plan.Add(new TeachPlan(Spirdon, Kurt, Build.Abilities.Rituals)); //can't tesch that week
+                    plan.Add(new TeachPlan(Kurt, Yoki, Build.Abilities.Demolitions));
+                    plan.Add(new TeachPlan(Kinfolk1, Kurt, Build.Abilities.Firearms));
+                    //plan.Add(new TeachPlan(Kinfolk2, Nameless, Build.Abilities.Brawl)); //done
+
+                    Yoki.LearnSessions =1; //made talens this week 
                     break;
                 case 2:
+                    Yoki.LearnSessions = 2; // restore
                     break;
 
 
