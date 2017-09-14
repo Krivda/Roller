@@ -15,15 +15,15 @@ namespace RolzOrgEnchancer
     internal enum Color
     {
         Black,  //Verbosity.Details
-        Red,    
+        Red,    //Verbosity.Error
         Green,                          //command
-        Blue,   //Verbosity.Important
+        Blue,   //Verbosity.Critical
         Gray,   //Verbosity.Debug
         Maroon,
         Olive,
         Orange, //Roll Description
         Purple, //Session
-        Teal,
+        Teal,   //Verbosity.Important
         Pink    //Verbosity.Warning
     }
 
@@ -33,7 +33,6 @@ namespace RolzOrgEnchancer
         //RollerEngine.Roller.IRoller
         public RollData Roll(int diceCount, int dc, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill, string description)
         {
-            Program.Log("RoomBootImpl: Rolling description: " + description); //TODO Fromat
             RoomBot.MakeMessage(Color.Orange, description);
 
             var specialization = hasSpecialization ? Specialization.UsingSpecialization : Specialization.False;
@@ -43,31 +42,36 @@ namespace RolzOrgEnchancer
             var input = new RollInput(diceCount, dc, specialization, negateBotch, ignoreFailures);
             var item = RoomBot.MakeRoll((uint)diceCount, (uint)dc, _idRoll++);
             var output = new RollOutput(item, input);   
-            Program.Log("Result = " + output.Result); //TODO Format
             return new RollData(output.Result, output.RawDices);
         }
 
         //RollerEngine.Logger.IRollLogger
         public void Log(Verbosity verbosity, string record)
         {
-            Program.Log("RoomBootImpl: Logging message: " + verbosity + record); //TODO Format
+            if (verbosity > Verbosity.Details) Program.Log(string.Format("RoomBootImpl: {0}: {1}", verbosity, record));
             Color color;
             switch (verbosity)
             {
+                case Verbosity.Debug:
+                    color = Color.Gray;
+                    break;
                 case Verbosity.Details:
                     color = Color.Black;
                     break;
-                case Verbosity.Debug:
-                    color = Color.Gray;
+                case Verbosity.Important:
+                    color = Color.Teal;
+                    break;
+                case Verbosity.Critical:
+                    color = Color.Blue;
                     break;
                 case Verbosity.Warning:
                     color = Color.Pink;
                     break;
-                case Verbosity.Important:
-                    color = Color.Blue;
+                case Verbosity.Error:
+                    color = Color.Red;
                     break;
                 default:
-                    color = Color.Red;
+                    color = Color.Green;
                     break;
             }
             RoomBot.MakeMessage(color, record);
