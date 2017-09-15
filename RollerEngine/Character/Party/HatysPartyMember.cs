@@ -31,7 +31,7 @@ namespace RollerEngine.Character.Party
             if (Build.CharacterClass.Equals(Build.Classes.Warewolf))
             {
                 //not already buffed with caern
-                if (HasOpenedCaern && !mods.Exists(modifier => modifier.Name.Equals(CaernOfVigilChannelling.GiftName)))
+                /*if (HasOpenedCaern && !mods.Exists(modifier => modifier.Name.Equals(CaernOfVigilChannelling.GiftName)))
                 {
                     if (Party.CaernChannellingUsedTimes < 7)
                     {
@@ -45,7 +45,7 @@ namespace RollerEngine.Character.Party
                         var caernChanelling = new CaernOfVigilChannelling(Log, Roller);
                         caernChanelling.Roll(Build, ability, true);
                     }
-                }
+                }*/
 
                 if (!mods.Exists(modifier => modifier.Name.Equals(Build.Backgrounds.Ansestors)))
                 {

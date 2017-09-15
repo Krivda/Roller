@@ -18,7 +18,42 @@ namespace RollerEngine.Rolls.Backgrounds
         {
             AdditionalInfo = targetTrait;
 
-            int successes = base.Roll(actor, new List<Build>() {actor}, false, false);
+
+            int successes = 0;
+            try
+            {
+                successes = base.Roll(actor, new List<Build>() { actor }, false, false);
+            }
+            catch (BotchException)
+            {
+                bool rethrow = true;
+                if (Successes > -3)
+                {
+                    if (actor.HasAncestorVeneration)
+                    {
+                        Log.Log(Verbosity.Warning, string.Format("{0} botched {1} roll, but he has Ancestor Veneration and will reroll one dice.", actor.Name, Name));
+
+                        successes = Successes + 1; //remove one failure due to reroll '1'
+
+                        int dc = FullRollInfo.DCInfo.AdjustedDC;                        
+                        var rolldata = Roller.Roll(1, dc, true, false, false, "Reroll 1 Ansestor Dice");
+                        successes += rolldata.Successes; //this can be -1 for '1'; 0 if <dc ; +1 if >= dc
+
+                        if (successes >= 0)
+                        {
+                            rethrow = false;
+                            Log.Log(Verbosity.Warning, string.Format("{0} recovered from botch and got {1} succeses.", actor.Name, successes));
+                        }
+                        else
+                        {
+                            Log.Log(Verbosity.Warning, string.Format("{0} didn't recover from botch!", actor.Name));
+                        }
+                    }
+                }
+
+                if (rethrow)
+                    throw;
+            }
 
             if (successes > 0)
             {

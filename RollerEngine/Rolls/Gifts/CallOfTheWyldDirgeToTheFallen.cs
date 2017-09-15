@@ -6,19 +6,32 @@ using RollerEngine.Roller;
 
 namespace RollerEngine.Rolls.Gifts
 {
-    public class CallToWyldDirgeToTheFallen : GiftRoll
+    public class CallOfTheWyldDirgeToTheFallen : GiftRoll
     {
+        /*
+         * Call of the Wyld:	Stamina + Empathy vs. 6
+                        Howl of Introduction
+            Howls:			Dirge for the Fallen
+                        Call for Succor
+
+            Intents:	impress ancestor spirits 		=> boost Ritual dice pool of rites
+                    find best suited ancestor spirits	=> boost Occult dice pool of Ghost Dance
+            Ceremony:		+1 dice applied (motivations and desires)
+            Sanctified Rosemary: 	vs.4 //because recall facts and experience				//sanctified rosemary
+
+         */
+
         private const string GIFT_NAME = "Call to Wyld";
         private const string GIFT_NAME_FULL = "Call to Wyld (Dirge to the Fallen)";
 
-        public CallToWyldDirgeToTheFallen(IRollLogger log, IRoller roller) : 
+        public CallOfTheWyldDirgeToTheFallen(IRollLogger log, IRoller roller) : 
             base(GIFT_NAME_FULL, log, roller, 
             new List<string>() { Build.Atributes.Stamina, Build.Abilities.Empathy},
-            new List<string>(), null, Verbosity.Details)
+            new List<string>() {Build.Conditions.Memory}, null, Verbosity.Details)
         {
         }
 
-        public new int Roll(Build actor, List<Build> targets, bool hasSpec, bool hasWill)
+        public int Roll(Build actor, List<Build> targets, string skill, bool hasSpec, bool hasWill)
         {
             int successes = base.Roll(actor, targets, hasSpec, hasWill);
 
@@ -29,16 +42,15 @@ namespace RollerEngine.Rolls.Gifts
                     target.TraitModifiers.Add(
                         new TraitModifier(
                             GIFT_NAME,
-                            new List<string>() { Build.Abilities.Occult },
+                            new List<string>() { skill },
                             DurationType.Roll,
                             new List<string>() { Build.Conditions.AncestorSpirits },
                             successes / 2,
                             TraitModifier.BonusTypeKind.AdditionalDice
                         ));
 
-                    Log.Log(Verbosity, string.Format("{0} obtained bonus {1} dices to Ansecetors Spririts related rolls for next roll from {2} gift performed by {3}.", target.Name, successes/2, Name, actor.Name));
+                    Log.Log(Verbosity, string.Format("{0} obtained bonus {1} dices to {2} (Ancestors Spririts related rolls) for next roll from {3} gift performed by {4}.", target.Name, skill, successes/2, Name, actor.Name));
                 }
-
             }
             else
             {
@@ -48,10 +60,5 @@ namespace RollerEngine.Rolls.Gifts
             return successes/2;
         }
 
-        public override int GetBaseDC(Build actor, List<Build> targets)
-        {
-            //base DC
-            return 7;
-        }
     }
 }

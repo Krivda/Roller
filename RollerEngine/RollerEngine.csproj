@@ -93,12 +93,13 @@
     <Compile Include="Rolls\BotchException.cs" />
     <Compile Include="Logger\CompositeLogger.cs" />
     <Compile Include="Rolls\Gifts\GiftRoll.cs" />
-    <Compile Include="Rolls\Gifts\CallToWyldDirgeToTheFallen.cs" />
+    <Compile Include="Rolls\Gifts\CallOfTheWyldDirgeToTheFallen.cs" />
     <Compile Include="Rolls\Gifts\GhostPack.cs" />
     <Compile Include="Rolls\Gifts\Persuasion.cs" />
     <Compile Include="Logger\NLogLogger.cs" />
     <Compile Include="Logger\StringBufferLogger.cs" />
     <Compile Include="Rolls\Gifts\TeachersEase.cs" />
+    <Compile Include="Rolls\Gifts\VizageOfFenris.cs" />
     <Compile Include="Rolls\Rites\AncestorSeeking.cs" />
     <Compile Include="Rolls\Rites\RiteRoll.cs" />
     <Compile Include="Rolls\Rites\SacredFire.cs" />

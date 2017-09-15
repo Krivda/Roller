@@ -17,9 +17,10 @@ namespace RollerEngine.Rolls.Skills
             log,
             roller,
             new List<string>() { Build.Atributes.Intellect, Build.Abilities.Rituals },
-            conditions, null, Verbosity.Important)
+            conditions,
+            null, Verbosity.Important)
         {
-
+            conditions.Add(Build.Conditions.LearningRites);
         }
 
         public int Roll(Build actor, string riteName, int riteLevel, bool hasSpec, bool hasWill)

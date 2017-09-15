@@ -124,6 +124,9 @@ namespace RollerEngine.Character.Common
             public const string Learning = "Learning";
             public const string MysticRite = "Mysctic Rite";
             public const string SpiritRite = "Spirit Rite";
+            public const string AncestorSocial = "Ansestor Social";
+            public const string Memory = "Memory";
+            public const string LearningRites = "Learning Rites";
         }
 
         public class DynamicTraits
@@ -169,6 +172,7 @@ namespace RollerEngine.Character.Common
 
         public List<DCModifer> BonusDCModifiers = new List<DCModifer>();
         public string Name { get; set; }
+        public bool HasAncestorVeneration { get; set; }
 
         public Build(string name)
         {

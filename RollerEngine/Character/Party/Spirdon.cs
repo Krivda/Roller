@@ -20,14 +20,21 @@ namespace RollerEngine.Character.Party
             persuasionRoll.Roll(Build, false, true);
         }
 
-        public void CastCallToWyld(List<Build> target)
+        public void CastVisageOfFenris()
+        {
+            //Cast Visage of fenfis
+            var vizageOfFenris = new VizageOfFenris(Log, Roller);
+            vizageOfFenris.Roll(Build, false, false);
+        }
+
+        public void CastCallToWyld(List<Build> target, string skill)
         {
             //Nameless buffs Empthy
             Party.Nameless.CastTeachersEase(Build, Build.Abilities.Empathy, true, Verbosity.Details);
             
             //Cast Call to Wyld
-            var callToWyld = new CallToWyldDirgeToTheFallen(Log, Roller);
-            callToWyld.Roll(Build, target, true, false);
+            var callToWyld = new CallOfTheWyldDirgeToTheFallen(Log, Roller);
+            callToWyld.Roll(Build, target, skill, true, false);
         }
 
         public override void Instruct(Build target, string ability, bool withWill)
@@ -42,8 +49,61 @@ namespace RollerEngine.Character.Party
         {
             var sacredFire = new SacredFire(Log, Roller);
             sacredFire.Roll(Build,
-                new List<Build>() {Party.Spirdon.Build, Party.Nameless.Build, Party.Yoki.Build, Party.Kurt.Build}, true,
+                new List<Build>() {Party.Spiridon.Build, Party.Nameless.Build, Party.Yoki.Build, Party.Kurt.Build}, true,
                 false);
+        }
+
+        public void WeeklyBoostSkill(string trait)
+        {
+            //add caern mod (+4 ancestors)
+            CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Build, Log);
+
+            //Apply chiminage
+            CommonBuffs.ApplyAncestorsChiminage(Build, Log);
+
+            //buff Occult
+            ApplyAncestors(Build.Abilities.Occult);
+
+            Nameless nameless = Party.Nameless;
+
+            nameless.CastTeachersEase(Build, Build.Abilities.Rituals, true, Verbosity.Details);
+            CastSacredFire();
+
+            
+            CastCallToWyld(new List<Build>() { nameless.Build, Party.Yoki.Build, Party.Kurt.Build, Build }, Build.Abilities.Occult);
+
+            CastVisageOfFenris();
+            
+            CastPersuasion();
+
+            //Apply chiminage
+            CommonBuffs.ApplyAncestorsChiminage(Build, Log);
+
+            //cast rite of Anscestor Seeking
+            CaseAnscestorSeeking();
+
+            //roll Ghost Pack
+            var ghostPackRoll = new GhostPack(Log, Roller);
+            ghostPackRoll.Roll(Build, false, false);
+
+            //Apply Bone Ryhtms
+            CommonBuffs.ApplyBoneRythms(Build, Log);
+
+            //Apply chiminage
+            CommonBuffs.ApplyAncestorsChiminage(Build, Log);
+
+            //buff Instruct 
+
+            Build.UsedAncestorsCount = Build.UsedAncestorsCount - 1;
+            ApplyAncestors(trait);
+
+        }
+
+        private void CaseAnscestorSeeking()
+        {
+            //Cast Pesuasion
+            var ancestorSeeking = new AncestorSeeking(Log, Roller);
+            ancestorSeeking.Roll(Build, false, true);
         }
     }
 }

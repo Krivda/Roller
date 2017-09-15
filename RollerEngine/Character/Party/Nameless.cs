@@ -16,6 +16,16 @@ namespace RollerEngine.Character.Party
 
         public void WeeklyBoostSkill(string trait)
         {
+
+            //buff from spiridon
+            Party.Spiridon.ShiftToCrinos();
+            CastTeachersEase(Party.Spiridon.Build, Build.Abilities.Rituals, true, Verbosity.Details);
+            Party.Spiridon.CastSacredFire();
+            //Spiridon buffs occult to Nameless
+            Party.Spiridon.CastCallToWyld(new List<Build>() { Build }, Build.Abilities.Occult);
+
+            CastPersuasion();
+            
             //add caern mod (+4 ancestors)
             CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Build, Log);
 
@@ -24,8 +34,6 @@ namespace RollerEngine.Character.Party
 
             //buff Occult
             ApplyAncestors(Build.Abilities.Occult);
-
-            CastPersuasion();
 
             //Apply chiminage
             CommonBuffs.ApplyAncestorsChiminage(Build, Log);

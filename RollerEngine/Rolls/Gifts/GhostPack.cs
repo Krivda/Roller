@@ -12,7 +12,7 @@ namespace RollerEngine.Rolls.Gifts
 
         public GhostPack(IRollLogger log, IRoller roller) : 
             base(GIFT_NAME, log, roller, new List<string>() { Build.Atributes.Charisma, Build.Abilities.Occult }, 
-                new List<string>() {Build.Conditions.Social, Build.Conditions.AncestorSpirits, Build.Conditions.SpiritHeritage}, null, Verbosity.Details)
+                new List<string>() {Build.Conditions.Social, Build.Conditions.AncestorSpirits, Build.Conditions.SpiritHeritage, Build.Conditions.AncestorSocial}, null, Verbosity.Details)
         {
         }
 

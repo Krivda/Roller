@@ -17,7 +17,7 @@ namespace RollerEngine.Character
         private readonly IRollLogger _log;
         private readonly IRoller _roller;
         public Nameless Nameless { get; private set; }
-        public Spirdon Spirdon { get; private set; }
+        public Spirdon Spiridon { get; private set; }
         public Yoki Yoki { get; private set; }
         public Kurt Kurt { get; private set; }
         public Kinfolk1 Kinfolk1 { get; private set; }
@@ -37,8 +37,8 @@ namespace RollerEngine.Character
             Nameless = new Nameless(party["Krivda"], log, roller, this);
             _party.Add(Nameless.CharacterName, Nameless);
 
-            Spirdon = new Spirdon(party["Keltur"], log, roller, this);
-            _party.Add(Spirdon.CharacterName, Spirdon);
+            Spiridon = new Spirdon(party["Keltur"], log, roller, this);
+            _party.Add(Spiridon.CharacterName, Spiridon);
 
             Yoki = new Yoki(party["Alisa"], log, roller, this);
             _party.Add(Yoki.CharacterName, Yoki);
@@ -55,11 +55,13 @@ namespace RollerEngine.Character
             OriginalStats = new Dictionary<string, Dictionary<string, int>>();
 
 
-            Spirdon.HasOpenedCaern = true;
+            Spiridon.HasOpenedCaern = true;
             Yoki.HasSpecOnInstruction = true;
             Yoki.LearnSessions = 2;
             Kinfolk1.HasSpecOnInstruction = true;
             Kinfolk2.HasSpecOnInstruction = true;
+
+            Nameless.Build.HasAncestorVeneration = true;
         }
 
         public static HatysParty LoadFromGoogle(IRollLogger log, IRoller roller)
@@ -120,22 +122,11 @@ namespace RollerEngine.Character
         {
             StartScene();
 
-            Nameless.CastPersuasion();
-
-            Spirdon.ShiftToCrinos();
-
-            Nameless.CastTeachersEase(Spirdon.Build, Build.Abilities.Rituals, true, Verbosity.Details);
-
-            Spirdon.CastSacredFire();
-
-            //Spiridon buffs offult to Nameless
-            Spirdon.CastCallToWyld(new List<Build>() { Nameless.Build });
-
             //boost nameless Instruction
             Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
 
-            Nameless.CastTeachersEase(Spirdon.Build, Build.Abilities.Subterfuge, false, Verbosity.Details);
-            Spirdon.CastPersuasion();
+            Nameless.CastTeachersEase(Spiridon.Build, Build.Abilities.Subterfuge, false, Verbosity.Details);
+            Spiridon.CastPersuasion();
 
             Nameless.CastTeachersEase(Yoki.Build, Build.Abilities.Subterfuge, false, Verbosity.Details);
             Yoki.CastPersuasion();
@@ -247,7 +238,7 @@ namespace RollerEngine.Character
 
             OriginalStats.Clear();
             StoreOriginalValues(Nameless.Build);
-            StoreOriginalValues(Spirdon.Build);
+            StoreOriginalValues(Spiridon.Build);
             StoreOriginalValues(Yoki.Build);
             StoreOriginalValues(Kurt.Build);
             StoreOriginalValues(Kinfolk1.Build);
@@ -331,7 +322,7 @@ namespace RollerEngine.Character
                 case 1:
                     plan.Add(new WeeklyActivity(Nameless, Kinfolk1, Build.Abilities.Leadership));
                     //plan.Add(new WeeklyActivity(Yoki, Ptitsa, Build.Abilities.Stealth)); //done
-                    //plan.Add(new WeeklyActivity(Spirdon, Kurt, Build.Abilities.Rituals)); //can't tesch that week
+                    //plan.Add(new WeeklyActivity(Spiridon, Kurt, Build.Abilities.Rituals)); //can't tesch that week
                     plan.Add(new WeeklyActivity(Kurt, Yoki, Build.Abilities.Demolitions));
                     plan.Add(new WeeklyActivity(Kinfolk1, Kurt, Build.Abilities.Firearms));
                     //plan.Add(new WeeklyActivity(Kinfolk2, Nameless, Build.Abilities.Brawl)); //done

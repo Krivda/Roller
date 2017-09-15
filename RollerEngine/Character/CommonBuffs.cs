@@ -15,8 +15,17 @@ namespace RollerEngine.Character
                 new DCModifer(
                     "Hatys",
                     new List<string>() { Build.Backgrounds.Ansestors },
-                    DurationType.Scene,
+                    DurationType.Permanent,
                     new List<string>(),
+                    -1
+                ));
+
+            build.DCModifiers.Add(
+                new DCModifer(
+                    "Hatys",
+                    new List<string>() { Build.Abilities.Rituals },
+                    DurationType.Permanent,
+                    new List<string>() {Build.Conditions.LearningRites},
                     -1
                 ));
         }
@@ -79,7 +88,7 @@ namespace RollerEngine.Character
                     "Rosemary",
                     new List<string>(), 
                     DurationType.Scene,
-                    new List<string>() {Build.Conditions.Teaching, Build.Conditions.Learning},
+                    new List<string>() {Build.Conditions.Teaching, Build.Conditions.Learning, Build.Conditions.Memory},
                     -2
                 ));
         }
@@ -97,6 +106,16 @@ namespace RollerEngine.Character
                     3,
                     TraitModifier.BonusTypeKind.AdditionalDice
                 ));
+
+            build.BonusDCModifiers.Add(
+                new DCModifer(
+                    "Medical Bundle",
+                    new List<string>(),
+                    DurationType.Permanent,
+                    new List<string>() {Build.Conditions.AncestorSocial},
+                    -1
+                ));
+
         }
 
         public static void ShiftToCrinos(Build build, IRollLogger log)

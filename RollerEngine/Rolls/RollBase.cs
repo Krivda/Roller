@@ -24,6 +24,8 @@ namespace RollerEngine.Rolls
         public bool CanBotch { get; private set; }
         public List<string> Conditions { get; private set; }
         public Verbosity Verbosity { get; private set; }
+        protected int Successes { get; set; }
+        protected RollInfo FullRollInfo { get; set; }
 
         public class TraitValueInfo
         {
@@ -96,6 +98,9 @@ namespace RollerEngine.Rolls
 
         protected virtual int Roll(Build actor, List<Build> targets, bool hasSpec, bool hasWill)
         {
+            Successes = 0;
+            FullRollInfo = null;
+
             StringBuilder logMessageBefore = new StringBuilder(500);
             logMessageBefore.AppendLine();
 
@@ -124,16 +129,16 @@ namespace RollerEngine.Rolls
 
             Log.Log(Verbosity, logMessageBefore.ToString());
 
-            RollInfo info = GetRollInfo(actor, targets);
+            FullRollInfo = GetRollInfo(actor, targets);
 
-            string logMessage = GetLogForRoll(actor, targets, info, hasSpec, hasWill);
+            string logMessage = GetLogForRoll(actor, targets, FullRollInfo, hasSpec, hasWill);
             Log.Log(Verbosity, string.Format(logMessage));
 
-            int successes = Roller.Roll(info.DicePoolInfo.Dices, info.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill, Name).Successes;
-            Log.Log(Verbosity.Debug, string.Format("...and got {0} successes.", successes));
+            Successes = Roller.Roll(FullRollInfo.DicePoolInfo.Dices, FullRollInfo.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill, Name).Successes;
+            Log.Log(Verbosity.Debug, string.Format("...and got {0} successes.", Successes));
 
             //remove used modifiers
-            foreach (var traitValueInfo in info.DicePoolInfo.Traits)
+            foreach (var traitValueInfo in FullRollInfo.DicePoolInfo.Traits)
             {
                 foreach (var valueModifirer in traitValueInfo.Value.Modifires)
                 {
@@ -144,7 +149,7 @@ namespace RollerEngine.Rolls
                 }
             }
 
-            foreach (var bonusModifier in info.DicePoolInfo.BonusDices.Modifires)
+            foreach (var bonusModifier in FullRollInfo.DicePoolInfo.BonusDices.Modifires)
             {
                 if (bonusModifier.Item2.Duration == DurationType.Roll)
                 {
@@ -152,7 +157,7 @@ namespace RollerEngine.Rolls
                 }
             }
 
-            foreach (var traitDCModifiers in info.DCInfo.Traits.Values)
+            foreach (var traitDCModifiers in FullRollInfo.DCInfo.Traits.Values)
             {
                 foreach (var dcModifier in traitDCModifiers.Modifires)
                 {
@@ -163,7 +168,7 @@ namespace RollerEngine.Rolls
                 }
             }
 
-            foreach (var bonusDCModifier in info.DCInfo.BonusModifers.Modifires)
+            foreach (var bonusDCModifier in FullRollInfo.DCInfo.BonusModifers.Modifires)
             {
                 if (bonusDCModifier.Item2.Duration == DurationType.Roll)
                 {
@@ -171,10 +176,10 @@ namespace RollerEngine.Rolls
                 }
             }
 
-            if (CanBotch && successes < 0)
-                throw new BotchException(string.Format("{0} roll botched on {1} successes.", Name, successes));
+            if (CanBotch && Successes < 0)
+                throw new BotchException(string.Format("{0} roll botched on {1} successes.", Name, Successes));
 
-            return successes;
+            return Successes;
          }
 
         public RollInfo GetRollInfo(Build actor, List<Build> targets)
