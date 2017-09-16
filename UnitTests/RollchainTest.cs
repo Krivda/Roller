@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
 using NLog;
 using NUnit.Framework;
 using RollerEngine.Character;
@@ -38,6 +36,31 @@ namespace UnitTests
             };
 
             res.TeachingWeek(plan);
+        }
+
+
+        [Test]
+        public void TestSpiridonBuff()
+        {
+            var rollLogger = new NLogLogger(Logger);
+            var devNullLogger = new StringBufferLogger();
+            var roller = new OfflineDiceRoller(rollLogger);
+            var devNullRoller = new OfflineDiceRoller(devNullLogger);
+
+            var res = HatysParty.LoadFromGoogle(rollLogger, roller);
+
+            Logger.Info("Started");
+            res.Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
+            Logger.Info("---nameless buff skipped");
+
+            res.Spiridon.ShiftToCrinos();
+
+            res.Spiridon.Log = rollLogger;
+            res.Spiridon.Roller = roller;
+
+            //typeof(Spirdon).GetProperty("Log").SetValue(res.Spiridon, rollLogger, null);
+
+            res.Spiridon.WeeklyBoostSkill(Build.Abilities.Instruction);
         }
 
 

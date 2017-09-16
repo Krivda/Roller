@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnsestorsTest.cs" />
     <Compile Include="BuildTest.cs" />
     <Compile Include="GsheetApiTest.cs" />
     <Compile Include="InstructionTest.cs" />

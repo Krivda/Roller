@@ -255,20 +255,20 @@ namespace RollerEngine.Character
                     buildKvp.Value.Traits[Build.Backgrounds.SpiritHeritage] = 5;
                 }
 
-                //Ansestors
+                //Ancestors
                 if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur"))
                 {
-                    buildKvp.Value.Traits[Build.Backgrounds.Ansestors] = 5;
+                    buildKvp.Value.Traits[Build.Backgrounds.Ancestors] = 5;
                 }
 
                 if (buildKvp.Key.Equals("Alisa"))
                 {
-                    buildKvp.Value.Traits[Build.Backgrounds.Ansestors] = 2;
+                    buildKvp.Value.Traits[Build.Backgrounds.Ancestors] = 2;
                 }
 
                 if (buildKvp.Key.Equals("Urfin"))
                 {
-                    buildKvp.Value.Traits[Build.Backgrounds.Ansestors] = 1;
+                    buildKvp.Value.Traits[Build.Backgrounds.Ancestors] = 1;
                 }
 
                 if (buildKvp.Key.Equals("Keltur"))
@@ -283,7 +283,7 @@ namespace RollerEngine.Character
 
                     buildKvp.Value.DCModifiers.Add(new DCModifer(
                         "Hatys",
-                        new List<string>() { Build.Backgrounds.Ansestors },
+                        new List<string>() { Build.Backgrounds.Ancestors },
                         DurationType.Permanent,
                         new List<string>(),
                         -2

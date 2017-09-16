@@ -17,10 +17,14 @@ namespace RollerEngine.Character.Party
         public void WeeklyBoostSkill(string trait)
         {
 
-            //buff from spiridon
+            //pre-buff from spiridon
+            CommonBuffs.ApplySacredRosemary(Party.Spiridon.Build, Log);
             Party.Spiridon.ShiftToCrinos();
             CastTeachersEase(Party.Spiridon.Build, Build.Abilities.Rituals, true, Verbosity.Details);
             Party.Spiridon.CastSacredFire();
+
+            CommonBuffs.ApplySacredRosemary(Party.Spiridon.Build, Log);
+
             //Spiridon buffs occult to Nameless
             Party.Spiridon.CastCallToWyld(new List<Build>() { Build }, Build.Abilities.Occult);
 
@@ -39,7 +43,7 @@ namespace RollerEngine.Character.Party
             CommonBuffs.ApplyAncestorsChiminage(Build, Log);
 
             //cast rite of Anscestor Seeking
-            CaseAnscestorSeeking();
+            CastAnscestorSeeking();
 
             //roll Ghost Pack
             var ghostPackRoll = new GhostPack(Log, Roller);
@@ -56,7 +60,7 @@ namespace RollerEngine.Character.Party
 
             //buff Instruct 
 
-            Build.UsedAncestorsCount = Build.UsedAncestorsCount - 1;
+            Build.AncestorsUsesLeft = Build.AncestorsUsesLeft - 1;
             ApplyAncestors(trait);
 
         }
@@ -97,7 +101,7 @@ namespace RollerEngine.Character.Party
             base.Instruct(target, ability, withWill);
         }
 
-        private void CaseAnscestorSeeking()
+        private void CastAnscestorSeeking()
         {
             //Cast Pesuasion
             var ancestorSeeking = new AncestorSeeking(Log, Roller);

@@ -25,7 +25,7 @@ namespace RollerEngine.Rolls.Gifts
                 actor.TraitModifiers.Add(
                     new TraitModifier(
                         Name,
-                        new List<string>() { Build.Backgrounds.Ansestors },
+                        new List<string>() { Build.Backgrounds.Ancestors },
                         DurationType.Roll,
                         new List<string>(),
                         successes, TraitModifier.BonusTypeKind.AdditionalDice, -1

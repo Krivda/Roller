@@ -47,7 +47,7 @@ namespace RollerEngine.Character.Party
                     }
                 }*/
 
-                if (!mods.Exists(modifier => modifier.Name.Equals(Build.Backgrounds.Ansestors)))
+                if (!mods.Exists(modifier => modifier.Name.Equals(Build.Backgrounds.Ancestors)))
                 {
                     CommonBuffs.ApplyAncestorsChiminage(Build, Log);
                     CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Build, Log);
@@ -115,7 +115,7 @@ namespace RollerEngine.Character.Party
                 //Apply rosemary
                 CommonBuffs.ApplySacredRosemary(Build, Log);
 
-                if (Build.Traits[Build.Backgrounds.Ansestors] > 0 && !Build.CheckBonusExists(Build.Abilities.Instruction, Build.Backgrounds.Ansestors))
+                if (Build.Traits[Build.Backgrounds.Ancestors] > 0 && !Build.CheckBonusExists(Build.Abilities.Instruction, Build.Backgrounds.Ancestors))
                 {
                     CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Build, Log);
                     CommonBuffs.ApplyAncestorsChiminage(Build, Log);

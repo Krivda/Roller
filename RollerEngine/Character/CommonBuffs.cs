@@ -14,7 +14,7 @@ namespace RollerEngine.Character
             build.DCModifiers.Add(
                 new DCModifer(
                     "Hatys",
-                    new List<string>() { Build.Backgrounds.Ansestors },
+                    new List<string>() { Build.Backgrounds.Ancestors },
                     DurationType.Permanent,
                     new List<string>(),
                     -1
@@ -56,7 +56,7 @@ namespace RollerEngine.Character
                 build.TraitModifiers.Add(
                     new TraitModifier(
                         caernOfVigil,
-                        new List<string>() {Build.Backgrounds.Ansestors},
+                        new List<string>() {Build.Backgrounds.Ancestors},
                         DurationType.Scene,
                         new List<string>(),
                         4,
@@ -83,14 +83,22 @@ namespace RollerEngine.Character
         {
             log.Log(Verbosity.Details, string.Format("Rosemary sanctified plant power applied on {0} (-2 Dice on learning to next roll)", build.Name));
 
-            build.BonusDCModifiers.Add(
-                new DCModifer(
-                    "Rosemary",
-                    new List<string>(), 
-                    DurationType.Scene,
-                    new List<string>() {Build.Conditions.Teaching, Build.Conditions.Learning, Build.Conditions.Memory},
-                    -2
-                ));
+            if (!build.CheckBonusExists(null, "Rosemary"))
+            {
+                build.BonusDCModifiers.Add(
+                    new DCModifer(
+                        "Rosemary",
+                        new List<string>(),
+                        DurationType.Scene,
+                        new List<string>()
+                        {
+                            Build.Conditions.Teaching,
+                            Build.Conditions.Learning,
+                            Build.Conditions.Memory
+                        },
+                        -2
+                    ));
+            }
         }
 
         public static void ApplyMedicalBundle(Build build, IRollLogger log)

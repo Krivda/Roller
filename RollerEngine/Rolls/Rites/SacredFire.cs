@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using RollerEngine.Character.Common;
 using RollerEngine.Logger;
@@ -33,6 +34,10 @@ namespace RollerEngine.Rolls.Rites
                 if (result > 0)
                 {
                     result = (result - 1) / 2;
+
+                    //can't exceed 5
+                    result = Math.Min(5, result);
+
                     foreach (var target in targets)
                     {
                         

@@ -177,10 +177,18 @@ namespace RollerEngine.Rolls
             }
 
             if (CanBotch && Successes < 0)
-                throw new BotchException(string.Format("{0} roll botched on {1} successes.", Name, Successes));
+            {
+                Successes = OnBotch(Successes);
+            }
+                
 
             return Successes;
          }
+
+        protected virtual int OnBotch(int successes)
+        {
+            throw new BotchException(string.Format("{0} roll botched on {1} successes.", Name, successes));
+        }
 
         public RollInfo GetRollInfo(Build actor, List<Build> targets)
         {
@@ -294,6 +302,9 @@ namespace RollerEngine.Rolls
 
             dcInfo.BonusModifers = GetBonusDC(actor, targets, Conditions);
             dcAdjust += dcInfo.BonusModifers.Value;
+
+
+
             int adjectedDC = dcInfo.BaseDC + dcAdjust;
 
             //hadle limited value

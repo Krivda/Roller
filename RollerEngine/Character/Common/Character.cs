@@ -8,8 +8,8 @@ namespace RollerEngine.Character.Common
     {
         public string CharacterName { get; protected set; }
         public Build Build { get; private set; }
-        public IRollLogger Log { get; private set; }
-        public IRoller Roller { get; private set; }
+        public IRollLogger Log { get; set; }
+        public IRoller Roller { get; set; }
         public int LearnSessions { get; set; }
 
         public Character(string name, Build build, IRollLogger log, IRoller roller)

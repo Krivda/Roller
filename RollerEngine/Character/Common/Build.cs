@@ -103,7 +103,7 @@ namespace RollerEngine.Character.Common
 
         public class Backgrounds
         {
-            public const string Ansestors = "Ansestors";
+            public const string Ancestors = "Ancestors";
             public const string SpiritHeritage = "Spirit Heritage";
 
         }
@@ -142,7 +142,7 @@ namespace RollerEngine.Character.Common
             }
         }
 
-        public int UsedAncestorsCount { get; set; }
+        public int AncestorsUsesLeft { get; set; }
 
         public string CharacterClass { get; set; }
 
