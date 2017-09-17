@@ -12,7 +12,7 @@ namespace RollerEngine.Rolls.Gifts
 
         public CaernOfVigilChannelling(IRollLogger log, IRoller roller)
             : base(GiftName, log, roller,
-                new List<string>() {Build.Atributes.Perception, Build.Abilities.Alertness},
+                new List<string>() {Build.Atributes.Perception, Build.Abilities.PrimalUrge},
                 new List<string>(), "", Verbosity.Details)
         {
             
@@ -43,7 +43,11 @@ namespace RollerEngine.Rolls.Gifts
             }
 
             return successes;
+        }
 
+        public override int GetBaseDC(Build actor, List<Build> targets)
+        {
+            return 7;
         }
     }
 }

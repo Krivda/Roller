@@ -61,7 +61,7 @@ namespace RollerEngine.Character
             Kinfolk1.HasSpecOnInstruction = true;
             Kinfolk2.HasSpecOnInstruction = true;
 
-            Nameless.Build.HasAncestorVeneration = true;
+            Nameless.Self.HasAncestorVeneration = true;
         }
 
         public static HatysParty LoadFromGoogle(IRollLogger log, IRoller roller)
@@ -88,7 +88,7 @@ namespace RollerEngine.Character
                     
                     _log.Log(Verbosity.Important, "");
                     _log.Log(Verbosity.Important, string.Format("{0} startered learning {1} to {2}.", item.Teacher.CharacterName, item.Trait, item.Student.CharacterName));
-                    item.Teacher.Instruct(item.Student.Build, item.Trait, false);
+                    item.Teacher.Instruct(item.Student.Self, item.Trait, false);
                 }
                 else if (item.RiteName != null)
                 {
@@ -125,16 +125,16 @@ namespace RollerEngine.Character
             //boost nameless Instruction
             Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
 
-            Nameless.CastTeachersEase(Spiridon.Build, Build.Abilities.Subterfuge, false, Verbosity.Details);
+            Nameless.CastTeachersEase(Spiridon.Self, Build.Abilities.Subterfuge, false, Verbosity.Details);
             Spiridon.CastPersuasion();
 
-            Nameless.CastTeachersEase(Yoki.Build, Build.Abilities.Subterfuge, false, Verbosity.Details);
+            Nameless.CastTeachersEase(Yoki.Self, Build.Abilities.Subterfuge, false, Verbosity.Details);
             Yoki.CastPersuasion();
 
-            Nameless.CastTeachersEase(Kinfolk1.Build, Build.Abilities.Subterfuge, false, Verbosity.Details);
+            Nameless.CastTeachersEase(Kinfolk1.Self, Build.Abilities.Subterfuge, false, Verbosity.Details);
             Kinfolk1.CastPersuasion();
 
-            Nameless.CastTeachersEase(Kinfolk2.Build, Build.Abilities.Subterfuge, false, Verbosity.Details);
+            Nameless.CastTeachersEase(Kinfolk2.Self, Build.Abilities.Subterfuge, false, Verbosity.Details);
             Kinfolk2.CastPersuasion();
         }
 
@@ -205,7 +205,7 @@ namespace RollerEngine.Character
             }
         }
 
-        private void StartScene()
+        public void StartScene()
         {
             CaernChannellingUsedTimes = 0;
 
@@ -234,15 +234,19 @@ namespace RollerEngine.Character
                 {
                     build.Value.TraitModifiers.Remove(tm);
                 }
+
+                build.Value.AncestorsUsesLeft = 1;
             }
 
+
+
             OriginalStats.Clear();
-            StoreOriginalValues(Nameless.Build);
-            StoreOriginalValues(Spiridon.Build);
-            StoreOriginalValues(Yoki.Build);
-            StoreOriginalValues(Kurt.Build);
-            StoreOriginalValues(Kinfolk1.Build);
-            StoreOriginalValues(Kinfolk2.Build);
+            StoreOriginalValues(Nameless.Self);
+            StoreOriginalValues(Spiridon.Self);
+            StoreOriginalValues(Yoki.Self);
+            StoreOriginalValues(Kurt.Self);
+            StoreOriginalValues(Kinfolk1.Self);
+            StoreOriginalValues(Kinfolk2.Self);
         }
 
         private static void AddPermanentModifiers(Dictionary<string, Build> result, IRollLogger log)
@@ -321,11 +325,11 @@ namespace RollerEngine.Character
             {
                 case 1:
                     plan.Add(new WeeklyActivity(Nameless, Kinfolk1, Build.Abilities.Leadership));
-                    //plan.Add(new WeeklyActivity(Yoki, Ptitsa, Build.Abilities.Stealth)); //done
-                    //plan.Add(new WeeklyActivity(Spiridon, Kurt, Build.Abilities.Rituals)); //can't tesch that week
+                    //plan.Add(new WeeklyActivity(Yoki, Ptitsa, Self.Abilities.Stealth)); //done
+                    //plan.Add(new WeeklyActivity(Spiridon, Kurt, Self.Abilities.Rituals)); //can't tesch that week
                     plan.Add(new WeeklyActivity(Kurt, Yoki, Build.Abilities.Demolitions));
                     plan.Add(new WeeklyActivity(Kinfolk1, Kurt, Build.Abilities.Firearms));
-                    //plan.Add(new WeeklyActivity(Kinfolk2, Nameless, Build.Abilities.Brawl)); //done
+                    //plan.Add(new WeeklyActivity(Kinfolk2, Nameless, Self.Abilities.Brawl)); //done
 
                     Yoki.LearnSessions =1; //made talens this week 
                     break;

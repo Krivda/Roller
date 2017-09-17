@@ -18,7 +18,7 @@ namespace RollerEngine.Rolls.Gifts
 
         public override int GetBaseDC(Build actor, List<Build> targets)
         {
-            return Math.Max(10 - targets[0].Traits[Build.Atributes.Intellect], 3);
+            return Math.Max(10 - targets[0].GetModifiedTrait(Build.Atributes.Intellect), 3);
         }
 
         public int Roll(Build actor, Build target, string ability, bool hasSpec, bool hasWill)
@@ -48,6 +48,11 @@ namespace RollerEngine.Rolls.Gifts
             }
 
             return result;
+        }
+
+        protected override int OnBotch(int successes)
+        {
+            return successes;
         }
     }
 }

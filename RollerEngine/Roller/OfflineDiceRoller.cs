@@ -58,9 +58,6 @@ namespace RollerEngine.Roller
             }
         }
 
-
-        private static readonly Random rnd = new Random();
-
         public OfflineDiceRoller(IRollLogger rollLogger)
         {
             _rollLogger = rollLogger;
@@ -90,7 +87,7 @@ namespace RollerEngine.Roller
                 bld.Append(string.Format("{0}{1}:{2}", delim, face, dice));
                 face++;
                 delim = ", ";
-                rollData.DiceResult.Add(info.Item1);
+                rollData.DiceResult.Add(dice);
             }
 
             _rollLogger.Log(Verbosity.Details, string.Format("{0} roll was [{1}] and gave {2} successes.", description, bld, info.Item1));

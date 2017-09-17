@@ -40,12 +40,11 @@ namespace RollerEngine.Rolls.Rites
 
                     foreach (var target in targets)
                     {
-                        
                         target.DCModifiers.Add(
                             new DCModifer(
                                 Name,
                                 new List<string>(){ Build.Abilities.Rituals},
-                                DurationType.Scene,
+                                DurationType.Roll, //TODO WARNING sacred fire lasts for as long as it is tended with sanctified materials
                                 new List<string>() {Build.Conditions.MysticRite, Build.Conditions.SpiritRite},
                                 -result 
                             ));

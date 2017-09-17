@@ -25,42 +25,42 @@ namespace RollerEngine.Character.Party
 
         public override void Learn(string ability, bool withWill)
         {
-            List<TraitModifier> mods = Build.TraitModifiers.FindAll(m => m.Traits.Contains(ability));
+            List<TraitModifier> mods = Self.TraitModifiers.FindAll(m => m.Traits.Contains(ability));
 
             //Apply Caern Of Vigil Channelling and Ancestors (for warewolves only)
-            if (Build.CharacterClass.Equals(Build.Classes.Warewolf))
+            if (Self.CharacterClass.Equals(Build.Classes.Warewolf))
             {
                 //not already buffed with caern
                 /*if (HasOpenedCaern && !mods.Exists(modifier => modifier.Name.Equals(CaernOfVigilChannelling.GiftName)))
                 {
                     if (Party.CaernChannellingUsedTimes < 7)
                     {
-                        if (!Build.Name.Equals(Party.Nameless.CharacterName))
+                        if (!Self.Name.Equals(Party.Nameless.CharacterName))
                         {
                             //Ask Nameless to buff allertness
-                            Party.Nameless.CastTeachersEase(Build, Build.Abilities.Alertness, false, Verbosity.Details);
+                            Party.Nameless.CastTeachersEase(Self, Self.Abilities.Alertness, false, Verbosity.Details);
                         }
 
                         Party.CaernChannellingUsedTimes++;
                         var caernChanelling = new CaernOfVigilChannelling(Log, Roller);
-                        caernChanelling.Roll(Build, ability, true);
+                        caernChanelling.Roll(Self, ability, true);
                     }
                 }*/
 
                 if (!mods.Exists(modifier => modifier.Name.Equals(Build.Backgrounds.Ancestors)))
                 {
-                    CommonBuffs.ApplyAncestorsChiminage(Build, Log);
-                    CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Build, Log);
+                    CommonBuffs.ApplyAncestorsChiminage(Self, Log);
+                    CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Self, Log);
 
                     var ancestors = new Ancestors(Log, Roller);
-                    ancestors.Roll(Build, ability);
+                    ancestors.Roll(Self, ability);
                 }
             }
 
-            if (!Build.Name.Equals(Party.Nameless.CharacterName))
+            if (!Self.Name.Equals(Party.Nameless.CharacterName))
             {
                 //Ask Nameless to buff Ability roll
-                Party.Nameless.CastTeachersEase(Build, ability, false, Verbosity.Important);
+                Party.Nameless.CastTeachersEase(Self, ability, false, Verbosity.Important);
             }
 
             base.Learn(ability, withWill);
@@ -70,7 +70,7 @@ namespace RollerEngine.Character.Party
         {
             var xpPoolTraits = new List<Tuple<string, int>>();
 
-            foreach (var traitKvp in Build.Traits)
+            foreach (var traitKvp in Self.Traits)
             {
                 if (traitKvp.Key.Contains(Build.DynamicTraits.ExpirienceToLearn))
                 {
@@ -88,7 +88,7 @@ namespace RollerEngine.Character.Party
                 if (LearnSessions > 0)
                 {
                     string trait = xpPoolTrait.Item1.Replace(Build.DynamicTraits.ExpirienceToLearn, "").Trim();
-                    bool hasWill = Build.Traits[trait] < 3;
+                    bool hasWill = Self.Traits[trait] < 3;
 
                     
                     for (int i = 0; i < LearnSessions; i++)
@@ -103,43 +103,44 @@ namespace RollerEngine.Character.Party
 
         public virtual void Instruct(Build target, string ability, bool withWill)
         {
-            if (Build.Traits[Build.Abilities.Instruction] > 0)
+            if (Self.Traits[Build.Abilities.Instruction] > 0)
             {
                 //ask nameless to buff instruct
-                if (!Build.Name.Equals(Party.Nameless.CharacterName))
+                if (!Self.Name.Equals(Party.Nameless.CharacterName))
                 {
                     //Ask Nameless to buff allertness
-                    Party.Nameless.CastTeachersEase(Build, Build.Abilities.Instruction, false, Verbosity.Important);
+                    Party.Nameless.CastTeachersEase(Self, Build.Abilities.Instruction, false, Verbosity.Important);
                 }
 
                 //Apply rosemary
-                CommonBuffs.ApplySacredRosemary(Build, Log);
+                CommonBuffs.ApplySacredRosemary(Self, Log);
 
-                if (Build.Traits[Build.Backgrounds.Ancestors] > 0 && !Build.CheckBonusExists(Build.Abilities.Instruction, Build.Backgrounds.Ancestors))
+                if (Self.Traits[Build.Backgrounds.Ancestors] > 0 && !Self.CheckBonusExists(Build.Abilities.Instruction, Build.Backgrounds.Ancestors))
                 {
-                    CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Build, Log);
-                    CommonBuffs.ApplyAncestorsChiminage(Build, Log);
+                    CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Self, Log);
+                    CommonBuffs.ApplyAncestorsChiminage(Self, Log);
 
                     ApplyAncestors(Build.Abilities.Instruction);
                 }
                 
                 //give XP to smb
                 var instruct = new InstructionTeach(Log, Roller);
-                instruct.Roll(Build, target, ability, HasSpecOnInstruction, withWill);
+                instruct.Roll(Self, target, ability, HasSpecOnInstruction, withWill);
             }
         }
 
         public void ApplyAncestors(string trait)
         {
+            CommonBuffs.ApplyAncestorsChiminage(Self, Log);
             var ansestorsRoll = new Ancestors(Log, Roller);
-            ansestorsRoll.Roll(Build, trait);
+            ansestorsRoll.Roll(Self, trait);
         }
 
         public void LearnRite(string riteName, int riteLevel, bool hasSpec)
         {
-            if (! (Build.CharacterClass.Equals(Build.Classes.Warewolf) || Build.CharacterClass.Equals(Build.Classes.Corax)))
+            if (! (Self.CharacterClass.Equals(Build.Classes.Warewolf) || Self.CharacterClass.Equals(Build.Classes.Corax)))
             {
-                throw new Exception(string.Format("{0} is {1}, and they can't learn rites", Build.Name, Build.CharacterClass));
+                throw new Exception(string.Format("{0} is {1}, and they can't learn rites", Self.Name, Self.CharacterClass));
             }
             
         }

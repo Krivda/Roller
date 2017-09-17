@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NLog.Config;
 using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Modifiers;
@@ -126,13 +127,66 @@ namespace RollerEngine.Character
 
         }
 
-        public static void ShiftToCrinos(Build build, IRollLogger log)
+        public static void ShiftToCrinos(Build actor, IRollLogger log)
         {
-            log.Log(Verbosity.Details, string.Format("{0} shifted to Crinos (+4 Strength, +1 Dex, +3 Stamina)", build.Name));
+            log.Log(Verbosity.Details, string.Format("{0} shifted to Crinos (+4 Strength, +1 Dex, +3 Stamina)", actor.Name));
 
-            build.Traits[Build.Atributes.Strength] = build.Traits[Build.Atributes.Strength] + 4;
-            build.Traits[Build.Atributes.Dexterity] = build.Traits[Build.Atributes.Dexterity] + 1;
-            build.Traits[Build.Atributes.Stamina] = build.Traits[Build.Atributes.Stamina] + 3;
+            actor.TraitModifiers.Add(
+                new TraitModifier(
+                    "Crinos",
+                    new List<string>() { Build.Atributes.Strength },
+                    DurationType.Scene,
+                    new List<string>(),
+                    4,
+                    TraitModifier.BonusTypeKind.TraitMod
+                ));
+
+            actor.TraitModifiers.Add(
+                new TraitModifier(
+                    "Crinos",
+                    new List<string>() { Build.Atributes.Dexterity },
+                    DurationType.Scene,
+                    new List<string>(),
+                    1,
+                    TraitModifier.BonusTypeKind.TraitMod
+                ));
+
+            actor.TraitModifiers.Add(
+                new TraitModifier(
+                    "Crinos",
+                    new List<string>() { Build.Atributes.Stamina },
+                    DurationType.Scene,
+                    new List<string>(),
+                    3,
+                    TraitModifier.BonusTypeKind.TraitMod
+                ));
+
+        }
+
+        public static void ApplyHeightenSenses(Build actor, IRollLogger log)
+        {
+            string name = "Heighten senses";
+
+            log.Log(Verbosity.Details, string.Format("{0} applied {1} (-3 DC Peception, +1 dice to Primal Urge)", actor.Name, name));
+
+            actor.DCModifiers.Add(
+                new DCModifer(
+                    "Heighten senses",
+                    new List<string>() {Build.Atributes.Perception},
+                    DurationType.Roll,
+                    new List<string>() {},
+                    -3
+                ));
+
+            actor.TraitModifiers.Add(
+                new TraitModifier(
+                    name,
+                    new List<string>() { Build.Abilities.PrimalUrge },
+                    DurationType.Scene,
+                    new List<string>(),
+                    1,
+                    TraitModifier.BonusTypeKind.AdditionalDice
+                ));
         }
     }
 }

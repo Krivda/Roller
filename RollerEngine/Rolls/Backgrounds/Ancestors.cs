@@ -15,7 +15,6 @@ namespace RollerEngine.Rolls.Backgrounds
         {
         }
 
-
         public int Roll(Build actor, string targetTrait)
         {
             AdditionalInfo = targetTrait;
@@ -93,6 +92,11 @@ namespace RollerEngine.Rolls.Backgrounds
         protected override int OnBotch(int successes)
         {
             return successes;
+        }
+
+        public override int GetBaseDC(Build actor, List<Build> targets)
+        {
+            return 8;
         }
     }
 }

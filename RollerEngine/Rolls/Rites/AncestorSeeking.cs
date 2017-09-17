@@ -21,16 +21,16 @@ namespace RollerEngine.Rolls.Rites
             return 7;
         }
 
-        public int Roll(Build actor, bool hasSpec, bool hasWill)
+        public int Roll(Build actor, Build target, bool hasSpec, bool hasWill)
         {
-            if (!actor.CheckBonusExists(Build.Atributes.Charisma, Name))
+            if (!target.CheckBonusExists(Build.Atributes.Charisma, Name))
             {
 
-                int result = base.Roll(actor, new List<Build>() { actor }, hasSpec, hasWill);
+                int result = base.Roll(actor, new List<Build>() { target }, hasSpec, hasWill);
 
                 if (result > 0)
                 {
-                    actor.TraitModifiers.Add(
+                    target.TraitModifiers.Add(
                         new TraitModifier(
                             Name,
                             new List<string>()
@@ -46,12 +46,12 @@ namespace RollerEngine.Rolls.Rites
                         ));
 
                     Log.Log(Verbosity,
-                    string.Format("{0} obtained bonus {1} dice on social rolls from {2} rite to Occult, Enigmas, Investigation for next Ancestor spirit related rolls.", actor.Name, result/2, Name));
+                    string.Format("{0} obtained bonus {1} dice on social rolls from {2} rite to Occult, Enigmas, Investigation for next Ancestor spirit related rolls.", target.Name, result/2, Name));
                 }
                 else
                 {
                     Log.Log(Verbosity,
-                    string.Format("{0} didn't get bonus from {1} rite.", actor.Name, Name));
+                    string.Format("{0} didn't get bonus from {1} rite.", target.Name, Name));
                 }
 
                 return result/2;

@@ -15,29 +15,29 @@ namespace RollerEngine.Character.Party
 
         public void CastPersuasion()
         {
-            Party.Nameless.CastTeachersEase(Build, Build.Abilities.Subterfuge, true, Verbosity.Details);
+            Party.Nameless.CastTeachersEase(Self, Build.Abilities.Subterfuge, true, Verbosity.Details);
             //Cast Pesuasion
             var persuasionRoll = new Persuasion(Log, Roller);
-            persuasionRoll.Roll(Build, false, false);
+            persuasionRoll.Roll(Self, false, false);
         }
 
         public void CastVisageOfFenris()
         {
 
-            Party.Nameless.CastTeachersEase(Build, Build.Abilities.Intimidation, true, Verbosity.Details);
+            Party.Nameless.CastTeachersEase(Self, Build.Abilities.Intimidation, true, Verbosity.Details);
             //Cast Visage of fenfis
             var vizageOfFenris = new VizageOfFenris(Log, Roller);
-            vizageOfFenris.Roll(Build, false, false);
+            vizageOfFenris.Roll(Self, false, false);
         }
 
         public void CastCallToWyld(List<Build> target, string skill)
         {
             //Nameless buffs Empthy
-            Party.Nameless.CastTeachersEase(Build, Build.Abilities.Empathy, true, Verbosity.Details);
+            Party.Nameless.CastTeachersEase(Self, Build.Abilities.Empathy, true, Verbosity.Details);
             
             //Cast Call to Wyld
             var callToWyld = new CallOfTheWyldDirgeToTheFallen(Log, Roller);
-            callToWyld.Roll(Build, target, skill, true, false);
+            callToWyld.Roll(Self, target, skill, true, false);
         }
 
         public override void Instruct(Build target, string ability, bool withWill)
@@ -49,64 +49,75 @@ namespace RollerEngine.Character.Party
             base.Instruct(target, ability, withWill);
         }
 
-        public void CastSacredFire()
+        public void CastSacredFire(List<Build> targets)
         {
-            Party.Nameless.CastTeachersEase(Build, Build.Abilities.Rituals, true, Verbosity.Details);
+            Party.Nameless.CastTeachersEase(Self, Build.Abilities.Rituals, true, Verbosity.Details);
 
             var sacredFire = new SacredFire(Log, Roller);
-
-            sacredFire.Roll(Build, new List<Build>() {Party.Spiridon.Build, Party.Nameless.Build, Party.Yoki.Build, Party.Kurt.Build}, false, false);
+            sacredFire.Roll(Self, targets,  false, true);
         }
 
-        public void WeeklyBoostSkill(string trait)
+        public void WeeklyPreBoost(string suppTrait)
         {
-            //add caern mod (+4 ancestors)
-            CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Build, Log);
+            Log.Log(Verbosity.Important, "=== === === === ===");
+            Log.Log(Verbosity.Important, string.Format("{0} WeeklyPreBoost on {1}", Self.Name, suppTrait));
 
-            //Apply chiminage
-            CommonBuffs.ApplyAncestorsChiminage(Build, Log);
-
-            //buff Occult
-            ApplyAncestors(Build.Abilities.Occult);
-
-            CastSacredFire();
-            
+            ShiftToCrinos();
+            //apply heighten sences
+            CommonBuffs.ApplyHeightenSenses(Self, Log);
+            //-1 dc social rolls
             CastVisageOfFenris();
-
+            //-1 dc social rolls
             CastPersuasion();
+            //add caern mod (+4 ancestors)
+            CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Self, Log);
+            //apply
+            CommonBuffs.ApplySacredRosemary(Party.Spiridon.Self, Log);
+            //buff Occult
+            ApplyAncestors(suppTrait);
+        }
 
-            //cast rite of Anscestor Seeking
-            CastAnscestorSeeking();
+        public void WeeklyMidBoostOccult(Build target)
+        {
+            Log.Log(Verbosity.Important, "=== === === === ===");
+            Log.Log(Verbosity.Important, string.Format("{0} WeeklyMidBoostOccult for {1}", Self.Name, target.Name));
 
-            CastCallToWyld(new List<Build>() { Party.Nameless.Build, Party.Yoki.Build, Party.Kurt.Build, Build }, Build.Abilities.Occult);
+            //for my next Ancestor Seeking
+            CastSacredFire(new List<Build>() { Self });
+            //cast rite of Anscestor Seeking - boost Occult to target
+            CastAnscestorSeeking(target);
+            //boost Occult to target
+            CastCallToWyld(new List<Build>() { target }, Build.Abilities.Occult);
+        }
 
-            CastGhostPack(trait);
-            
+        public void WeeklyBoostSkill(string mainTrait)
+        {
+            Log.Log(Verbosity.Important, "=== === === === ===");
+            Log.Log(Verbosity.Important, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, mainTrait));
+
+            //Buff occult from Spiridon
+            Party.Spiridon.WeeklyMidBoostOccult(Self);
+            CastGhostPack(mainTrait);
         }
 
         private void CastGhostPack(string trait)
         {
-            Party.Nameless.CastTeachersEase(Build, Build.Abilities.Occult, false, Verbosity.Details);
+            Party.Nameless.CastTeachersEase(Self, Build.Abilities.Occult, false, Verbosity.Details);
 
             //roll Ghost Pack
             var ghostPackRoll = new GhostPack(Log, Roller);
-            ghostPackRoll.Roll(Build, true, false);
+            ghostPackRoll.Roll(Self, true, false);
 
-            //Apply chiminage
-            CommonBuffs.ApplyAncestorsChiminage(Build, Log);
-
-            Build.AncestorsUsesLeft = Build.AncestorsUsesLeft - 1;
             ApplyAncestors(trait);
-
         }
 
-        private void CastAnscestorSeeking()
+        public void CastAnscestorSeeking(Build target)
         {
-            Party.Nameless.CastTeachersEase(Build, Build.Abilities.Rituals, false, Verbosity.Details);
+            Party.Nameless.CastTeachersEase(Self, Build.Abilities.Rituals, false, Verbosity.Details);
             
             //Cast Pesuasion
             var ancestorSeeking = new AncestorSeeking(Log, Roller);
-            ancestorSeeking.Roll(Build, false, true);
+            ancestorSeeking.Roll(Self, target, false, true);
         }
     }
 }

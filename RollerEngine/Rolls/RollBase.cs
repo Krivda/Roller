@@ -26,6 +26,7 @@ namespace RollerEngine.Rolls
         public Verbosity Verbosity { get; private set; }
         protected int Successes { get; set; }
         protected RollInfo FullRollInfo { get; set; }
+        public RollData RollResult { get; protected set; }
 
         public class TraitValueInfo
         {
@@ -134,7 +135,9 @@ namespace RollerEngine.Rolls
             string logMessage = GetLogForRoll(actor, targets, FullRollInfo, hasSpec, hasWill);
             Log.Log(Verbosity, string.Format(logMessage));
 
-            Successes = Roller.Roll(FullRollInfo.DicePoolInfo.Dices, FullRollInfo.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill, Name).Successes;
+            RollResult = Roller.Roll(FullRollInfo.DicePoolInfo.Dices, FullRollInfo.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill, Name);
+            Successes = RollResult.Successes;
+
             Log.Log(Verbosity.Debug, string.Format("...and got {0} successes.", Successes));
 
             //remove used modifiers
@@ -185,9 +188,23 @@ namespace RollerEngine.Rolls
             return Successes;
          }
 
+
         protected virtual int OnBotch(int successes)
         {
-            throw new BotchException(string.Format("{0} roll botched on {1} successes.", Name, successes));
+            
+            StringBuilder info = new StringBuilder(100);
+            string delim = "";
+            int face = 1;
+            foreach (var dice in RollResult.DiceResult)
+            {
+                info.Append(string.Format("{0}{1}:{2}", delim, face, dice));
+                face++;
+                delim = ", ";
+            }
+
+            info.AppendFormat(" vs DC {0}", FullRollInfo.DCInfo.AdjustedDC);
+
+            throw new BotchException(string.Format("{0} roll botched on {1} successes. ({2})", Name, successes, info));
         }
 
         public RollInfo GetRollInfo(Build actor, List<Build> targets)

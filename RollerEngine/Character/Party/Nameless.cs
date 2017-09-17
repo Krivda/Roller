@@ -14,69 +14,45 @@ namespace RollerEngine.Character.Party
         {
         }
 
+        public void WeeklyPreBoost()
+        {
+            Log.Log(Verbosity.Important, "=== === === === ===");
+            Log.Log(Verbosity.Important, string.Format("{0} WeeklyPreBoost", Self.Name));
+
+            //-1 dc social rolls
+            CastPersuasion();
+
+            //add caern mod (+4 ancestors)
+            CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Self, Log);
+        }
+
         public void WeeklyBoostSkill(string trait)
         {
-
-            //pre-buff from spiridon
-            CommonBuffs.ApplySacredRosemary(Party.Spiridon.Build, Log);
-            Party.Spiridon.ShiftToCrinos();
-            CastTeachersEase(Party.Spiridon.Build, Build.Abilities.Rituals, true, Verbosity.Details);
-            Party.Spiridon.CastSacredFire();
-
-            CommonBuffs.ApplySacredRosemary(Party.Spiridon.Build, Log);
-
-            //Spiridon buffs occult to Nameless
-            Party.Spiridon.CastCallToWyld(new List<Build>() { Build }, Build.Abilities.Occult);
-
-            CastPersuasion();
-            
-            //add caern mod (+4 ancestors)
-            CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Build, Log);
-
-            //Apply chiminage
-            CommonBuffs.ApplyAncestorsChiminage(Build, Log);
+            Log.Log(Verbosity.Important, "=== === === === ===");
+            Log.Log(Verbosity.Important, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, trait));
 
             //buff Occult
             ApplyAncestors(Build.Abilities.Occult);
 
-            //Apply chiminage
-            CommonBuffs.ApplyAncestorsChiminage(Build, Log);
+            //Buff occult from Spiridon
+            Party.Spiridon.WeeklyMidBoostOccult(Self);
 
-            //cast rite of Anscestor Seeking
-            CastAnscestorSeeking();
-
-            //roll Ghost Pack
-            var ghostPackRoll = new GhostPack(Log, Roller);
-            ghostPackRoll.Roll(Build, false, false);
-
-            //Apply Bone Ryhtms
-            CommonBuffs.ApplyBoneRythms(Build, Log);
-
-            //Apply Channelling for 3 Rage
-            ApplyChannellingGift(Build, Log, 3);
-
-            //Apply chiminage
-            CommonBuffs.ApplyAncestorsChiminage(Build, Log);
-
-            //buff Instruct 
-
-            Build.AncestorsUsesLeft = Build.AncestorsUsesLeft - 1;
-            ApplyAncestors(trait);
-
+            //Maximum boost for trait
+            CastGhostPack(trait, true);
         }
 
         public void CastPersuasion()
         {
             //Cast Pesuasion
             var persuasionRoll = new Persuasion(Log, Roller);
-            persuasionRoll.Roll(Build, false, true);
+            persuasionRoll.Roll(Self, false, true);
         }
 
         public void CastTeachersEase(Build target, string ability, bool withWill, Verbosity verbosity)
         {
             //buff trait on target
             var teachersEase = new TeachersEase(Log, Roller, verbosity);
-            teachersEase.Roll(Build, target, ability, true, withWill);
+            teachersEase.Roll(Self, target, ability, true, withWill);
         }
 
         public static void ApplyChannellingGift(Build build, IRollLogger log, int value)
@@ -101,12 +77,45 @@ namespace RollerEngine.Character.Party
             base.Instruct(target, ability, withWill);
         }
 
-        private void CastAnscestorSeeking()
+        private void CastAnscestorSeeking(Build target)
         {
             //Cast Pesuasion
             var ancestorSeeking = new AncestorSeeking(Log, Roller);
-            ancestorSeeking.Roll(Build, false, true);
+            ancestorSeeking.Roll(Self, target, false, true);
         }
 
+
+        private void CastGhostPack(string trait, bool maxBoost)
+        {
+            //Apply chiminage
+            CommonBuffs.ApplyAncestorsChiminage(Self, Log);
+
+
+            /*Self.DCModifiers.Add(
+                new DCModifer(
+                    "Dreams!",
+                    new List<string>() { Build.Abilities.Occult },
+                    DurationType.Roll,
+                    new List<string>() { },
+                    -2
+                ));*/
+
+
+            //roll Ghost Pack
+            var ghostPackRoll = new GhostPack(Log, Roller);
+            ghostPackRoll.Roll(Self, false, false);
+
+            if (maxBoost)
+            {
+                //Apply Bone Ryhtms
+                CommonBuffs.ApplyBoneRythms(Self, Log);
+
+                //Apply Channelling for 3 Rage
+                ApplyChannellingGift(Self, Log, 3);
+            }
+
+            ApplyAncestors(trait);
+
+        }
     }
 }

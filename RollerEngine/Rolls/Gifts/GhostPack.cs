@@ -8,7 +8,7 @@ namespace RollerEngine.Rolls.Gifts
 {
     public class GhostPack : GiftRoll
     {
-        private const string GIFT_NAME = "Ghost Pack";
+        public const string GIFT_NAME = "Ghost Pack";
 
         public GhostPack(IRollLogger log, IRoller roller) : 
             base(GIFT_NAME, log, roller, new List<string>() { Build.Atributes.Charisma, Build.Abilities.Occult }, 

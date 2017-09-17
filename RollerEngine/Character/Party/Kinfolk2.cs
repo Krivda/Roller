@@ -15,7 +15,7 @@ namespace RollerEngine.Character.Party
         {
             //Cast Pesuasion
             var persuasionRoll = new Persuasion(Log, Roller);
-            persuasionRoll.Roll(Build, false, true);
+            persuasionRoll.Roll(Self, false, true);
         }
     }
 }
