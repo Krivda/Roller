@@ -327,7 +327,7 @@ namespace RollerEngine.Rolls
             //hadle limited value
             if (adjectedDC < MIN_DC)
             {
-                Log.Log(Verbosity.Important, string.Format("DC was lesser then min, adjusted to {0}.", MIN_DC));
+                Log.Log(Verbosity, string.Format("DC was lesser then min, adjusted to {0}.", MIN_DC));
                 dcInfo.AdjustedDC = MIN_DC;
             }
             else

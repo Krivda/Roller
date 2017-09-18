@@ -29,7 +29,7 @@ namespace RollerEngine.Character
             IList<IList<object>> data;
             try
             {
-                 data = SpreadsheetService.GetNotEmptySpreadsheetRange("1tKXkAjTaUpIDkjmCi7w1QOVbnyYU2f-KOWEnl2EAIZg", "A1:J97", "Party sheet list");
+                 data = SpreadsheetService.GetNotEmptySpreadsheetRange("1tKXkAjTaUpIDkjmCi7w1QOVbnyYU2f-KOWEnl2EAIZg", "A1:J100", "Party sheet list");
             }
             catch (Exception e)
             {
@@ -66,7 +66,6 @@ namespace RollerEngine.Character
                         {
                             try
                             {
-
                                 Tuple<int, int> traitValue = GetTraitValue(characterTuple, traitName, data[i], i);
 
                                 if (traitValue != null)
@@ -92,12 +91,20 @@ namespace RollerEngine.Character
                                             );
                                         }
                                     }
-                                    else if (traitName.Contains(Build.DynamicTraits.ExpirienceToLearn))
+                                    else if (traitName.Contains(Build.DynamicTraits.ExpiriencePool))
                                     {
                                         target.Traits.Add(traitName, traitValue.Item1);
                                         target.Traits.Add(
                                             Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceLearned,
-                                                traitName.Replace(Build.DynamicTraits.ExpirienceToLearn, "").Trim()),
+                                                traitName.Replace(Build.DynamicTraits.ExpiriencePool, "").Trim()),
+                                            traitValue.Item2);
+                                    }
+                                    else if (traitName.Contains(Build.DynamicTraits.RitePool))
+                                    {
+                                        target.Traits.Add(traitName, traitValue.Item1);
+                                        target.Traits.Add(
+                                            Build.DynamicTraits.GetKey(Build.DynamicTraits.RiteLearned,
+                                                traitName.Replace(Build.DynamicTraits.RitePool, "").Trim()),
                                             traitValue.Item2);
                                     }
                                 }
@@ -198,7 +205,12 @@ namespace RollerEngine.Character
 
             if (_expPoolStarted)
             {
-                return Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceToLearn, traitName);
+                if (typeof(Build.Abilities).GetFields().Any(info => info.Name.Equals(traitName)))
+                {
+                    return Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpiriencePool, traitName);
+                }
+                
+                return Build.DynamicTraits.GetKey(Build.DynamicTraits.RitePool, traitName);
             }
             else
             {
@@ -256,13 +268,14 @@ namespace RollerEngine.Character
             //parse exp (30(5))
             if (strValue.Contains("("))
             {
-                string[] split = strValue.Split('(');
-                split[1] = strValue.Replace(")", "");
-                strValue = split[0].TrimEnd();
-                split[1] = split[1].TrimEnd();
-
+                string[] split = strValue.Split(new[] {'(', ')'}, StringSplitOptions.RemoveEmptyEntries);
+                if (split.Length != 2)
+                {
+                    throw new Exception(string.Format("invalid dynamic exp string at line {0} column {1}: {2}", index, characterTuple.Item1, strValue));
+                }
+                strValue = split[0].Trim();
                 //add value from bracers into sec Val
-                secondVal = int.Parse(split[1]);
+                secondVal = int.Parse(split[1].Trim()); //TODO TryParse
             }
 
             //try parse to int

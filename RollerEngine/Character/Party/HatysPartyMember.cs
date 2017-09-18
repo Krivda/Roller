@@ -5,7 +5,7 @@ using RollerEngine.Logger;
 using RollerEngine.Modifiers;
 using RollerEngine.Roller;
 using RollerEngine.Rolls.Backgrounds;
-using RollerEngine.Rolls.Gifts;
+using RollerEngine.Rolls.Rites;
 using RollerEngine.Rolls.Skills;
 
 namespace RollerEngine.Character.Party
@@ -20,7 +20,13 @@ namespace RollerEngine.Character.Party
         {
             Party = party;
             HasSpecOnInstruction = false;
-            LearnSessions = 1;
+        }
+
+        public void ApplyAncestors(string trait)
+        {
+            CommonBuffs.ApplyAncestorsChiminage(Self, Log);
+            var ansestorsRoll = new Ancestors(Log, Roller);
+            ansestorsRoll.Roll(Self, trait);
         }
 
         public override void Learn(string ability, bool withWill)
@@ -28,7 +34,7 @@ namespace RollerEngine.Character.Party
             List<TraitModifier> mods = Self.TraitModifiers.FindAll(m => m.Traits.Contains(ability));
 
             //Apply Caern Of Vigil Channelling and Ancestors (for warewolves only)
-            if (Self.CharacterClass.Equals(Build.Classes.Warewolf))
+            if (Self.CharacterClass.Equals(Build.Classes.Werewolf))
             {
                 //not already buffed with caern
                 /*if (HasOpenedCaern && !mods.Exists(modifier => modifier.Name.Equals(CaernOfVigilChannelling.GiftName)))
@@ -57,22 +63,25 @@ namespace RollerEngine.Character.Party
                 }
             }
 
+            //Apply rosemary
+            CommonBuffs.ApplySacredRosemary(Self, Log);
+
             if (!Self.Name.Equals(Party.Nameless.CharacterName))
             {
                 //Ask Nameless to buff Ability roll
-                Party.Nameless.CastTeachersEase(Self, ability, false, Verbosity.Important);
+                Party.Nameless.CastTeachersEase(Self, ability, false, Verbosity.Details);
             }
 
             base.Learn(ability, withWill);
         }
 
-        public void AutoLearn()
+        public void AutoLearn(int learnSessions)
         {
             var xpPoolTraits = new List<Tuple<string, int>>();
 
             foreach (var traitKvp in Self.Traits)
             {
-                if (traitKvp.Key.Contains(Build.DynamicTraits.ExpirienceToLearn))
+                if (traitKvp.Key.Contains(Build.DynamicTraits.ExpiriencePool))
                 {
                     if (traitKvp.Value != 0)
                     {
@@ -81,22 +90,24 @@ namespace RollerEngine.Character.Party
                 }
             }
 
+            //TODO: sorting order?
             xpPoolTraits.Sort((tuple, tuple1) => tuple.Item2.CompareTo(tuple1.Item2));
 
             foreach (var xpPoolTrait in xpPoolTraits)
             {
-                if (LearnSessions > 0)
+                string traitKeyXpPool = xpPoolTrait.Item1;
+                string trait = Build.DynamicTraits.GetBaseTrait(traitKeyXpPool, Build.DynamicTraits.ExpiriencePool);
+                bool hasWill = Self.Traits[trait] < 3;
+
+                while (learnSessions > 0)
                 {
-                    string trait = xpPoolTrait.Item1.Replace(Build.DynamicTraits.ExpirienceToLearn, "").Trim();
-                    bool hasWill = Self.Traits[trait] < 3;
-
-                    
-                    for (int i = 0; i < LearnSessions; i++)
+                    if (Self.Traits[traitKeyXpPool] <= 0) //TODO: AlreadyLearned
                     {
-                        Learn(trait, hasWill);
+                        break;
                     }
-                    LearnSessions=0;
 
+                    Learn(trait, hasWill);
+                    learnSessions--;
                 }
             }
         }
@@ -109,7 +120,7 @@ namespace RollerEngine.Character.Party
                 if (!Self.Name.Equals(Party.Nameless.CharacterName))
                 {
                     //Ask Nameless to buff allertness
-                    Party.Nameless.CastTeachersEase(Self, Build.Abilities.Instruction, false, Verbosity.Important);
+                    Party.Nameless.CastTeachersEase(Self, Build.Abilities.Instruction, false, Verbosity.Details);
                 }
 
                 //Apply rosemary
@@ -129,20 +140,64 @@ namespace RollerEngine.Character.Party
             }
         }
 
-        public void ApplyAncestors(string trait)
+        public void AutoLearnRite(int learnSessions)
         {
-            CommonBuffs.ApplyAncestorsChiminage(Self, Log);
-            var ansestorsRoll = new Ancestors(Log, Roller);
-            ansestorsRoll.Roll(Self, trait);
+            var ritePoolTraits = new List<Tuple<string, int>>();
+
+            //TODO: ???
+            foreach (var traitKvp in Self.Traits)
+            {
+                if (traitKvp.Key.Contains(Build.DynamicTraits.RiteLearned))
+                {
+                    if (traitKvp.Value != Build.RiteAlreadyLearned)
+                    {
+                        ritePoolTraits.Add(new Tuple<string, int>(traitKvp.Key, traitKvp.Value));
+                    }
+                }
+            }
+
+            //TODO: sorting order?
+            ritePoolTraits.Sort((tuple, tuple1) => tuple.Item2.CompareTo(tuple1.Item2));
+
+            foreach (var ritePoolTrait in ritePoolTraits)
+            {
+                string traitKeyRitePool = ritePoolTrait.Item1;
+                string riteName = Build.DynamicTraits.GetBaseTrait(traitKeyRitePool, Build.DynamicTraits.RiteLearned);
+
+                while (learnSessions > 0)
+                {
+                    if (Self.Traits[traitKeyRitePool] == Build.RiteAlreadyLearned)
+                    {
+                        break;
+                    }
+
+                    LearnRite(riteName, false, true); //TODO check for Caern group for Spiridon, Mystic for Yoki etc
+                                                      //always with Will to prevent botches (ask CURATOR!)
+                    learnSessions--;
+                }
+            }
         }
 
-        public void LearnRite(string riteName, int riteLevel, bool hasSpec)
+        public void LearnRite(string riteName, bool hasSpec, bool hasWill)
         {
-            if (! (Self.CharacterClass.Equals(Build.Classes.Warewolf) || Self.CharacterClass.Equals(Build.Classes.Corax)))
+            if (! (Self.CharacterClass.Equals(Build.Classes.Werewolf) || Self.CharacterClass.Equals(Build.Classes.Corax)))
             {
                 throw new Exception(string.Format("{0} is {1}, and they can't learn rites", Self.Name, Self.CharacterClass));
             }
-            
+
+            //Apply rosemary
+            CommonBuffs.ApplySacredRosemary(Self, Log);
+
+
+            //ask nameless to buff instruct
+            if (!Self.Name.Equals(Party.Nameless.CharacterName))
+            {
+                //Ask Nameless to buff rituals
+                Party.Nameless.CastTeachersEase(Self, Build.Abilities.Rituals, false, Verbosity.Details);
+            }
+
+            RitualsLearn roll = new RitualsLearn(Log, Roller);
+            roll.Roll(Self, riteName, hasSpec, hasWill);
         }
     }
 }

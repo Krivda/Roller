@@ -9,7 +9,7 @@ namespace RollerEngine.Character.Common
     {
         public class Classes
         {
-            public const string Warewolf = "Warewolf";
+            public const string Werewolf = "Werewolf";
             public const string Kinfolk = "Kinfolk";
             public const string Corax = "Corax";
         }
@@ -131,14 +131,20 @@ namespace RollerEngine.Character.Common
 
         public class DynamicTraits
         {
-            public const string ExpirienceToLearn = "Expirience ToLearn";
+            public const string ExpiriencePool = "Expirience Pool";
             public const string ExpirienceLearned = "Expirience Learned";
-            public const string RiteSuccesses = "Successes towards rite";
-
+            public const string RitePool = "Rite Pool";
+            public const string RiteLearned = "Rite Learned";
 
             public static string GetKey(string dynamicName, string baseName)
             {
                 return string.Format("{0} {1}", dynamicName, baseName);
+            }
+
+            public static string GetBaseTrait(string key, string dynamicName)
+            {
+                string result = key.Replace(dynamicName, "").Trim();
+                return result;
             }
         }
 
@@ -264,6 +270,22 @@ namespace RollerEngine.Character.Common
             }
 
             return traitValue;
+        }
+
+        public const int RiteAlreadyLearned = -1;
+
+        public bool IsRiteLearned(string riteName)
+        {
+            string keyRiteName = DynamicTraits.GetKey(DynamicTraits.RiteLearned, riteName);
+
+            //create dynamic trait if it was absent
+            if (!Traits.ContainsKey(keyRiteName))
+            {
+                return false;
+            }
+
+            int successesInitial = Traits[keyRiteName];
+            return (successesInitial == RiteAlreadyLearned);
         }
     }
 }

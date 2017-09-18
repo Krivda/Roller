@@ -18,7 +18,7 @@ namespace RollerEngine.Character
                     new List<string>() { Build.Backgrounds.Ancestors },
                     DurationType.Permanent,
                     new List<string>(),
-                    -1
+                    -2
                 ));
 
             build.DCModifiers.Add(
@@ -95,7 +95,8 @@ namespace RollerEngine.Character
                         {
                             Build.Conditions.Teaching,
                             Build.Conditions.Learning,
-                            Build.Conditions.Memory
+                            Build.Conditions.Memory,
+                            Build.Conditions.LearningRites
                         },
                         -2
                     ));

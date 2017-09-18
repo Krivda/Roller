@@ -26,25 +26,6 @@ namespace UnitTests
         }
 
         [Test]
-        public void TestInstructionWeek()
-        {
-            var rollLogger = new NLogLogger(Logger);
-            Logger.Info("Started");
-
-            var res = HatysParty.LoadFromGoogle(rollLogger, new OfflineDiceRoller(rollLogger));
-
-            var plan = new List<WeeklyActivity>
-            {
-                new WeeklyActivity(res.Nameless, res.Yoki, Build.Abilities.Brawl),
-                new WeeklyActivity(res.Yoki, res.Kurt, Build.Abilities.Rituals),
-                new WeeklyActivity(res.Kinfolk1, res.Kinfolk2, Build.Abilities.Science)
-            };
-
-            res.TeachingWeek(plan);
-        }
-
-
-        [Test]
         public void TestPartyBuffStats()
         {
             var rollLogger = new NLogLogger(Logger);
@@ -146,9 +127,22 @@ namespace UnitTests
 
 
         [Test]
-        public void Mutiweek()
+        public void Multiweek()
         {
-            
+            var rollLogger = new NLogLogger(Logger, Verbosity.Important);
+            var devNullLogger = new StringBufferLogger();
+            var roller = new OfflineDiceRoller(rollLogger);
+            var devNullRoller = new OfflineDiceRoller(devNullLogger);
+
+            var currLogger = rollLogger;
+            var currRoller = roller;
+
+            var res = HatysParty.LoadFromGoogle(currLogger, currRoller);
+
+
+            res.DoWeek(1);
+            res.DoWeek(2);
+
         }
 
     }

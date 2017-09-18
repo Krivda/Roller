@@ -14,16 +14,20 @@ namespace RollerEngine.Roller
 
         public static void LogStats(IRollLogger rollLogger)
         {
-            int sum = 0;
-            foreach (var i in _diceFaceStat)
+            if (_diceFaceStat != null)
             {
-                sum += i;
+                int sum = 0;
+                foreach (var i in _diceFaceStat)
+                {
+                    sum += i;
+                }
+
+                for (var index = 0; index < _diceFaceStat.Length; index++)
+                {
+                    rollLogger.Log(Verbosity.Important, string.Format("Percetage of {0} is {1:P2} (of {2} dices)", index+1, decimal.Divide(_diceFaceStat[index], sum), sum));  
+                }
             }
 
-            for (var index = 0; index < _diceFaceStat.Length; index++)
-            {
-                rollLogger.Log(Verbosity.Important, string.Format("Percetage of {0} is {1:P2} (of {2} dices)", index+1, decimal.Divide(_diceFaceStat[index], sum), sum));  
-            }
         }
 
         static class RNG

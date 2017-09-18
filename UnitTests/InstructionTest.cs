@@ -26,7 +26,7 @@ namespace UnitTests
             student.Traits[Build.Abilities.Occult] = 0;
 
             string xpPoolOccult =
-                Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceToLearn, Build.Abilities.Occult);
+                Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpiriencePool, Build.Abilities.Occult);
             string xpConsumedOcuult =
                 Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceLearned, Build.Abilities.Occult);
 

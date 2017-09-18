@@ -16,8 +16,8 @@ namespace RollerEngine.Character.Party
 
         public void WeeklyPreBoost()
         {
-            Log.Log(Verbosity.Important, "=== === === === ===");
-            Log.Log(Verbosity.Important, string.Format("{0} WeeklyPreBoost", Self.Name));
+            Log.Log(Verbosity.Details, "=== === === === ===");
+            Log.Log(Verbosity.Details, string.Format("{0} WeeklyPreBoost", Self.Name));
 
             //-1 dc social rolls
             CastPersuasion();
@@ -28,8 +28,8 @@ namespace RollerEngine.Character.Party
 
         public void WeeklyBoostSkill(string trait)
         {
-            Log.Log(Verbosity.Important, "=== === === === ===");
-            Log.Log(Verbosity.Important, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, trait));
+            Log.Log(Verbosity.Details, "=== === === === ===");
+            Log.Log(Verbosity.Details, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, trait));
 
             //buff Occult
             ApplyAncestors(Build.Abilities.Occult);

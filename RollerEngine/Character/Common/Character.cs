@@ -10,7 +10,6 @@ namespace RollerEngine.Character.Common
         public Build Self { get; private set; }
         public IRollLogger Log { get; set; }
         public IRoller Roller { get; set; }
-        public int LearnSessions { get; set; }
 
         public Character(string name, Build build, IRollLogger log, IRoller roller)
         {

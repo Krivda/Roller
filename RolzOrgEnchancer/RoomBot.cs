@@ -118,8 +118,8 @@ namespace RolzOrgEnchancer
             {
               Thread.Sleep(100);
               Program.Log("Worker: Deque action #" + action); //TODO Format
-                res.Week(1);
-                res.Week(2);
+                res.DoWeek(1);
+                res.DoWeek(2);
               MakeMessage(Color.Red, "=== END OF ACTION ===");
             }
         }

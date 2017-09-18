@@ -17,7 +17,7 @@ namespace RollerEngine.Rolls.Gifts
 
         public int Roll(Build actor, bool hasSpec, bool hasWill)
         {
-            if (!actor.CheckBonusExists(null, Name))
+            if (!actor.CheckBonusExists(Build.Atributes.Manipulation, Name))
             {
 
                 int result = base.Roll(actor, new List<Build>() {actor}, hasSpec, hasWill);

@@ -83,60 +83,77 @@ namespace RollerEngine.Rolls.Skills
 
             if (result > 0)
             {
-                string traitNameXpToLearn = Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceToLearn, ability);
-                string traitNameXpLearned = Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceLearned, ability);
+                string traitKeyXpPool = Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpiriencePool, ability);
+                string traitKeyXpLearned = Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceLearned, ability);
 
-                int consumedXp = Math.Min(result, actor.Traits[traitNameXpToLearn]);
-
-                actor.Traits[traitNameXpToLearn] = actor.Traits[traitNameXpToLearn] - consumedXp;
-                actor.Traits[traitNameXpLearned] = actor.Traits[traitNameXpLearned] + consumedXp;
-
-                if (!actor.Traits.ContainsKey(traitNameXpLearned))
+                //create traits if they were absent
+                if (!actor.Traits.ContainsKey(traitKeyXpPool))
                 {
-                    actor.Traits.Add(traitNameXpLearned,0);
+                    actor.Traits.Add(traitKeyXpPool, 0);
+                }
+                if (!actor.Traits.ContainsKey(traitKeyXpLearned))
+                {
+                    actor.Traits.Add(traitKeyXpLearned, 0);
                 }
 
-                int xpToSpend = actor.Traits[traitNameXpLearned];
+                //this is amount xp consumed from xp pool by this roll
+                int xpPoolInitial = actor.Traits[traitKeyXpPool];
+                int xpConsumedFromPool = Math.Min(result, xpPoolInitial);
+
+                //MAIN: move xp from pool to learned
+                actor.Traits[traitKeyXpPool] = actor.Traits[traitKeyXpPool] - xpConsumedFromPool;
+                actor.Traits[traitKeyXpLearned] = actor.Traits[traitKeyXpLearned] + xpConsumedFromPool;
+
+                Log.Log(Verbosity, string.Format("{0} rolls {1} successes on learning {2}, has {3} XP in pool, {4} XP was consumed, now has ({5},{6}) pool/learned XP",
+                    actor.Name, result, ability, xpPoolInitial, xpConsumedFromPool, actor.Traits[traitKeyXpPool], actor.Traits[traitKeyXpLearned]));
+
+                //this is an amount of xp we have learned
+                int xpLearned = actor.Traits[traitKeyXpLearned];
+
+                //this is an amount of xp we'll spend to increase trait value
+                int xpSpentIncreasingTrait = 0;
+
                 int currentTraitValue = actor.Traits[ability];
-
-                int spentXp = 0;
-
                 for (int i = currentTraitValue+1; i < 6; i++)
                 {
 
                     int xpCost = Build.GetSkillXpTable()[i];
 
-                    if (xpCost <= xpToSpend)
+                    if (xpCost > xpLearned)
                     {
-                        xpToSpend -= xpCost;
-                        spentXp += xpCost;
-                        actor.Traits[ability] = actor.Traits[ability] + 1;
-                        Log.Log(Verbosity, string.Format("{0} spent {1} bonus XP on {2} increasing it's value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool.", actor.Name, xpCost, ability, actor.Traits[ability], xpToSpend, actor.Traits[traitNameXpLearned] - spentXp));
-                    }
-                    else
-                    {
-                        Log.Log(Verbosity, string.Format("{0} don't yet have {1}XP learned to increase {2} value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool.", actor.Name, xpCost, ability, actor.Traits[ability]+1, xpToSpend, actor.Traits[traitNameXpLearned] - spentXp));
+                        Log.Log(Verbosity, string.Format("{0} don't yet have {1}XP in {2} to increase it's value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool, total {6}XP spent.", 
+                            actor.Name, xpCost, ability, i, actor.Traits[traitKeyXpPool], xpLearned, xpSpentIncreasingTrait));
                         break;
                     }
+
+                    xpLearned -= xpCost;
+                    xpSpentIncreasingTrait += xpCost;
+                    actor.Traits[ability] = actor.Traits[ability] + 1; //TODO check i vs. actor.Traits[ability] consistency (should be ok)
+                    Log.Log(Verbosity, string.Format("{0} spent {1} bonus XP on {2}, increasing it's value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool, total {6}XP spent.",
+                        actor.Name, xpCost, ability, actor.Traits[ability], actor.Traits[traitKeyXpPool], xpLearned, xpSpentIncreasingTrait));
+
                 }
 
                 //clear xp if trait is raised to 5
                 if (actor.Traits[ability] == 5)
                 {
-                    actor.Traits[traitNameXpToLearn] = 0;
-                    actor.Traits[traitNameXpLearned] = 0;
-                    Log.Log(Verbosity, string.Format("{0} maxed his ability {1}. Remaining XP burened out.", actor.Name, ability));
+                    actor.Traits[traitKeyXpPool] = 0;
+                    actor.Traits[traitKeyXpLearned] = 0;
+                    Log.Log(Verbosity.Critical, string.Format("{0} maxed his ability {1}. Remaining XP has burned out.", actor.Name, ability));
                 }
                 else
                 {
-                    if (spentXp != 0)
+                    if (xpSpentIncreasingTrait != 0)
                     {
-                        actor.Traits[traitNameXpLearned] = actor.Traits[traitNameXpLearned] - spentXp;
+                        actor.Traits[traitKeyXpLearned] = actor.Traits[traitKeyXpLearned] - xpSpentIncreasingTrait;
                     }
+                    Log.Log(Verbosity.Critical, string.Format("{0} spent total {1} bonus XP on {2}, {3}XP remains learned, ({4} bonus XP remains in pool).",
+                        actor.Name, xpSpentIncreasingTrait, ability, actor.Traits[traitKeyXpLearned], actor.Traits[traitKeyXpPool]));
                 }
             }
             else
             {
+                //TODO: burn pool on botch?
                 Log.Log(Verbosity, string.Format("{0} didn't learn anything.", actor.Name));
             }
 

@@ -47,29 +47,29 @@ namespace RollerEngine.Rolls.Skills
 
             if (result > 0)
             {
-                string traitXpConsumed = Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceLearned, ability);
+                string traitKeyXpLearned = Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceLearned, ability);
                 int alreadyLearned;
-                if (!target.Traits.ContainsKey(traitXpConsumed))
+                if (!target.Traits.ContainsKey(traitKeyXpLearned))
                 {
-                    target.Traits.Add(traitXpConsumed, 0);
+                    target.Traits.Add(traitKeyXpLearned, 0);
                     alreadyLearned = 0;
                 }
                 else
                 {
-                    alreadyLearned= target.Traits[traitXpConsumed];
+                    alreadyLearned= target.Traits[traitKeyXpLearned];
                 }
 
-                string traitNameXpInPool = Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceToLearn, ability);
+                string traitKeyXpPool = Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpiriencePool, ability);
                 
                 int currentXpInPool;
-                if (!target.Traits.ContainsKey(traitNameXpInPool))
+                if (!target.Traits.ContainsKey(traitKeyXpPool))
                 {
                     currentXpInPool = 0;
-                    target.Traits.Add(traitNameXpInPool, 0);
+                    target.Traits.Add(traitKeyXpPool, 0);
                 }
                 else
                 {
-                    currentXpInPool = target.Traits[traitNameXpInPool];
+                    currentXpInPool = target.Traits[traitKeyXpPool];
                 }
 
                 int maxXpPoolFromThisTeacher = 0;
@@ -86,9 +86,10 @@ namespace RollerEngine.Rolls.Skills
                 //limit XP by teacher's capacity
                 int newXp = Math.Min(result, maxXpPoolFromThisTeacher);
 
-                target.Traits[traitNameXpInPool] = currentXpInPool + newXp;
+                target.Traits[traitKeyXpPool] = currentXpInPool + newXp;
 
-                Log.Log(Verbosity.Warning, string.Format("{0} got new {1}XP ({2}XP in total in bonus XP pool) to spent on learning {3} from {4}'s {5}.", target.Name, result, newXp, ability, actor.Name, Name));
+                Log.Log(Verbosity.Warning, string.Format("{0} obtain {1}XP truncated to new {2}XP + old {3}XP = {4}XP in XP pool) to spent on learning {5} from {6}'s {7}.",
+                    target.Name, result, newXp, currentXpInPool, target.Traits[traitKeyXpPool], ability, actor.Name, Name));
             }
             else
             {

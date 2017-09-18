@@ -4,6 +4,7 @@ namespace RollerEngine.Logger
 {
     public class NLogLogger : IRollLogger
     {
+        public Verbosity MinVerbosity { get; private set; }
         private readonly NLog.Logger _nlog;
 
         public NLogLogger(NLog.Logger nlog)
@@ -11,34 +12,41 @@ namespace RollerEngine.Logger
             _nlog = nlog;
         }
 
+        public NLogLogger(NLog.Logger nlog, Verbosity minVerbosity)
+        {
+            MinVerbosity = minVerbosity;
+            _nlog = nlog;
+        }
+
         public void Log(Verbosity verbosity, string record)
         {
-            LogLevel level;
-
-            switch (verbosity)
+            if (verbosity >= MinVerbosity)
             {
-                case Verbosity.Error:
-                    level = LogLevel.Error;
-                    break;
-                case Verbosity.Warning:
-                case Verbosity.Critical:
-                    level = LogLevel.Warn;
-                    break;
-                case Verbosity.Important:
-                    level = LogLevel.Info;
-                    break;
-                case Verbosity.Details:
-                    level = LogLevel.Debug;
-                    break;
-                case Verbosity.Debug:
-                    level = LogLevel.Trace;
-                    break;
-                default:
-                    level = LogLevel.Error;
-                    break;
+                LogLevel level;
+                switch (verbosity)
+                {
+                    case Verbosity.Error:
+                        level = LogLevel.Error;
+                        break;
+                    case Verbosity.Warning:
+                    case Verbosity.Critical:
+                        level = LogLevel.Warn;
+                        break;
+                    case Verbosity.Important:
+                        level = LogLevel.Info;
+                        break;
+                    case Verbosity.Details:
+                        level = LogLevel.Debug;
+                        break;
+                    case Verbosity.Debug:
+                        level = LogLevel.Trace;
+                        break;
+                    default:
+                        level = LogLevel.Error;
+                        break;
+                }
+                _nlog.Log(level, record);
             }
-
-            _nlog.Log(level, record);
         }
 
     }

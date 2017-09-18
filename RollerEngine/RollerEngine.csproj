@@ -58,6 +58,7 @@
       <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Activities" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -101,6 +102,7 @@
     <Compile Include="Rolls\Gifts\TeachersEase.cs" />
     <Compile Include="Rolls\Gifts\VizageOfFenris.cs" />
     <Compile Include="Rolls\Rites\AncestorSeeking.cs" />
+    <Compile Include="Rolls\Rites\RiteInfo.cs" />
     <Compile Include="Rolls\Rites\RiteRoll.cs" />
     <Compile Include="Rolls\Rites\SacredFire.cs" />
     <Compile Include="Rolls\Skills\SkillRoll.cs" />

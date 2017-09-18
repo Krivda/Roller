@@ -6,6 +6,7 @@ using RollerEngine.Character.Party;
 using RollerEngine.Roller;
 using RollerEngine.Logger;
 using RollerEngine.Modifiers;
+using RollerEngine.Rolls.Rites;
 
 namespace RollerEngine.Character
 {
@@ -57,7 +58,6 @@ namespace RollerEngine.Character
 
             Spiridon.HasOpenedCaern = true;
             Yoki.HasSpecOnInstruction = true;
-            Yoki.LearnSessions = 2;
             Kinfolk1.HasSpecOnInstruction = true;
             Kinfolk2.HasSpecOnInstruction = true;
 
@@ -71,84 +71,15 @@ namespace RollerEngine.Character
             return new HatysParty(party, log, roller);
         }
 
-        public void TeachingWeek(List<WeeklyActivity> teachPlan)
-        {
-            _log.Log(Verbosity.Important, "");
-            _log.Log(Verbosity.Warning, "Start TEACHING Week");
-
-            WeeklyBuff();
-
-            _log.Log(Verbosity.Warning, "Buffs Done, starting REAL job!");
-
-            foreach (var item in teachPlan)
-            {
-                //instruction
-                if (item.Student != null)
-                {
-                    
-                    _log.Log(Verbosity.Important, "");
-                    _log.Log(Verbosity.Important, string.Format("{0} startered learning {1} to {2}.", item.Teacher.CharacterName, item.Trait, item.Student.CharacterName));
-                    item.Teacher.Instruct(item.Student.Self, item.Trait, false);
-                }
-                else if (item.RiteName != null)
-                {
-                    _log.Log(Verbosity.Important, "");
-                    _log.Log(Verbosity.Important, string.Format("{0} startered learning {1} to {2}.", item.Teacher.CharacterName, item.Trait, item.Student.CharacterName));
-                    item.Teacher.LearnRite(item.RiteName, item.RiteLevel, false);
-                }
-            }
-
-            AutoLearn();
-
-            _log.Log(Verbosity.Warning, "END TEACHING Week");
-
-            //OfflineDiceRoller.LogStats(_log);
-        }
-
-        public void LearnWeek()
-        {
-
-            _log.Log(Verbosity.Important, "");
-            _log.Log(Verbosity.Warning, "Start LEARNING Week");
-
-            WeeklyBuff();
-
-            AutoLearn();
-
-            //OfflineDiceRoller.LogStats(_log);
-        }
-
         private void WeeklyBuff()
         {
-            StartScene();
+            //todo: rewrite
 
-            //boost nameless Instruction
+            //boost
+            Nameless.WeeklyPreBoost();
+            Spiridon.WeeklyPreBoost(Build.Abilities.Empathy); //it is important to Spiridon to be second due to -1 dc of Teacher's Ease of Nameless
+            Spiridon.WeeklyBoostSkill(Build.Abilities.Rituals);
             Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
-
-            Nameless.CastTeachersEase(Spiridon.Self, Build.Abilities.Subterfuge, false, Verbosity.Details);
-            Spiridon.CastPersuasion();
-
-            Nameless.CastTeachersEase(Yoki.Self, Build.Abilities.Subterfuge, false, Verbosity.Details);
-            Yoki.CastPersuasion();
-
-            Nameless.CastTeachersEase(Kinfolk1.Self, Build.Abilities.Subterfuge, false, Verbosity.Details);
-            Kinfolk1.CastPersuasion();
-
-            Nameless.CastTeachersEase(Kinfolk2.Self, Build.Abilities.Subterfuge, false, Verbosity.Details);
-            Kinfolk2.CastPersuasion();
-        }
-
-        private void AutoLearn()
-        {
-            _log.Log(Verbosity.Important, "");
-            _log.Log(Verbosity.Important, "Start LEARNING");
-
-            foreach (var partyKvp in _party)
-            {
-                partyKvp.Value.AutoLearn();
-            }
-            ShowLearningResults();
-
         }
 
 
@@ -165,6 +96,8 @@ namespace RollerEngine.Character
 
         private void ShowLearningResults()
         {
+            _log.Log(Verbosity.Critical, "==> week summary:");
+
             foreach (var origKvp in OriginalStats)
             {
                 var activeTraits = _partyBuilds.First(p => p.Value.Name.Equals(origKvp.Key)).Value.Traits;
@@ -180,28 +113,42 @@ namespace RollerEngine.Character
 
                     if (currTraitValue != origTraitValue)
                     {
-                        if (activeTrait.Key.Equals(Build.Atributes.Strength) ||
-                            activeTrait.Key.Equals(Build.Atributes.Dexterity) ||
-                            activeTrait.Key.Equals(Build.Atributes.Stamina)
-                            )
+                        if (activeTrait.Key.Contains(Build.DynamicTraits.ExpirienceLearned))
                         {
+                            string baseTrait = Build.DynamicTraits.GetBaseTrait(activeTrait.Key, Build.DynamicTraits.ExpirienceLearned);
+
+                            _log.Log(Verbosity.Critical, string.Format("{0} advanced in learning trait {1}: he already learned {2}XP towards next rank!. (changed from {3})!", origKvp.Key, baseTrait, currTraitValue, origTraitValue));
                         }
-                        else if (activeTrait.Key.Contains(Build.DynamicTraits.ExpirienceLearned))
+                        else if (activeTrait.Key.Contains(Build.DynamicTraits.ExpiriencePool))
                         {
-                            _log.Log(Verbosity.Important, string.Format("{0} changed known XP for {1} trait from {2} to {3}!", origKvp.Key, activeTrait.Key, origTraitValue, currTraitValue));
+                            string baseTrait = Build.DynamicTraits.GetBaseTrait(activeTrait.Key, Build.DynamicTraits.ExpiriencePool);
+
+                            _log.Log(Verbosity.Critical, string.Format("{0} advanced in learning trait {1}: he has {2}XP in trait pool. (changed from {3})!", origKvp.Key, baseTrait, currTraitValue, origTraitValue));
                         }
-                        else if (activeTrait.Key.Contains(Build.DynamicTraits.ExpirienceToLearn))
+                        else if (activeTrait.Key.Contains(Build.DynamicTraits.RiteLearned))
                         {
-                            _log.Log(Verbosity.Important, string.Format("{0} XP pool (to consume) for {1} trait from {2} to {3}!", origKvp.Key, activeTrait.Key, origTraitValue, currTraitValue));
+                            string baseTrait = Build.DynamicTraits.GetBaseTrait(activeTrait.Key, Build.DynamicTraits.RiteLearned);
+
+                            if (currTraitValue == Build.RiteAlreadyLearned && currTraitValue != origTraitValue)
+                            {
+                                //finished learning rite this week
+                                _log.Log(Verbosity.Critical, string.Format("{0} has learned rite {1}!", origKvp.Key, baseTrait));
+                            }
+                            else if (currTraitValue != Build.RiteAlreadyLearned)
+                            {
+                                _log.Log(Verbosity.Critical, string.Format("{0} advanced in learning rite {1}: he already learned {2} successes!. (changed from {3})!", origKvp.Key, baseTrait, currTraitValue, origTraitValue));
+                            }
+                        }
+                        else if (activeTrait.Key.Contains(Build.DynamicTraits.RitePool))
+                        {
+                            //skip it
                         }
                         else 
                         {
-                            _log.Log(Verbosity.Important, string.Format("{0} increased {1} trait from {2} to {3}!", origKvp.Key, activeTrait.Key, origTraitValue, currTraitValue));
+                            _log.Log(Verbosity.Critical, string.Format("{0} advanced in learning trait {1}: he increased trait value from {2} to {3}!", origKvp.Key, activeTrait.Key, origTraitValue, currTraitValue));
                         }
                     }
                 }
-
-                _log.Log(Verbosity.Important, "");
             }
         }
 
@@ -283,15 +230,9 @@ namespace RollerEngine.Character
                 //Hatys
                 if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur") || buildKvp.Key.Equals("Alisa") || buildKvp.Key.Equals("Urfin"))
                 {
-                    buildKvp.Value.CharacterClass = Build.Classes.Warewolf;
+                    buildKvp.Value.CharacterClass = Build.Classes.Werewolf;
 
-                    buildKvp.Value.DCModifiers.Add(new DCModifer(
-                        "Hatys",
-                        new List<string>() { Build.Backgrounds.Ancestors },
-                        DurationType.Permanent,
-                        new List<string>(),
-                        -2
-                    ));
+                    CommonBuffs.ApplyHatysBuff(buildKvp.Value, log);
                 }
 
                 if (buildKvp.Key.Equals("Kinfolk 1") || buildKvp.Key.Equals("Kinfolk 2"))
@@ -317,46 +258,105 @@ namespace RollerEngine.Character
             }
         }
 
-        public void Week(int weekNo)
+        public void DoWeek(int weekNo)
+        {
+            List<WeeklyActivity> plan = GetPlanByWeekNumber(weekNo);
+
+            _log.Log(Verbosity.Critical, string.Format("<==== Week {0} starts", weekNo));
+
+            StartScene();
+
+            WeeklyBuff();
+
+            foreach (var planItem in plan)
+            {
+                switch (planItem.Activity)
+                {
+                    case WeeklyActivity.ActivityKind.Teaching:
+                        planItem.Actor.Instruct(planItem.Student.Self, planItem.Trait, false);
+                        break;
+                    case WeeklyActivity.ActivityKind.LearnRites:
+                        planItem.Actor.AutoLearnRite(planItem.LearnSessions);
+                        break;
+                    case WeeklyActivity.ActivityKind.LearnTrait:
+                        planItem.Actor.AutoLearn(planItem.LearnSessions);
+                        break;
+                    case WeeklyActivity.ActivityKind.QueueNewRite:
+
+                        string keyRitePool = Build.DynamicTraits.GetKey(Build.DynamicTraits.RitePool, planItem.RiteInfo.Name);
+                        string keyRiteLearned = Build.DynamicTraits.GetKey(Build.DynamicTraits.RiteLearned, planItem.RiteInfo.Name);
+
+                        //create dynamic trait if it was absent
+                        if (!planItem.Actor.Self.Traits.ContainsKey(keyRitePool))
+                        {
+                            planItem.Actor.Self.Traits.Add(keyRitePool, planItem.RiteInfo.Level * 10);
+                        }
+
+                        //create dynamic trait if it was absent
+                        if (!planItem.Actor.Self.Traits.ContainsKey(keyRiteLearned))
+                        {
+                            planItem.Actor.Self.Traits.Add(keyRiteLearned, 0);
+                        }
+                        
+                        break;
+                }
+            }
+
+            ShowLearningResults();
+
+            _log.Log(Verbosity.Critical, string.Format("<==== Week {0} ends", weekNo));
+        }
+
+        private List<WeeklyActivity> GetPlanByWeekNumber(int weekNo)
         {
             List<WeeklyActivity> plan = new List<WeeklyActivity>();
 
             switch (weekNo)
             {
                 case 1:
-                    plan.Add(new WeeklyActivity(Nameless, Kinfolk1, Build.Abilities.Leadership));
-                    //plan.Add(new WeeklyActivity(Yoki, Ptitsa, Self.Abilities.Stealth)); //done
-                    //plan.Add(new WeeklyActivity(Spiridon, Kurt, Self.Abilities.Rituals)); //can't tesch that week
-                    plan.Add(new WeeklyActivity(Kurt, Yoki, Build.Abilities.Demolitions));
-                    plan.Add(new WeeklyActivity(Kinfolk1, Kurt, Build.Abilities.Firearms));
-                    //plan.Add(new WeeklyActivity(Kinfolk2, Nameless, Self.Abilities.Brawl)); //done
-
-                    Yoki.LearnSessions =1; //made talens this week 
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites["Some rite 1"]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites["Some rite 2"]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites["Rite of Something"]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnRites, Spiridon, 5));
                     break;
+
                 case 2:
-                    Yoki.LearnSessions = 2; // restore
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnRites, Spiridon, 5));
                     break;
 
+                case 3:
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Nameless, Kinfolk1, Build.Abilities.Leadership));
+                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Yoki, Ptitsa, Self.Abilities.Stealth)); //done
+                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Spiridon, Kurt, Self.Abilities.Rituals)); //can't teach that week
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Kurt, Yoki, Build.Abilities.Demolitions));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Kinfolk1, Kurt, Build.Abilities.Firearms));
+                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Kinfolk2, Nameless, Self.Abilities.Brawl)); //done
 
+
+                    //learning
+                    //plan.Add(new WeeklyActivity(Nameless, 2));
+                    //plan.Add(new WeeklyActivity(Spiridon, 2));
+                    //plan.Add(new WeeklyActivity(Kurt, 2));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Yoki, 4));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Yoki, 4));
+                    //plan.Add(new WeeklyActivity(Kinfolk1, 2));
+                    //plan.Add(new WeeklyActivity(Kinfolk2, 2));
+
+                    break;
+                case 4:
+                    //learning
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Nameless, 1));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Spiridon, 1));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Kurt, 1));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Yoki, 1));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Yoki, 1));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Kinfolk1, 1));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Kinfolk2, 1));
+
+                    break;
             }
 
-            try
-            {
-                if (plan.Count > 0)
-                {
-                    TeachingWeek(plan);
-                }
-                else
-                {
-                    LearnWeek();
-                }
-            }
-            catch (Exception e)
-            {
-                _log.Log(Verbosity.Warning, e.Message);
-            }
-
-            
+            return plan;
         }
     }
 }

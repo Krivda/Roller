@@ -59,8 +59,8 @@ namespace RollerEngine.Character.Party
 
         public void WeeklyPreBoost(string suppTrait)
         {
-            Log.Log(Verbosity.Important, "=== === === === ===");
-            Log.Log(Verbosity.Important, string.Format("{0} WeeklyPreBoost on {1}", Self.Name, suppTrait));
+            Log.Log(Verbosity.Details, "=== === === === ===");
+            Log.Log(Verbosity.Details, string.Format("{0} WeeklyPreBoost on {1}", Self.Name, suppTrait));
 
             ShiftToCrinos();
             //apply heighten sences
@@ -72,15 +72,15 @@ namespace RollerEngine.Character.Party
             //add caern mod (+4 ancestors)
             CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Self, Log);
             //apply
-            CommonBuffs.ApplySacredRosemary(Party.Spiridon.Self, Log);
+            CommonBuffs.ApplySacredRosemary(Party.Spiridon.Self, Log); //TODO: this usage should be counted once more because its target are spirits (do when we'll count talens)
             //buff Occult
             ApplyAncestors(suppTrait);
         }
 
         public void WeeklyMidBoostOccult(Build target)
         {
-            Log.Log(Verbosity.Important, "=== === === === ===");
-            Log.Log(Verbosity.Important, string.Format("{0} WeeklyMidBoostOccult for {1}", Self.Name, target.Name));
+            Log.Log(Verbosity.Details, "=== === === === ===");
+            Log.Log(Verbosity.Details, string.Format("{0} WeeklyMidBoostOccult for {1}", Self.Name, target.Name));
 
             //for my next Ancestor Seeking
             CastSacredFire(new List<Build>() { Self });
@@ -92,8 +92,8 @@ namespace RollerEngine.Character.Party
 
         public void WeeklyBoostSkill(string mainTrait)
         {
-            Log.Log(Verbosity.Important, "=== === === === ===");
-            Log.Log(Verbosity.Important, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, mainTrait));
+            Log.Log(Verbosity.Details, "=== === === === ===");
+            Log.Log(Verbosity.Details, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, mainTrait));
 
             //Buff occult from Spiridon
             Party.Spiridon.WeeklyMidBoostOccult(Self);
