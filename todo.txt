@@ -18,9 +18,35 @@ Info: Spiridon: 16,1836 (0-35)
 todo max priority:
 15. learn bone rythms, veneration, open caern
 15b. rites to dictionary for planned
+		Papa Serega: 5 - for Rite of Signpost(4); Rite of Trespassing(5); Crash Space (2); Shopping Chart (2)
+		Golosa Vetrov: 5 - for Rite of Caern Building (5); Rite of Balance (3); Invitation to Ancestors (4)
+		Babka Aine: 5 - for Rite of Sacred Peace(5)/Bowels of Mother(0), Asklepius (3), Comfort (2), Sin-Eating (3); of Teachers (1)
+		Udjin: 4 - for Rite of Fetish (3); Rite of Deliverance (3); Nightshade (4); Deliverance (3); Sin-Eater (2)
+
 28, check nlog.txt is full!
 29. !!! !!! Bundle to Nameless; Chiminage for Spiridon!!!
 !!! ultimate plan till next Wed
 32 test 3-4 weeks
 33 fortune spirit (Charm from F.Tribebook)
 34 MindPartition logic (2 + Gnosis roll * 2 = learning Sessions)
+
+SELECT TOKENS:
+	Pipes of the Otherworld, Fiana, 2 - decrease Mystic rites DC
+	Carnyx of Victory +DicePool fiana, 4
+	Torc of Wisdom fiana 3,4 + perma gnos
+	Boar’s Tusk, 
+	Coforters Archtect (3), children
+	Unbroken Cord (4), children
+
+	Core 4 : Shrouded Glen - protect Caern in Umbra (rite)
+	PGtG 4 : of Opened Sky - to cleanse area (in CAERN only)
+
+Glass Walkers Tribal Seasonal: The Little Rite !!!
+Glass Walkers Camp : Rite of Growth
+Black Fury 1 Seasonal : Autumn: Rejuvenate the Soil = fertility
+Children of Gaia 3 : Sign the Many Shapes => roleplay, get knowledge
+Children of Gaia 4 : Rite of resolution => prevent frenzy in Garou challenges !!!
+Children of Gaia 5 : End of Time Rite => roleplaying
+Glass Walkers Camp : Rite of Bonding = blessing from pack Totem (bonuses!) !!!
+Children of Gaia 5 : Parted Veil => create Kinfolks!
+
