@@ -29,7 +29,7 @@ namespace RollerEngine.Character
             IList<IList<object>> data;
             try
             {
-                 data = SpreadsheetService.GetNotEmptySpreadsheetRange("1tKXkAjTaUpIDkjmCi7w1QOVbnyYU2f-KOWEnl2EAIZg", "A1:J100", "Party sheet list");
+                 data = SpreadsheetService.GetNotEmptySpreadsheetRange("1tKXkAjTaUpIDkjmCi7w1QOVbnyYU2f-KOWEnl2EAIZg", "A1:K100", "Party sheet list");
             }
             catch (Exception e)
             {
@@ -51,7 +51,6 @@ namespace RollerEngine.Character
             for (int i = 1; i < data.Count; i++)
             {
                 Build probeBuild = result.Values.First(v => true);
-
 
                 try
                 {
@@ -230,7 +229,7 @@ namespace RollerEngine.Character
         {
             List<Tuple<string, int>> result = new List<Tuple<string, int>>();
 
-            for (int i = 3; i < 10; i++)
+            for (int i = 3; i < 11; i++)
             {
                 result.Add(new Tuple<string, int>(Convert.ToString(data[0][i]), i));
             }
@@ -290,6 +289,5 @@ namespace RollerEngine.Character
 
             return new Tuple<int, int>(traitValue, secondVal);
         }
-
     }
 }

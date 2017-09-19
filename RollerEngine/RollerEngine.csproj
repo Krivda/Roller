@@ -79,6 +79,7 @@
     <Compile Include="Character\Party\Kinfolk1.cs" />
     <Compile Include="Character\Party\Kinfolk2.cs" />
     <Compile Include="Character\Party\Kurt.cs" />
+    <Compile Include="Character\Party\Lynn.cs" />
     <Compile Include="Character\WeeklyActivity.cs" />
     <Compile Include="Modifiers\BonusModifier.cs" />
     <Compile Include="Modifiers\DCModifer.cs" />
