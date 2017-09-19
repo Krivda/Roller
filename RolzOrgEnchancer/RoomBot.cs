@@ -143,12 +143,15 @@ namespace RolzOrgEnchancer
           var lines = message.Split(LineSeparators, StringSplitOptions.RemoveEmptyEntries);
           foreach (var el in lines)
           {
-              //fourth stage: remove starting / ending white chars
-              var line = el.Trim();
+              var line = el;
+              //fourth stage: if starts with === replace = from string
+              if (line.StartsWith("===")) line = line.Replace("=", "");
               //fifth stage: remove starting spaces and special characters for commands and rolls
               line = line.TrimStart(' ', '/', '#', '-');
+              //last stage: remove ending white chars
+              line = line.TrimEnd();
               if (line != el) Program.Log("Bot: replaced '" + el + "' with '" + line + "'"); //TODO Format
-              MakeSingleMessage(color, line);
+              if (line != "") MakeSingleMessage(color, line);
           }
         }
 
