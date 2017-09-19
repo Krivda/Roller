@@ -21,8 +21,15 @@ namespace RollerEngine.Rolls.Skills
         {
         }
 
-        public int Roll(Build actor, string riteName, bool hasSpec, bool hasWill)
+        public int Roll(Build actor, Rite rite, bool hasSpec, bool hasWill)
         {
+            RiteInfo riteInfo;
+            if (!RitesDictionary.Rites.TryGetValue(rite, out riteInfo))
+            {
+                throw new Exception(string.Format("Rite {0} is not known by software!", Enum.GetName(typeof(Rite), rite)));
+            }
+
+            var riteName = riteInfo.Name;
             AdditionalInfo = riteName;
 
             int result = base.Roll(actor, new List<Build>() { actor }, hasSpec, hasWill);
@@ -35,14 +42,7 @@ namespace RollerEngine.Rolls.Skills
                 //create dynamic trait if it was absent
                 if (!actor.Traits.ContainsKey(keyRitePool))
                 {
-                    RiteInfo rite;
-
-                    if (! RitesDictionary.Rites.TryGetValue(riteName, out rite))
-                    {
-                        throw new Exception(string.Format("Rite {0} is not known by software!", riteName));
-                    }
-
-                    actor.Traits.Add(keyRitePool, (int)rite.Level * 10);
+                    actor.Traits.Add(keyRitePool, (int)riteInfo.Level * 10);
                 }
 
                 //create dynami trait if it was absent

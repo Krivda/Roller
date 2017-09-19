@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Modifiers;
 using RollerEngine.Roller;
 using RollerEngine.Rolls.Backgrounds;
+using RollerEngine.Rolls.Rites;
 using RollerEngine.Rolls.Skills;
 
 namespace RollerEngine.Character.Party
@@ -175,6 +177,8 @@ namespace RollerEngine.Character.Party
                 string traitKeyRitePool = ritePoolTrait.Item1;
                 string riteName = Build.DynamicTraits.GetBaseTrait(traitKeyRitePool, Build.DynamicTraits.RiteLearned);
 
+                Rite rite = RitesDictionary.Rites.First(ri => ri.Value.Name.Equals(riteName)).Key;
+
                 while (LearnAttempts > 0)
                 {
                     //learn until don't exceed max attempts (or all available for SPEND_ALL_ATTEMPTS)
@@ -188,7 +192,7 @@ namespace RollerEngine.Character.Party
                         break;
                     }
 
-                    LearnRite(riteName, false, true); //TODO check for Caern group for Spiridon, Mystic for Yoki etc
+                    LearnRite(rite, false, true); //TODO check for Caern group for Spiridon, Mystic for Yoki etc
                                                       //always with Will to prevent botches (ask CURATOR!)
                     LearnAttempts--;
                     spentAttempts++;
@@ -196,7 +200,7 @@ namespace RollerEngine.Character.Party
             }
         }
 
-        public void LearnRite(string riteName, bool hasSpec, bool hasWill)
+        public void LearnRite(Rite rite, bool hasSpec, bool hasWill)
         {
             if (! (Self.CharacterClass.Equals(Build.Classes.Werewolf) || Self.CharacterClass.Equals(Build.Classes.Corax)))
             {
@@ -215,7 +219,7 @@ namespace RollerEngine.Character.Party
             }
 
             RitualsLearn roll = new RitualsLearn(Log, Roller);
-            roll.Roll(Self, riteName, hasSpec, hasWill);
+            roll.Roll(Self, rite, hasSpec, hasWill);
         }
     }
 }

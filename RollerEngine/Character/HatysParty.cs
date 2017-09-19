@@ -390,10 +390,10 @@ namespace RollerEngine.Character
                     //Nameless teach Kurt Ancestor Veneration
                     plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.TeachGarouToGarou, Nameless, 1));
 
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Nameless, RitesDictionary.Rites["of Opened Caern"]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Kurt, RitesDictionary.Rites["of Ancestors Veneration"]));
-                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Yoki, RitesDictionary.Rites["of Ancestors Veneration"])); //from Kurt later
-                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites["of Ancestors Veneration"])); //from Kurt later
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Nameless, RitesDictionary.Rites[Rite.OpenedCaern]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Kurt, RitesDictionary.Rites[Rite.AncestorVeneration]));
+                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Yoki, RitesDictionary.Rites[Rite.AncestorVeneration])); //from Kurt later
+                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.AncestorVeneration])); //from Kurt later
 
                     //Spiridon PACK of rites!!!
                     /*
@@ -410,9 +410,9 @@ namespace RollerEngine.Character
                 //22 Feb (teaching week)
 
                 case 3:
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnRite, Spiridon, RitesDictionary.Rites["Some rite 1"]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites["Some rite 2"]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites["Rite of Something"]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnRite, Spiridon, RitesDictionary.Rites[Rite.AncestorSeeking]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.AncestorSeeking]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.AncestorSeeking]));
                     plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnRite, Spiridon, 5));
                     plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Nameless, Kinfolk1, Build.Abilities.Leadership));
                     //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Yoki, Ptitsa, Self.Abilities.Stealth)); //done

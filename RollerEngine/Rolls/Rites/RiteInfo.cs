@@ -141,10 +141,9 @@ namespace RollerEngine.Rolls.Rites
                 {Rite.QuestingStone, new RiteInfo("Of Questing Stone", RiteGroup.Mystic, 1, new List<string>())},
                 {Rite.TalismanDedication, new RiteInfo("Of Talisman Dedication", RiteGroup.Mystic, 1, new List<string>())},
                 {Rite.Becoming, new RiteInfo("Of Becoming", RiteGroup.Mystic, 2, new List<string>())},
-                {Rite.Becoming, new RiteInfo("Of Becoming", RiteGroup.Mystic, 2, new List<string>())},
                 {Rite.SpiritAwakening, new RiteInfo("Of Spirit Awakening", RiteGroup.Mystic, 2, new List<string>())},
                 {Rite.Fetish, new RiteInfo("Of Fetish", RiteGroup.Mystic, 3, new List<string>())},
-                {Rite.Totem, new RiteInfo("Of Becoming", RiteGroup.Mystic, 3, new List<string>())},
+                {Rite.Totem, new RiteInfo("Of Totem", RiteGroup.Mystic, 3, new List<string>())},
 
                 {Rite.Accomplishment, new RiteInfo("Of Accomplishment", RiteGroup.Renown, 2, new List<string>())},
                 {Rite.Passage, new RiteInfo("Of Passage", RiteGroup.Renown, 2, new List<string>())},
