@@ -54,7 +54,7 @@ namespace RollerEngine.Character.Party
                     }
                 }*/
 
-                if (!mods.Exists(modifier => modifier.Name.Equals(Build.Backgrounds.Ancestors)))
+                if (!mods.Exists(modifier => modifier.Name.Equals(Build.Backgrounds.Ancestors) && modifier.Value !=0 ))
                 {
                     CommonBuffs.ApplyAncestorsChiminage(Self, Log);
                     CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Self, Log);
@@ -155,7 +155,6 @@ namespace RollerEngine.Character.Party
         {
             var ritePoolTraits = new List<Tuple<string, int>>();
 
-            //TODO: ???
             foreach (var traitKvp in Self.Traits)
             {
                 if (traitKvp.Key.Contains(Build.DynamicTraits.RiteLearned))
@@ -167,7 +166,6 @@ namespace RollerEngine.Character.Party
                 }
             }
 
-            //TODO: sorting order?
             ritePoolTraits.Sort((tuple, tuple1) => tuple.Item2.CompareTo(tuple1.Item2));
 
             int spentAttempts = 0;

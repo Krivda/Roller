@@ -23,6 +23,8 @@ namespace RollerEngine.Character
         public Kurt Kurt { get; private set; }
         public Kinfolk1 Kinfolk1 { get; private set; }
         public Kinfolk2 Kinfolk2 { get; private set; }
+        public Lynn Lynn { get; private set; }
+        
 
         public Dictionary<string, Dictionary<string, int>> OriginalStats;
 
@@ -52,6 +54,9 @@ namespace RollerEngine.Character
 
             Kinfolk2 = new Kinfolk2(party["Kinfolk 2"], log, roller, this);
             _party.Add(Kinfolk2.CharacterName, Kinfolk2);
+
+            Lynn = new Lynn(party["Lynn"], log, roller, this);
+            _party.Add(Lynn.CharacterName, Kinfolk2);
 
             OriginalStats = new Dictionary<string, Dictionary<string, int>>();
 
@@ -214,7 +219,7 @@ namespace RollerEngine.Character
                 }
 
                 //Ancestors
-                if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur"))
+                if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur") || buildKvp.Key.Equals("Lynn"))
                 {
                     buildKvp.Value.Traits[Build.Backgrounds.Ancestors] = 5;
                 }
@@ -234,12 +239,16 @@ namespace RollerEngine.Character
                     CommonBuffs.ApplyMedicalBundle(buildKvp.Value, log);
                 }
 
-                //Hatys
-                if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur") || buildKvp.Key.Equals("Alisa") || buildKvp.Key.Equals("Urfin"))
+                if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur") || buildKvp.Key.Equals("Alisa") || buildKvp.Key.Equals("Urfin") || buildKvp.Key.Equals("Lynn"))
                 {
                     buildKvp.Value.CharacterClass = Build.Classes.Werewolf;
 
-                    CommonBuffs.ApplyHatysBuff(buildKvp.Value, log);
+                    //Hatys
+                    if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur") ||
+                        buildKvp.Key.Equals("Alisa") || buildKvp.Key.Equals("Urfin"))
+                    {
+                        CommonBuffs.ApplyHatysBuff(buildKvp.Value, log);
+                    }
                 }
 
                 if (buildKvp.Key.Equals("Kinfolk 1") || buildKvp.Key.Equals("Kinfolk 2"))
