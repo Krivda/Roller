@@ -6,9 +6,9 @@ using RollerEngine.Roller;
 
 namespace RollerEngine.Rolls.Gifts
 {
-    class CaernOfVigilChannelling : GiftRoll
+    public class CaernOfVigilChannelling : GiftRoll
     {
-        public const string GiftName = "Caern of Vigil (Chanellig)";
+        public const string GiftName = "Caern of Vigil (Chanelling)";
 
         public CaernOfVigilChannelling(IRollLogger log, IRoller roller)
             : base(GiftName, log, roller,
@@ -20,6 +20,8 @@ namespace RollerEngine.Rolls.Gifts
 
         public int Roll(Build actor, string targetTrait, bool withWill)
         {
+            AdditionalInfo = targetTrait;
+
             int successes = base.Roll(actor, new List<Build>() { actor }, false, withWill);
 
             if (successes > 0)

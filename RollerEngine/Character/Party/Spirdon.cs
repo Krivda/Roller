@@ -119,5 +119,13 @@ namespace RollerEngine.Character.Party
             var ancestorSeeking = new AncestorSeeking(Log, Roller);
             ancestorSeeking.Roll(Self, target, false, true);
         }
+
+        public void CastMindPartition()
+        {
+            //Cast Pesuasion
+            var mindPartition = new MindPartition(Log, Roller);
+            int mindParts = 1 + mindPartition.Roll(Self);
+            LearnAttempts *= mindParts; //TODO more complicated (requires reroll of the gift for finished learning activities)
+        }
     }
 }

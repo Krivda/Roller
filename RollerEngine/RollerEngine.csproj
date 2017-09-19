@@ -96,6 +96,7 @@
     <Compile Include="Rolls\Gifts\GiftRoll.cs" />
     <Compile Include="Rolls\Gifts\CallOfTheWyldDirgeToTheFallen.cs" />
     <Compile Include="Rolls\Gifts\GhostPack.cs" />
+    <Compile Include="Rolls\Gifts\MindPartition.cs" />
     <Compile Include="Rolls\Gifts\Persuasion.cs" />
     <Compile Include="Logger\NLogLogger.cs" />
     <Compile Include="Logger\StringBufferLogger.cs" />

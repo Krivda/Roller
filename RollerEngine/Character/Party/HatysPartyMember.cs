@@ -5,13 +5,14 @@ using RollerEngine.Logger;
 using RollerEngine.Modifiers;
 using RollerEngine.Roller;
 using RollerEngine.Rolls.Backgrounds;
-using RollerEngine.Rolls.Rites;
 using RollerEngine.Rolls.Skills;
 
 namespace RollerEngine.Character.Party
 {
     public class HatysPartyMember : Common.Character
     {
+        public const int SPEND_ALL_ATTEMPTS = -1;
+
         public HatysParty Party { get; private set; }
         public bool HasOpenedCaern { get; set; }
         public bool HasSpecOnInstruction { get; set; }
@@ -75,7 +76,7 @@ namespace RollerEngine.Character.Party
             base.Learn(ability, withWill);
         }
 
-        public void AutoLearn(int learnSessions)
+        public void AutoLearn(int maxLearnAttempts)
         {
             var xpPoolTraits = new List<Tuple<string, int>>();
 
@@ -93,21 +94,31 @@ namespace RollerEngine.Character.Party
             //TODO: sorting order?
             xpPoolTraits.Sort((tuple, tuple1) => tuple.Item2.CompareTo(tuple1.Item2));
 
+            int spentAttempts = 0;
+
             foreach (var xpPoolTrait in xpPoolTraits)
             {
                 string traitKeyXpPool = xpPoolTrait.Item1;
                 string trait = Build.DynamicTraits.GetBaseTrait(traitKeyXpPool, Build.DynamicTraits.ExpiriencePool);
                 bool hasWill = Self.Traits[trait] < 3;
 
-                while (learnSessions > 0)
+                while (LearnAttempts > 0 )
                 {
+                    //learn until don't exceed max attempts (or all available for SPEND_ALL_ATTEMPTS)
+                    if ((maxLearnAttempts != SPEND_ALL_ATTEMPTS) && (spentAttempts == maxLearnAttempts))
+                    {
+                        break;
+                    }
+
                     if (Self.Traits[traitKeyXpPool] <= 0) //TODO: AlreadyLearned
                     {
                         break;
                     }
 
                     Learn(trait, hasWill);
-                    learnSessions--;
+                    LearnAttempts--;
+                    spentAttempts++;
+
                 }
             }
         }
@@ -140,7 +151,7 @@ namespace RollerEngine.Character.Party
             }
         }
 
-        public void AutoLearnRite(int learnSessions)
+        public void AutoLearnRite(int maxLearnAttempts)
         {
             var ritePoolTraits = new List<Tuple<string, int>>();
 
@@ -159,13 +170,21 @@ namespace RollerEngine.Character.Party
             //TODO: sorting order?
             ritePoolTraits.Sort((tuple, tuple1) => tuple.Item2.CompareTo(tuple1.Item2));
 
+            int spentAttempts = 0;
+
             foreach (var ritePoolTrait in ritePoolTraits)
             {
                 string traitKeyRitePool = ritePoolTrait.Item1;
                 string riteName = Build.DynamicTraits.GetBaseTrait(traitKeyRitePool, Build.DynamicTraits.RiteLearned);
 
-                while (learnSessions > 0)
+                while (LearnAttempts > 0)
                 {
+                    //learn until don't exceed max attempts (or all available for SPEND_ALL_ATTEMPTS)
+                    if ((maxLearnAttempts != SPEND_ALL_ATTEMPTS) && (spentAttempts == maxLearnAttempts))
+                    {
+                        break;
+                    }
+
                     if (Self.Traits[traitKeyRitePool] == Build.RiteAlreadyLearned)
                     {
                         break;
@@ -173,7 +192,8 @@ namespace RollerEngine.Character.Party
 
                     LearnRite(riteName, false, true); //TODO check for Caern group for Spiridon, Mystic for Yoki etc
                                                       //always with Will to prevent botches (ask CURATOR!)
-                    learnSessions--;
+                    LearnAttempts--;
+                    spentAttempts++;
                 }
             }
         }

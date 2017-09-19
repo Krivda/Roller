@@ -121,7 +121,7 @@ namespace RollerEngine.Rolls.Skills
 
                     if (xpCost > xpLearned)
                     {
-                        Log.Log(Verbosity, string.Format("{0} don't yet have {1}XP in {2} to increase it's value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool, total {6}XP spent.", 
+                        Log.Log(Verbosity.Details, string.Format("{0} don't yet have {1}XP in {2} to increase it's value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool, total {6}XP spent.", 
                             actor.Name, xpCost, ability, i, actor.Traits[traitKeyXpPool], xpLearned, xpSpentIncreasingTrait));
                         break;
                     }

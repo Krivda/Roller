@@ -2,7 +2,6 @@ using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
 using RollerEngine.Rolls.Gifts;
-using RollerEngine.Rolls.Skills;
 
 namespace RollerEngine.Character.Party
 {
@@ -11,6 +10,7 @@ namespace RollerEngine.Character.Party
  
         public Yoki(Build build, IRollLogger log, IRoller roller, HatysParty party) : base("Йоки", build, log, roller, party)
         {
+            LearnAttempts = 4;
         }
 
         public void CastPersuasion()

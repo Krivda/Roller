@@ -10,7 +10,7 @@ namespace RollerEngine.Character
         public bool HasWill { get; private set; }
         public string Activity { get; protected set; }
         public HatysPartyMember Actor { get; private set; }
-        public int LearnSessions { get; private set; }
+        public int MaxLearnAttempts { get; private set; }
         public Common.Character Student { get; private set; }
         public string Trait { get; private set; }
 
@@ -28,7 +28,7 @@ namespace RollerEngine.Character
                                                                 //shared activity
 
             public const string LearnTrait = "Learn Ability";
-            public const string LearnRites = "Learn Rite";      //due to cacao talen you can make up to 2 learning rolls per week (3,5 days EXCLUSIVE per roll)
+            public const string LearnRite = "Learn Rite";      //due to cacao talen you can make up to 2 learning rolls per week (3,5 days EXCLUSIVE per roll)
                                                                 //due to Eidetic memory Yoki can make up to 4 learning rolls per week (1,75 days EXCLUSIVE per roll)
                                                                 //due to Mind Partition Spiridon can make learning rolls as background activity
                                                                 //this is EXCLUSIVE activity by default (you cannot do anything during learning)
@@ -36,6 +36,8 @@ namespace RollerEngine.Character
             public const string CreateTalens = "Create Talens"; //mini umbral storm prevents fast creation; shared activity; components from modules
             public const string CreateFetish = "Create Fetish"; //mini umbral storm prevents fast creation; shared activity; components from modules
             public const string CreateDevice = "Create Device"; //shared activity; components from modules
+
+            public const string TeachGarouToGarou = "Teach from Garou to Garou";
 
             public const string QueueNewRite = "Queue new rite"; //add rite to learning queue
 
@@ -60,13 +62,13 @@ namespace RollerEngine.Character
             RiteInfo = riteRiteInfo;
         }
 
-        public WeeklyActivity(string activity, HatysPartyMember actor, int learnSessions)
+        public WeeklyActivity(string activity, HatysPartyMember actor, int maxLearnAttempts)
         {
             //Learn rite or trait
             Activity = activity;
             Actor = actor;
 
-            LearnSessions = learnSessions;
+            MaxLearnAttempts = maxLearnAttempts;
         }
     }
 }

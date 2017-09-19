@@ -42,7 +42,7 @@ namespace RollerEngine.Rolls.Skills
                         throw new Exception(string.Format("Rite {0} is not known by software!", riteName));
                     }
 
-                    actor.Traits.Add(keyRitePool, rite.Level * 10);
+                    actor.Traits.Add(keyRitePool, (int)rite.Level * 10);
                 }
 
                 //create dynami trait if it was absent

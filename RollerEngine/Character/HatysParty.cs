@@ -186,7 +186,7 @@ namespace RollerEngine.Character
             }
 
 
-
+            //todo: loop it!
             OriginalStats.Clear();
             StoreOriginalValues(Nameless.Self);
             StoreOriginalValues(Spiridon.Self);
@@ -194,6 +194,13 @@ namespace RollerEngine.Character
             StoreOriginalValues(Kurt.Self);
             StoreOriginalValues(Kinfolk1.Self);
             StoreOriginalValues(Kinfolk2.Self);
+
+            Spiridon.LearnAttempts = 2;
+            Nameless.LearnAttempts = 2;
+            Kurt.LearnAttempts = 2;
+            Yoki.LearnAttempts = 4;
+            Kinfolk1.LearnAttempts = 2;
+            Kinfolk2.LearnAttempts = 2;
         }
 
         private static void AddPermanentModifiers(Dictionary<string, Build> result, IRollLogger log)
@@ -268,6 +275,9 @@ namespace RollerEngine.Character
 
             WeeklyBuff();
 
+            Spiridon.CastMindPartition();
+
+            //first of all queue rites and roll teaching
             foreach (var planItem in plan)
             {
                 switch (planItem.Activity)
@@ -275,12 +285,7 @@ namespace RollerEngine.Character
                     case WeeklyActivity.ActivityKind.Teaching:
                         planItem.Actor.Instruct(planItem.Student.Self, planItem.Trait, false);
                         break;
-                    case WeeklyActivity.ActivityKind.LearnRites:
-                        planItem.Actor.AutoLearnRite(planItem.LearnSessions);
-                        break;
-                    case WeeklyActivity.ActivityKind.LearnTrait:
-                        planItem.Actor.AutoLearn(planItem.LearnSessions);
-                        break;
+
                     case WeeklyActivity.ActivityKind.QueueNewRite:
 
                         string keyRitePool = Build.DynamicTraits.GetKey(Build.DynamicTraits.RitePool, planItem.RiteInfo.Name);
@@ -289,17 +294,54 @@ namespace RollerEngine.Character
                         //create dynamic trait if it was absent
                         if (!planItem.Actor.Self.Traits.ContainsKey(keyRitePool))
                         {
-                            planItem.Actor.Self.Traits.Add(keyRitePool, planItem.RiteInfo.Level * 10);
+                            planItem.Actor.Self.Traits.Add(keyRitePool, (int)planItem.RiteInfo.Level * 10);
                         }
 
                         //create dynamic trait if it was absent
                         if (!planItem.Actor.Self.Traits.ContainsKey(keyRiteLearned))
                         {
                             planItem.Actor.Self.Traits.Add(keyRiteLearned, 0);
-                        }
-                        
+                        }                        
                         break;
                 }
+            }
+
+            //person spends learning attempts
+            foreach (var actor in _party)
+            {
+                List<WeeklyActivity> personalPlanCreateTalens =
+                    plan.FindAll(wa => wa.Actor.CharacterName.Equals(actor.Value.CharacterName) && wa.Activity == WeeklyActivity.ActivityKind.CreateTalens);
+                List<WeeklyActivity> personalPlanTeachGarouToGarou =
+                    plan.FindAll(wa => wa.Actor.CharacterName.Equals(actor.Value.CharacterName) && wa.Activity == WeeklyActivity.ActivityKind.TeachGarouToGarou);
+                List<WeeklyActivity> personalPlanLearnTraits =
+                    plan.FindAll(wa => wa.Actor.CharacterName.Equals(actor.Value.CharacterName) && wa.Activity == WeeklyActivity.ActivityKind.LearnTrait);
+                List<WeeklyActivity> personalPlanLearnRites =
+                    plan.FindAll(wa => wa.Actor.CharacterName.Equals(actor.Value.CharacterName) && wa.Activity == WeeklyActivity.ActivityKind.LearnRite);
+
+                foreach (var planItem in personalPlanTeachGarouToGarou)
+                {
+                    planItem.Actor.LearnAttempts -= planItem.MaxLearnAttempts;
+                }
+
+                foreach (var planItem in personalPlanCreateTalens)
+                {
+                    planItem.Actor.LearnAttempts -= planItem.MaxLearnAttempts;
+                }
+
+                foreach (var planItem in personalPlanLearnRites)
+                {
+                    planItem.Actor.AutoLearnRite(planItem.MaxLearnAttempts);
+                }
+
+                foreach (var planItem in personalPlanLearnTraits)
+                {
+                    planItem.Actor.AutoLearn(planItem.MaxLearnAttempts);
+                }
+
+                actor.Value.AutoLearn(HatysPartyMember.SPEND_ALL_ATTEMPTS);     //first try to learn more traits
+                actor.Value.AutoLearnRite(HatysPartyMember.SPEND_ALL_ATTEMPTS); //second try to learn more rites
+
+                //TODO: maybe log attempts.
             }
 
             ShowLearningResults();
@@ -313,18 +355,56 @@ namespace RollerEngine.Character
 
             switch (weekNo)
             {
+                //8 Feb (teaching week)
                 case 1:
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites["Some rite 1"]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites["Some rite 2"]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites["Rite of Something"]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnRites, Spiridon, 5));
+                    //teach
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Nameless, Kinfolk1, Build.Abilities.Leadership));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Kurt, Yoki, Build.Abilities.Demolitions));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Kinfolk1, Kurt, Build.Abilities.Firearms));
+
+                    //learn
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Kurt, 2));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Kinfolk1, 2));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Yoki, 2));
+
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.CreateTalens, Yoki, 2));
+
                     break;
 
+                //15 Feb
                 case 2:
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnRites, Spiridon, 5));
+                    //Kinfolks learn nothing!?
+
+                    //Spiridon,Yoki: create Talens
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.CreateTalens, Spiridon, 2)); //TODO: or 0.5 week?
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.CreateTalens, Yoki, 2));
+                    //Nameless teach Kurt Ancestor Veneration
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.TeachGarouToGarou, Nameless, 1));
+
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Nameless, RitesDictionary.Rites["of Opened Caern"]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Kurt, RitesDictionary.Rites["of Ancestors Veneration"]));
+                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Yoki, RitesDictionary.Rites["of Ancestors Veneration"])); //from Kurt later
+                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites["of Ancestors Veneration"])); //from Kurt later
+
+                    //Spiridon PACK of rites!!!
+                    /*
+                     * +bone rythms
+                     * 15b. rites to dictionary for planned
+		Papa Serega: 5 - for Rite of Signpost(4); Rite of Trespassing(5); Crash Space (2); Shopping Chart (2)
+		Golosa Vetrov: 5 - for Rite of Caern Building (5); Rite of Balance (3); Invitation to Ancestors (4)
+		Babka Aine: 5 - for Rite of Sacred Peace(5)/Bowels of Mother(0), Asklepius (3), Comfort (2), Sin-Eating (3); of Teachers (1)
+		Udjin: 4 - for Rite of Fetish (3); Rite of Deliverance (3); Nightshade (4); Deliverance (3); Sin-Eater (2)
+                     */
+
                     break;
+
+                //22 Feb (teaching week)
 
                 case 3:
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnRite, Spiridon, RitesDictionary.Rites["Some rite 1"]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites["Some rite 2"]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites["Rite of Something"]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnRite, Spiridon, 5));
                     plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Nameless, Kinfolk1, Build.Abilities.Leadership));
                     //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Yoki, Ptitsa, Self.Abilities.Stealth)); //done
                     //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Spiridon, Kurt, Self.Abilities.Rituals)); //can't teach that week
