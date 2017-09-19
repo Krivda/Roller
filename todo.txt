@@ -30,22 +30,12 @@ todo max priority:
 27. code: queue new rite with delay until it will be learned by teacher; incorporate garou to garou case
 
 SELECT TOKENS:
-	Pipes of the Otherworld, Fiana, 2 - decrease Mystic rites DC
-	Carnyx of Victory +DicePool fiana, 4
-	Torc of Wisdom fiana 3,4 + perma gnos
-	Boar’s Tusk, 
-	Coforters Archtect (3), children
-	Unbroken Cord (4), children
+	Carnyx of Victory +DicePool fiana, 4                              NEED //Roll Man+Perf vs. 8 (-2 social) => +1 dice to ALL pools of ALL comrades (work while singing-hours)
+	Coforters Archtect (3), children                                  ?? NEED; allows transfer to packmate while sleep (WHY WE NEED IT?)
+	Unbroken Cord (4), children                                       NEED; also need Caern of Gnosis that on open caern will allow to have Gnois>=perma; (+consider Bonding Rite or tagalong)
+                                                                          shares Ability/Gift with packmate for scene
+	Torc of Wisdom fiana 3,4 + perma gnos                             NEED
+  Uktena's Scale or Rite to create kinfolks!                        NEED, if there is no perma Gnosis spending
 
-	Core 4 : Shrouded Glen - protect Caern in Umbra (rite)
-	PGtG 4 : of Opened Sky - to cleanse area (in CAERN only)
 
-Glass Walkers Tribal Seasonal: The Little Rite !!!
-Glass Walkers Camp : Rite of Growth
-Black Fury 1 Seasonal : Autumn: Rejuvenate the Soil = fertility
-Children of Gaia 3 : Sign the Many Shapes => roleplay, get knowledge
-Children of Gaia 4 : Rite of resolution => prevent frenzy in Garou challenges !!!
-Children of Gaia 5 : End of Time Rite => roleplaying
-Glass Walkers Camp : Rite of Bonding = blessing from pack Totem (bonuses!) !!!
-Children of Gaia 5 : Parted Veil => create Kinfolks!
 
