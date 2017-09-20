@@ -56,7 +56,7 @@ namespace RollerEngine.Character
             _party.Add(Kinfolk2.CharacterName, Kinfolk2);
 
             Lynn = new Lynn(party["Lynn"], log, roller, this);
-            _party.Add(Lynn.CharacterName, Kinfolk2);
+            _party.Add(Lynn.CharacterName, Lynn);
 
             OriginalStats = new Dictionary<string, Dictionary<string, int>>();
 
@@ -303,7 +303,7 @@ namespace RollerEngine.Character
                         //create dynamic trait if it was absent
                         if (!planItem.Actor.Self.Traits.ContainsKey(keyRitePool))
                         {
-                            planItem.Actor.Self.Traits.Add(keyRitePool, (int)planItem.RiteInfo.Level * 10);
+                            planItem.Actor.Self.Traits.Add(keyRitePool, (int)(10.0 * planItem.RiteInfo.Level));
                         }
 
                         //create dynamic trait if it was absent
@@ -377,23 +377,55 @@ namespace RollerEngine.Character
                     plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Yoki, 2));
 
                     plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.CreateTalens, Yoki, 2));
-
                     break;
 
-                //15 Feb
+                //15 Feb (no teaching week)
                 case 2:
-                    //Kinfolks learn nothing!?
+                    //Kinfolks learn nothing special
 
                     //Spiridon,Yoki: create Talens
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.CreateTalens, Spiridon, 2)); //TODO: or 0.5 week?
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.CreateTalens, Yoki, 2));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.CreateTalens, Spiridon, 2)); //creation used
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.CreateTalens, Yoki, 2));     //creation used
+
                     //Nameless teach Kurt Ancestor Veneration
                     plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.TeachGarouToGarou, Nameless, 1));
+                    //Spirit teach Yoki Ancestor Seeking
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.TeachGarouToGarou, Spiridon, 1));
 
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Nameless, RitesDictionary.Rites[Rite.OpenedCaern]));
                     plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Kurt, RitesDictionary.Rites[Rite.AncestorVeneration]));
-                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Yoki, RitesDictionary.Rites[Rite.AncestorVeneration])); //from Kurt later
-                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.AncestorVeneration])); //from Kurt later
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Yoki, RitesDictionary.Rites[Rite.AncestorSeeking]));
+
+                    //MAIN common RITES for nearest future (teached from summoned spirits)
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Nameless, RitesDictionary.Rites[Rite.OpenedCaern]));
+                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.OpenedCaern])); - already learned
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Kurt, RitesDictionary.Rites[Rite.OpenedCaern]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Yoki, RitesDictionary.Rites[Rite.OpenedCaern]));
+
+                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Nameless, RitesDictionary.Rites[Rite.BoneRhythms])); -already learned
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.BoneRhythms]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Kurt, RitesDictionary.Rites[Rite.BoneRhythms]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Yoki, RitesDictionary.Rites[Rite.BoneRhythms]));
+
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Yoki, RitesDictionary.Rites[Rite.SpiritAwakening]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Yoki, RitesDictionary.Rites[Rite.RenewingTalen]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.RenewingTalen]));
+
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.Fetish]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.InvitationToAncestors]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.FeastForSpirits]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.Teachers]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.SacredPeace]));
+                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.CaernBuilding]));
+                    break;
+
+                //22 Feb (teaching week)
+                case 3:
+                    break;
+
+                    //TODO
+                    //Lynn: Talisman Dedication, Cleanising
+                    //Ancestor Seeking: Krivda; Keltur; <Yoki> ...
+                    //Ancestor Veneration: Krivda; <Kurt> ...
 
                     //Spiridon PACK of rites!!!
                     /*
@@ -404,12 +436,11 @@ namespace RollerEngine.Character
 		Babka Aine: 5 - for Rite of Sacred Peace(5)/Bowels of Mother(0), Asklepius (3), Comfort (2), Sin-Eating (3); of Teachers (1)
 		Udjin: 4 - for Rite of Fetish (3); Rite of Deliverance (3); Nightshade (4); Deliverance (3); Sin-Eater (2)
                      */
+ 
 
-                    break;
+                
 
-                //22 Feb (teaching week)
-
-                case 3:
+                case 4:
                     plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnRite, Spiridon, RitesDictionary.Rites[Rite.AncestorSeeking]));
                     plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.AncestorSeeking]));
                     plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.AncestorSeeking]));
@@ -432,7 +463,7 @@ namespace RollerEngine.Character
                     //plan.Add(new WeeklyActivity(Kinfolk2, 2));
 
                     break;
-                case 4:
+                case 5:
                     //learning
                     plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Nameless, 1));
                     plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Spiridon, 1));

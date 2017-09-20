@@ -42,7 +42,7 @@ namespace RollerEngine.Rolls.Skills
                 //create dynamic trait if it was absent
                 if (!actor.Traits.ContainsKey(keyRitePool))
                 {
-                    actor.Traits.Add(keyRitePool, (int)riteInfo.Level * 10);
+                    actor.Traits.Add(keyRitePool, (int)(10.0 * riteInfo.Level));
                 }
 
                 //create dynami trait if it was absent
@@ -69,9 +69,9 @@ namespace RollerEngine.Rolls.Skills
                 }
                 else
                 {
+                    Log.Log(Verbosity, string.Format("{0} has has finally learned rite {1} (+{2} more success. Now he has {3} of {4} successes!)",
+                        actor.Name, riteName, result, successesLearned, successesRequired));
                     successesLearned = Build.RiteAlreadyLearned;
-                    Log.Log(Verbosity, string.Format("{0} has finally learned rite {1}!",
-                        actor.Name, riteName));
                 }
 
                 actor.Traits[keyRiteLearned] = successesLearned;

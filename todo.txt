@@ -39,4 +39,4 @@ SELECT TOKENS:
 
 
 30. Build 
-
+31. Distrube buffs Nameless (secondary Rituals goal (B.R+Chann+supp Anc.)) //should be param of the week
