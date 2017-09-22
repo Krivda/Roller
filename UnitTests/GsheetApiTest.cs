@@ -10,13 +10,6 @@ namespace UnitTests
     public class GsheetApiTest
     {
         [Test]
-        public void TestAPI()
-        {
-            ApiTest.Test();
-
-        }
-
-        [Test]
         public void GetPartySpreadsheet()
         {
             var data = SpreadsheetService.GetNotEmptySpreadsheetRange("1tKXkAjTaUpIDkjmCi7w1QOVbnyYU2f-KOWEnl2EAIZg", "A1:J93", "Party sheet list");
