@@ -6,7 +6,6 @@ using System.Threading;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
-using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Util.Store;
 
 namespace RollerEngine.SpreadSheets
@@ -15,68 +14,68 @@ namespace RollerEngine.SpreadSheets
     {
         // If modifying these scopes, delete your previously saved credentials
         // at ~/.credentials/sheets.googleapis.com-dotnet-quickstart.json
-        static readonly string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
-        static readonly string ApplicationName = "Makedonsky Strategy planner";
-
+        private static readonly string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
+        private const string ApplicationName = "Serial Hatys Roller boosted by Rolz.org";
         private static SheetsService _service;
 
         private static string AssemblyDirectory
         {
             get
             {
-                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
-                UriBuilder uri = new UriBuilder(codeBase);
-                string path = Uri.UnescapeDataString(uri.Path);
+                var codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                var uri = new UriBuilder(codeBase);
+                var path = Uri.UnescapeDataString(uri.Path);
                 return Path.GetDirectoryName(path);
             }
         }
 
         public static SheetsService GetService()
         {
-            if (_service == null)
+            if (_service != null) return _service;
+
+            UserCredential credential;
+            var path = AssemblyDirectory + @"\SpreadSheets\client_secret.json";
+
+            if (!File.Exists(path))
             {
-                UserCredential credential;
-
-                using (var stream =
-                    new FileStream(AssemblyDirectory + @"\SpreadSheets\client_secret.json", FileMode.Open, FileAccess.Read))
-                {
-                    string credPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
-                    credPath = Path.Combine(credPath, ".credentials/sheets.googleapis.makedonsky.json");
-
-                    credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                        GoogleClientSecrets.Load(stream).Secrets,
-                        Scopes,
-                        "user",
-                        CancellationToken.None,
-                        new FileDataStore(credPath, true)).Result;
-                    //Console.WriteLine("Credential file saved to: " + credPath);
-                }
-
-                // Create Google Sheets API service.
-                _service = new SheetsService(new BaseClientService.Initializer()
-                {
-                    HttpClientInitializer = credential,
-                    ApplicationName = ApplicationName,
-                });
+                throw new FileNotFoundException(path);                    
             }
+
+            using (var stream =
+                new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                var credPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                credPath = Path.Combine(credPath, ".credentials/sheets.googleapis.hatys.json");
+
+                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    GoogleClientSecrets.Load(stream).Secrets,
+                    Scopes,
+                    "user",
+                    CancellationToken.None,
+                    new FileDataStore(credPath, true)).Result;
+            }
+
+            // Create Google Sheets API service.
+            _service = new SheetsService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = ApplicationName,
+            });
             return _service;
         }
 
-        public static IList<IList<Object>> GetSpreadsheetRange(String spreadsheetId, String range)
+        public static IList<IList<object>> GetSpreadsheetRange(string spreadsheetId, string range)
         {
 
             var gsheetApi = GetService();
-            SpreadsheetsResource.ValuesResource.GetRequest request = gsheetApi.Spreadsheets.Values.Get(spreadsheetId, range);
-
-            ValueRange response = request.Execute();
-            IList<IList<Object>> values = response.Values;
-
-            return values;
+            var request = gsheetApi.Spreadsheets.Values.Get(spreadsheetId, range);
+            var response = request.Execute();
+            return response.Values;
         }
 
-        public static IList<IList<Object>> GetNotEmptySpreadsheetRange(String spreadsheetId, String range, String description)
+        public static IList<IList<object>> GetNotEmptySpreadsheetRange(string spreadsheetId, string range, string description)
         {
-            IList<IList<Object>> data;
+            IList<IList<object>> data;
 
             try
             {
@@ -84,26 +83,26 @@ namespace RollerEngine.SpreadSheets
             }
             catch (Exception e)
             {
-                String message = string.Format("Error quering {0} spreadsheet {1}/{2}: exception occured: {3}.", description, spreadsheetId, range, e.Message);
+                var message = string.Format("Error quering {0} spreadsheet {1}/{2}: exception occured: {3}.", description, spreadsheetId, range, e.Message);
                 throw new Exception(message, e);
             }
 
             if (null == data)
             {
-                String message = string.Format("Error quering {0} spreadsheet {1}/{2}: data is null.", description, spreadsheetId, range);
+                var message = string.Format("Error quering {0} spreadsheet {1}/{2}: data is null.", description, spreadsheetId, range);
                 throw new NullReferenceException(message);
             }
 
             if (!(data.Count > 0))
             {
-                String message = string.Format("Error quering {0} spreadsheet {1}/{2}: data is empty.", description, spreadsheetId, range);
+                var message = string.Format("Error quering {0} spreadsheet {1}/{2}: data is empty.", description, spreadsheetId, range);
                 throw new InvalidDataException(message);
             }
 
             return data;
         }
 
-        public class RowDataHandling
+        public class RowDataHandling //TODO: parser helpers
         {
             
             public static string GetColumn(IList<object> row, int index)

@@ -110,7 +110,6 @@
     <Compile Include="Rolls\Skills\SkillRoll.cs" />
     <Compile Include="Rolls\Skills\InstructionLearn.cs" />
     <Compile Include="Rolls\Skills\RitualsLearn.cs" />
-    <Compile Include="SpreadSheets\ApiTest.cs" />
     <Compile Include="SpreadSheets\SpreadsheetService.cs" />
     <Compile Include="Roller\OfflineDiceRoller.cs" />
     <Compile Include="Roller\IRoller.cs" />

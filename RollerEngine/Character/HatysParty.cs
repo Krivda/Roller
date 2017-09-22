@@ -49,13 +49,13 @@ namespace RollerEngine.Character
             Kurt = new Kurt(party["Urfin"], log, roller, this);
             _party.Add(Kurt.CharacterName, Kurt);
 
-            Kinfolk1 = new Kinfolk1(party["Kinfolk 1"], log, roller, this);
+            Kinfolk1 = new Kinfolk1(party["NPC 1"], log, roller, this);
             _party.Add(Kinfolk1.CharacterName, Kinfolk1);
 
-            Kinfolk2 = new Kinfolk2(party["Kinfolk 2"], log, roller, this);
+            Kinfolk2 = new Kinfolk2(party["NPC 2"], log, roller, this);
             _party.Add(Kinfolk2.CharacterName, Kinfolk2);
 
-            Lynn = new Lynn(party["Lynn"], log, roller, this);
+            Lynn = new Lynn(party["NPC 3"], log, roller, this);
             _party.Add(Lynn.CharacterName, Lynn);
 
             OriginalStats = new Dictionary<string, Dictionary<string, int>>();
@@ -219,7 +219,7 @@ namespace RollerEngine.Character
                 }
 
                 //Ancestors
-                if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur") || buildKvp.Key.Equals("Lynn"))
+                if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur") || buildKvp.Key.Equals("NPC 3"))
                 {
                     buildKvp.Value.Traits[Build.Backgrounds.Ancestors] = 5;
                 }
@@ -239,7 +239,7 @@ namespace RollerEngine.Character
                     CommonBuffs.ApplyMedicalBundle(buildKvp.Value, log);
                 }
 
-                if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur") || buildKvp.Key.Equals("Alisa") || buildKvp.Key.Equals("Urfin") || buildKvp.Key.Equals("Lynn"))
+                if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur") || buildKvp.Key.Equals("Alisa") || buildKvp.Key.Equals("Urfin") || buildKvp.Key.Equals("NPC 3"))
                 {
                     buildKvp.Value.CharacterClass = Build.Classes.Werewolf;
 
@@ -251,7 +251,7 @@ namespace RollerEngine.Character
                     }
                 }
 
-                if (buildKvp.Key.Equals("Kinfolk 1") || buildKvp.Key.Equals("Kinfolk 2"))
+                if (buildKvp.Key.Equals("NPC 1") || buildKvp.Key.Equals("NPC 2"))
                 {
                     buildKvp.Value.CharacterClass = Build.Classes.Kinfolk;
                 }
