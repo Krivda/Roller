@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using NLog;
+using RollerEngine.Rolls;
 
 namespace RollerEngine.Modifiers
 {
@@ -19,34 +21,59 @@ namespace RollerEngine.Modifiers
 
         public List<string> Traits { get; private set; }
         public DurationType Duration { get; private set; }
-        private List<string> Condtions { get; set; }
+        private List<string> Conditions { get; set; }
+        private List<string> IgnoredConditions { get; set; }
 
-        protected ARollModifer(string name, List<string> traits, DurationType duration, List<string> condtions, int value)
+        protected ARollModifer(string name, List<string> traits, DurationType duration, List<string> conditions, List<string> ignoredConditions, int value)
         {
             Name = name;
             Value = value;
             Traits = traits;
             Duration = duration;
-            Condtions = condtions;
+            Conditions = conditions;
+            IgnoredConditions = ignoredConditions;
         }
 
-        public bool ConditionsMet(List<string> rollConditions)
+        protected ARollModifer(string name, List<string> traits, DurationType duration, List<string> conditions, int value) :  this (name, traits, duration, conditions, new List<string>(), value)
         {
-            bool conditionsMet = false;
-            if (Condtions.Count == 0)
+
+        }
+
+        public virtual bool ConditionsMet(RollBase roll)
+        {
+            if (Conditions.Count == 0)
             {
-                conditionsMet = true;
-            }
-            else
-            {
-                foreach (var condtion in rollConditions)
+                if (IgnoredConditions.Count != 0)
                 {
-                    conditionsMet = Condtions.Contains(condtion);
-                    if (conditionsMet)
-                        break;
+                    foreach (var condtion in roll.Conditions)
+                    {
+                        var found = IgnoredConditions.Contains(condtion);
+                        if (found)
+                        {
+                            return false;
+                        }
+                    }
                 }
+                return true;
             }
-            return conditionsMet;
+
+            foreach (var condtion in roll.Conditions)
+            {
+                var found = IgnoredConditions.Contains(condtion);
+                if (found)
+                {
+                    return false;
+                }
+
+                found = Conditions.Contains(condtion);
+                if (found)
+                {
+                    return true;
+                }
+
+            }
+
+            return false;
         }
     }
 }

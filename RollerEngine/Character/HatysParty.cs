@@ -69,6 +69,14 @@ namespace RollerEngine.Character
             Nameless.Self.HasAncestorVeneration = true;
         }
 
+        public List<Build> Builds
+        {
+            get
+            {
+                return _partyBuilds.Select(kvp => kvp.Value).ToList();;
+            }
+        }
+
         public static HatysParty LoadFromGoogle(IRollLogger log, IRoller roller)
         {
             var party = HatysPartyLoader.LoadFromGoogle(log);
@@ -76,12 +84,15 @@ namespace RollerEngine.Character
             return new HatysParty(party, log, roller);
         }
 
-        private void WeeklyBuff()
+        public void WeeklyBuff()
         {
             //todo: rewrite
 
             //boost
+            Spiridon.ActivateCarnyx();
             Nameless.WeeklyPreBoost();
+            Spiridon.DeactivateCarnyx();
+
             Spiridon.WeeklyPreBoost(Build.Abilities.Empathy); //it is important to Spiridon to be second due to -1 dc of Teacher's Ease of Nameless
             Spiridon.WeeklyBoostSkill(Build.Abilities.Rituals);
             Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
@@ -434,7 +445,7 @@ namespace RollerEngine.Character
 		Papa Serega: 5 - for Rite of Signpost(4); Rite of Trespassing(5); Crash Space (2); Shopping Chart (2)
 		Golosa Vetrov: 5 - for Rite of Caern Building (5); Rite of Balance (3); Invitation to Ancestors (4)
 		Babka Aine: 5 - for Rite of Sacred Peace(5)/Bowels of Mother(0), Asklepius (3), Comfort (2), Sin-Eating (3); of Teachers (1)
-		Udjin: 4 - for Rite of Fetish (3); Rite of Deliverance (3); Nightshade (4); Deliverance (3); Sin-Eater (2)
+		Udjin: 4 - for Rite of FetishRoll (3); Rite of Deliverance (3); Nightshade (4); Deliverance (3); Sin-Eater (2)
                      */
  
 

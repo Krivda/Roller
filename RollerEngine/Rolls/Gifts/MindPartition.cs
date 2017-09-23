@@ -3,6 +3,7 @@ using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Modifiers;
 using RollerEngine.Roller;
+using RollerEngine.Rolls.Fetish;
 
 namespace RollerEngine.Rolls.Gifts
 {
@@ -23,7 +24,7 @@ namespace RollerEngine.Rolls.Gifts
         public MindPartition(IRollLogger log, IRoller roller)
             : base(GiftName, log, roller,
                 new List<string>() { Build.RollableTraits.Gnosis },
-                new List<string>(),
+                new List<string>() { Build.Conditions.RollableTrait }, 
                 null, Verbosity.Important)
         {
             
@@ -64,5 +65,23 @@ namespace RollerEngine.Rolls.Gifts
             //todo: remove ALL success from number of pools equal to botch level?
             return base.OnBotch(successes);
         }
+
+        /*
+        //commented out case because Spiridon cannot cast Mind Partition while Carnyx is active
+        protected override BonusValueInfo GetBonusDices(Build actor, List<Build> targets, List<string> conditions)
+        {
+            BonusValueInfo mods = base.GetBonusDices(actor, targets, conditions);
+
+            var carnyx = mods.Modifires.Find(m => m.Item2.Name.Equals(CarnyxOfVictory.NAME));
+            if (carnyx != null)
+            {
+                mods.Modifires.Remove(carnyx);
+                mods.Value -= carnyx.Item1;
+            }
+
+            return mods;
+        }
+        */
+        
     }
 }

@@ -40,3 +40,7 @@ SELECT TOKENS:
 
 30. Build 
 31. Distrube buffs Nameless (secondary Rituals goal (B.R+Chann+supp Anc.)) //should be param of the week
+32. Learn/Teach/MindP./Creation attetmps
+33. Gnosis/Willpower replenish
+
+//TODO we should split traits into Atributes, Abilities, Backgrounds, Rollalbe-10-based, Dynamic

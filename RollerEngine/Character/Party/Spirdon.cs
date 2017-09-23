@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Linq;
 using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
+using RollerEngine.Rolls.Fetish;
 using RollerEngine.Rolls.Gifts;
 using RollerEngine.Rolls.Rites;
 
@@ -85,9 +87,13 @@ namespace RollerEngine.Character.Party
             //for my next Ancestor Seeking
             CastSacredFire(new List<Build>() { Self });
             //cast rite of Anscestor Seeking - boost Occult to target
+            Party.Spiridon.ActivateCarnyx();
             CastAnscestorSeeking(target);
+            Party.Spiridon.DeactivateCarnyx();
             //boost Occult to target
+            Party.Spiridon.ActivateCarnyx();
             CastCallToWyld(new List<Build>() { target }, Build.Abilities.Occult);
+            Party.Spiridon.DeactivateCarnyx();
         }
 
         public void WeeklyBoostSkill(string mainTrait)
@@ -97,7 +103,11 @@ namespace RollerEngine.Character.Party
 
             //Buff occult from Spiridon
             Party.Spiridon.WeeklyMidBoostOccult(Self);
+
+            //Maximum boost for trait
+            Party.Spiridon.ActivateCarnyx();
             CastGhostPack(mainTrait);
+            Party.Spiridon.DeactivateCarnyx();
         }
 
         private void CastGhostPack(string trait)
@@ -126,6 +136,32 @@ namespace RollerEngine.Character.Party
             var mindPartition = new MindPartition(Log, Roller);
             int mindParts = 1 + mindPartition.Roll(Self);
             LearnAttempts *= mindParts; //TODO more complicated (requires reroll of the gift for finished learning activities)
+        }
+
+        public void CastCaernChanneling(string trait)
+        {
+            Party.Nameless.CastTeachersEase(Self, Build.Abilities.PrimalUrge, false, Verbosity.Details);
+
+            var caernChanelling = new CaernOfVigilChannelling(Log, Roller);
+            caernChanelling.Roll(Self, trait, false);
+        }
+
+        public void ActivateCarnyx()
+        {
+            Log.Log(Verbosity.Critical, ">== Carnyx started, now actions from Spiridon");
+            //TODO: -1 Gnosis to activate
+
+            CastCaernChanneling(Build.Abilities.Performance);
+            Party.Nameless.CastTeachersEase(Self, Build.Abilities.Performance, false, Verbosity.Details);
+
+            var carnyx = new CarnyxOfVictory(Log, Roller, Verbosity.Critical);
+            carnyx.Roll(Self, Party.Builds.FindAll(build => !build.Name.Equals(CharacterName)), false, false);
+        }
+
+        public void DeactivateCarnyx()
+        {
+            CarnyxOfVictory.RemoveFromBuild(Party.Builds.FindAll(build => !build.Name.Equals(CharacterName)));
+            Log.Log(Verbosity.Critical, "<== Carnyx ended, Spiridon can act again");
         }
     }
 }

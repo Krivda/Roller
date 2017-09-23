@@ -8,9 +8,12 @@ namespace RollerEngine.Rolls.Backgrounds
 {
     public class BackgroundRoll : RollBase
     {
-        public BackgroundRoll(string name, IRollLogger log, IRoller roller, List<string> conditions, string addtionalInfo, Verbosity verbosity) 
-            : base(name, log, roller, new List<string>(){name}, true, true, conditions, addtionalInfo, verbosity)
-        {}
+        public BackgroundRoll(string name, IRollLogger log, IRoller roller, List<string> conditions,
+            string addtionalInfo, Verbosity verbosity)
+            : base(name, log, roller, new List<string>() {name}, true, true, conditions, addtionalInfo, verbosity)
+        {
+            Conditions.Add(Build.Conditions.Background);
+        }
 
         protected override int Roll(Build actor, List<Build> targets, bool hasSpec, bool hasWill)
         {

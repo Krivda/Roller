@@ -34,7 +34,7 @@ namespace RollerEngine.Character
                                                                 //this is EXCLUSIVE activity by default (you cannot do anything during learning)
 
             public const string CreateTalens = "Create Talens"; //mini umbral storm prevents fast creation; shared activity; components from modules
-            public const string CreateFetish = "Create Fetish"; //mini umbral storm prevents fast creation; shared activity; components from modules
+            public const string CreateFetish = "Create FetishRoll"; //mini umbral storm prevents fast creation; shared activity; components from modules
             public const string CreateDevice = "Create Device"; //shared activity; components from modules
 
             public const string TeachGarouToGarou = "Teach from Garou to Garou";

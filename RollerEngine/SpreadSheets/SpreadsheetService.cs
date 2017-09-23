@@ -66,7 +66,6 @@ namespace RollerEngine.SpreadSheets
 
         public static IList<IList<object>> GetSpreadsheetRange(string spreadsheetId, string range)
         {
-
             var gsheetApi = GetService();
             var request = gsheetApi.Spreadsheets.Values.Get(spreadsheetId, range);
             var response = request.Execute();

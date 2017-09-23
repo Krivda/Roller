@@ -29,7 +29,7 @@ namespace RollerEngine.Character
             IList<IList<object>> data;
             try
             {
-                 data = SpreadsheetService.GetNotEmptySpreadsheetRange("1tKXkAjTaUpIDkjmCi7w1QOVbnyYU2f-KOWEnl2EAIZg", "A1:K100", "Party sheet list");
+                 data = SpreadsheetService.GetNotEmptySpreadsheetRange("1tKXkAjTaUpIDkjmCi7w1QOVbnyYU2f-KOWEnl2EAIZg", "A1:K130", "Party sheet list");
             }
             catch (Exception e)
             {

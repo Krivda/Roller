@@ -29,7 +29,8 @@ namespace RollerEngine.Character.Common
             public const string Intellect  = "Intellect";
             public const string Wits       = "Wits";
         }
-
+        
+        //TODO we should split traits into Atributes, Abilities, Backgrounds, Rollalbe-10-based, Dynamic
         public class Abilities
         {
             //talents
@@ -127,6 +128,10 @@ namespace RollerEngine.Character.Common
             public const string AncestorSocial = "Ansestor Social";
             public const string Memory = "Memory";
             public const string LearningRites = "Learning Rites";
+
+            //for ignored
+            public const string Background = "Background";
+            public const string RollableTrait = "RollableTrait";
         }
 
         public class DynamicTraits

@@ -25,11 +25,29 @@ namespace UnitTests
         }
 
         [Test]
+        public void TestPartyBuff()
+        {
+            var rollLogger = new NLogLogger(Logger, Verbosity.Details);
+            var devNullLogger = new StringBufferLogger();
+            var roller = new OfflineDiceRoller(rollLogger);
+            var devNullRoller = new OfflineDiceRoller(devNullLogger);
+
+            var currLogger = rollLogger;
+            var currRoller = roller;
+
+            var res = HatysParty.LoadFromGoogle(currLogger, currRoller);
+            res.StartScene();
+            res.WeeklyBuff();
+        }
+
+
+        [Test]
         public void TestPartyBuffStats()
         {
             var rollLogger = new NLogLogger(Logger);
             var devNullLogger = new StringBufferLogger();
             var roller = new OfflineDiceRoller(rollLogger);
+
             var devNullRoller = new OfflineDiceRoller(devNullLogger);
 
             int sumNameless = 0;

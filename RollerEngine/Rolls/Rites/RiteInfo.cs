@@ -142,7 +142,7 @@ namespace RollerEngine.Rolls.Rites
                 {Rite.TalismanDedication, new RiteInfo("Of Talisman Dedication", RiteGroup.Mystic, 1, new List<string>())},
                 {Rite.Becoming, new RiteInfo("Of Becoming", RiteGroup.Mystic, 2, new List<string>())},
                 {Rite.SpiritAwakening, new RiteInfo("Of Spirit Awakening", RiteGroup.Mystic, 2, new List<string>())},
-                {Rite.Fetish, new RiteInfo("Of Fetish", RiteGroup.Mystic, 3, new List<string>())},
+                {Rite.Fetish, new RiteInfo("Of FetishRoll", RiteGroup.Mystic, 3, new List<string>())},
                 {Rite.Totem, new RiteInfo("Of Totem", RiteGroup.Mystic, 3, new List<string>())},
 
                 {Rite.Accomplishment, new RiteInfo("Of Accomplishment", RiteGroup.Renown, 2, new List<string>())},
@@ -158,7 +158,7 @@ namespace RollerEngine.Rolls.Rites
 
                 {Rite.OpenedSky, new RiteInfo("Of Opened Sky", RiteGroup.Accord, 4, new List<string>())},
                 {Rite.LesserMourning, new RiteInfo("Of Lesser Mourning", RiteGroup.Death, 2, new List<string>())},
-                {Rite.PreservingFetish, new RiteInfo("Of Preserving Fetish", RiteGroup.Mystic, 1, new List<string>())},
+                {Rite.PreservingFetish, new RiteInfo("Of Preserving FetishRoll", RiteGroup.Mystic, 1, new List<string>())},
                 {Rite.RenewingTalen, new RiteInfo("Of Renewing Talen", RiteGroup.Mystic, 2, new List<string>())},
 
                 {Rite.CrashSpace, new RiteInfo("Of Crash Space", RiteGroup.Mystic, 2, new List<string>())},

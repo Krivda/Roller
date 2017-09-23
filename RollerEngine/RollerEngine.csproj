@@ -91,6 +91,7 @@
     <Compile Include="Roller\MockFixedRoller.cs" />
     <Compile Include="Rolls\Backgrounds\Ancestors.cs" />
     <Compile Include="Rolls\Backgrounds\BackgroundRoll.cs" />
+    <Compile Include="Rolls\Fetish\CarnyxOfVictory.cs" />
     <Compile Include="Rolls\Gifts\CaernOfVigilChannelling.cs" />
     <Compile Include="Rolls\BotchException.cs" />
     <Compile Include="Logger\CompositeLogger.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Rolls\Rites\RiteInfo.cs" />
     <Compile Include="Rolls\Rites\RiteRoll.cs" />
     <Compile Include="Rolls\Rites\SacredFire.cs" />
+    <Compile Include="Rolls\Fetish\FetishRoll.cs" />
     <Compile Include="Rolls\Skills\SkillRoll.cs" />
     <Compile Include="Rolls\Skills\InstructionLearn.cs" />
     <Compile Include="Rolls\Skills\RitualsLearn.cs" />

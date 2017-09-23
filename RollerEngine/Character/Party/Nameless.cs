@@ -38,7 +38,9 @@ namespace RollerEngine.Character.Party
             Party.Spiridon.WeeklyMidBoostOccult(Self);
 
             //Maximum boost for trait
+            Party.Spiridon.ActivateCarnyx();
             CastGhostPack(trait, true);
+            Party.Spiridon.DeactivateCarnyx();
         }
 
         public void CastPersuasion()

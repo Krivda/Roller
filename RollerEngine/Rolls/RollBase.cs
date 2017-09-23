@@ -216,7 +216,7 @@ namespace RollerEngine.Rolls
             return rollInfo;
         }
 
-        private DicePoolInfo GetDicePool(Build actor, List<Build> targets)
+        protected virtual DicePoolInfo GetDicePool(Build actor, List<Build> targets)
         {
             var dicePool = new DicePoolInfo();
             dicePool.Traits = new Dictionary<string, TraitValueInfo>();
@@ -235,7 +235,7 @@ namespace RollerEngine.Rolls
             return dicePool;
         }
 
-        private TraitValueInfo GetModifiedTrait(Build actor, List<Build> targets, string traitName, List<string> conditions)
+        protected virtual TraitValueInfo GetModifiedTrait(Build actor, List<Build> targets, string traitName, List<string> conditions)
         {
             var appliedMods = new List<Tuple<int, TraitModifier>>();
 
@@ -251,9 +251,9 @@ namespace RollerEngine.Rolls
 
             foreach (var modifier in modifiers)
             {
-                if (!modifier.ConditionsMet(conditions))
+                if (!modifier.ConditionsMet(this))
                 {
-                    Log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
+                    Log.Log(Verbosity.Important, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {
@@ -279,7 +279,7 @@ namespace RollerEngine.Rolls
             return new TraitValueInfo() {TraitName = traitName, BaseValue = baseValue, ModifiedValue = triatValue, Modifires = appliedMods};
         }
 
-        private BonusValueInfo GetBonusDices(Build actor, List<Build> targets, List<string> conditions)
+        protected virtual BonusValueInfo GetBonusDices(Build actor, List<Build> targets, List<string> conditions)
         {
             var appliedMods = new List<Tuple<int, BonusModifier>>();
             int value = 0;
@@ -288,7 +288,7 @@ namespace RollerEngine.Rolls
 
             foreach (var modifier in modifiers)
             {
-                if (!modifier.ConditionsMet(conditions))
+                if (!modifier.ConditionsMet(this))
                 {
                     Log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
@@ -343,7 +343,7 @@ namespace RollerEngine.Rolls
             return BASE_DC;
         }
 
-        private TraitDCInfo GetTraitDCInfo(Build actor, List<Build> targets, string traitName, List<string> conditions)
+        protected virtual TraitDCInfo GetTraitDCInfo(Build actor, List<Build> targets, string traitName, List<string> conditions)
         {
             var appliedMods = new List<Tuple<int, DCModifer>>();
 
@@ -357,7 +357,7 @@ namespace RollerEngine.Rolls
 
             foreach (var modifier in modifiers)
             {
-                if (!modifier.ConditionsMet(conditions))
+                if (!modifier.ConditionsMet(this))
                 {
                     Log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
@@ -373,7 +373,7 @@ namespace RollerEngine.Rolls
             return new TraitDCInfo() { TraitName = traitName, ModifiedValue = adjustedValue, Modifires = appliedMods };
         }
 
-        private BonusDCInfo GetBonusDC(Build actor, List<Build> targets, List<string> conditions)
+        protected virtual BonusDCInfo GetBonusDC(Build actor, List<Build> targets, List<string> conditions)
         {
             var appliedMods = new List<Tuple<int, DCModifer>>();
 
@@ -383,7 +383,7 @@ namespace RollerEngine.Rolls
 
             foreach (var modifier in modifiers)
             {
-                if (!modifier.ConditionsMet(conditions))
+                if (!modifier.ConditionsMet(this))
                 {
                     Log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
@@ -398,7 +398,7 @@ namespace RollerEngine.Rolls
             return new BonusDCInfo() { Value = value, Modifires = appliedMods };
         }
 
-        private string GetLogForRoll(Build actor, List<Build> targets, RollInfo info, bool hasSpec, bool hasWill)
+        protected virtual string GetLogForRoll(Build actor, List<Build> targets, RollInfo info, bool hasSpec, bool hasWill)
         {
             StringBuilder logMessage = new StringBuilder(500);
 
