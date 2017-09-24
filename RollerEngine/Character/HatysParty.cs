@@ -7,6 +7,7 @@ using RollerEngine.Roller;
 using RollerEngine.Logger;
 using RollerEngine.Modifiers;
 using RollerEngine.Rolls.Rites;
+using RollerEngine.WeekPlan;
 
 namespace RollerEngine.Character
 {
@@ -90,7 +91,7 @@ namespace RollerEngine.Character
 
             //boost
             Spiridon.ActivateCarnyx();
-            Nameless.WeeklyPreBoost();
+            Nameless.WeeklyPreBoost(Build.Abilities.Occult);
             Spiridon.DeactivateCarnyx();
 
             Spiridon.WeeklyPreBoost(Build.Abilities.Empathy); //it is important to Spiridon to be second due to -1 dc of Teacher's Ease of Nameless
@@ -211,12 +212,15 @@ namespace RollerEngine.Character
             StoreOriginalValues(Kinfolk1.Self);
             StoreOriginalValues(Kinfolk2.Self);
 
-            Spiridon.LearnAttempts = 2;
-            Nameless.LearnAttempts = 2;
-            Kurt.LearnAttempts = 2;
-            Yoki.LearnAttempts = 4;
-            Kinfolk1.LearnAttempts = 2;
-            Kinfolk2.LearnAttempts = 2;
+
+            //todo: make if for week #1 (hardcoded) actions 2; partion actions -= 1 for teach (NOW)
+            Spiridon.WeeklyActions = 1;
+            Nameless.WeeklyActions = 1;
+            Kurt.WeeklyActions = 1;
+            Yoki.WeeklyActions = 1;
+            Kinfolk1.WeeklyActions = 1;
+            Kinfolk2.WeeklyActions = 1;
+            Lynn.WeeklyActions = 1;
         }
 
         private static void AddPermanentModifiers(Dictionary<string, Build> result, IRollLogger log)
@@ -293,71 +297,138 @@ namespace RollerEngine.Character
 
             StartScene();
 
-            WeeklyBuff();
+            CheckFullAndCalcPartialActions(weekNo, plan); //CastMindPartition is inside
 
-            Spiridon.CastMindPartition();
+            WeeklyBuff();
 
             //first of all queue rites and roll teaching
             foreach (var planItem in plan)
             {
                 switch (planItem.Activity)
                 {
-                    case WeeklyActivity.ActivityKind.Teaching:
-                        planItem.Actor.Instruct(planItem.Student.Self, planItem.Trait, false);
+                    case Activity.TeachAbility:
+                    {
+                        TeachAbility weeklyActivity = (TeachAbility) planItem;
+                        planItem.Actor.Instruct(weeklyActivity.Student.Self, weeklyActivity.Ability, false);
                         break;
+                    }
 
-                    case WeeklyActivity.ActivityKind.QueueNewRite:
+                    case Activity.TeachGiftToGarou:
+                    {
+                        TeachGiftToGarou weeklyActivity = (TeachGiftToGarou) planItem;
+                        //planItem.Actor.Instruct(weeklyActivity.Student.Self, weeklyActivity.Gift, false);
+                        _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} teachs {1} for gift {2}",
+                            weeklyActivity.Actor.CharacterName,
+                            weeklyActivity.Student.Self.Name,
+                            weeklyActivity.Gift));
+                        break;
+                    }
 
-                        string keyRitePool = Build.DynamicTraits.GetKey(Build.DynamicTraits.RitePool, planItem.RiteInfo.Name);
-                        string keyRiteLearned = Build.DynamicTraits.GetKey(Build.DynamicTraits.RiteLearned, planItem.RiteInfo.Name);
+                    case Activity.TeachRiteToGarou:
+                    {
+                        TeachRiteToGarou weeklyActivity = (TeachRiteToGarou)planItem;
+                        _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} teachs {1} for Rite {2}",
+                            weeklyActivity.Actor.CharacterName, 
+                            weeklyActivity.Student.Self.Name,
+                            RitesDictionary.Rites[weeklyActivity.Rite].Name));
+                        break;
+                    }
+
+                    case Activity.CreateDevice:
+                    {
+                        CreateDevice weeklyActivity = (CreateDevice) planItem;
+                        //planItem.Actor.Craft(weeklyActivity.Student.Self, weeklyActivity.FetishName);
+                        _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} crafts device {1}",
+                            weeklyActivity.Actor.CharacterName,
+                            weeklyActivity.DeviceName));
+                            break;
+                    }
+
+                    case Activity.CreateFetishBase:
+                    {
+                        CreateFetishBase weeklyActivity = (CreateFetishBase) planItem;
+                            //planItem.Actor.Craft(weeklyActivity.Student.Self, weeklyActivity.DeviceName);
+                        _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} crafts item for fetish {1}",
+                            weeklyActivity.Actor.CharacterName,
+                            weeklyActivity.FetishName));
+                        break;
+                    }
+
+                    case Activity.QueueRiteLearning:
+                    {
+                        QueueRiteLearning weeklyActivity = (QueueRiteLearning) planItem;
+                        RiteInfo riteInfo = RitesDictionary.Rites[weeklyActivity.Rite];
+                        string keyRitePool = Build.DynamicTraits.GetKey(Build.DynamicTraits.RitePool, riteInfo.Name);
+                        string keyRiteLearned =
+                            Build.DynamicTraits.GetKey(Build.DynamicTraits.RiteLearned, riteInfo.Name);
 
                         //create dynamic trait if it was absent
                         if (!planItem.Actor.Self.Traits.ContainsKey(keyRitePool))
                         {
-                            planItem.Actor.Self.Traits.Add(keyRitePool, (int)(10.0 * planItem.RiteInfo.Level));
+                            planItem.Actor.Self.Traits.Add(keyRitePool, (int) (10.0 * riteInfo.Level));
                         }
 
                         //create dynamic trait if it was absent
                         if (!planItem.Actor.Self.Traits.ContainsKey(keyRiteLearned))
                         {
                             planItem.Actor.Self.Traits.Add(keyRiteLearned, 0);
-                        }                        
+                        }
                         break;
+                    }
                 }
             }
 
             //person spends learning attempts
             foreach (var actor in _party)
             {
-                List<WeeklyActivity> personalPlanCreateTalens =
-                    plan.FindAll(wa => wa.Actor.CharacterName.Equals(actor.Value.CharacterName) && wa.Activity == WeeklyActivity.ActivityKind.CreateTalens);
-                List<WeeklyActivity> personalPlanTeachGarouToGarou =
-                    plan.FindAll(wa => wa.Actor.CharacterName.Equals(actor.Value.CharacterName) && wa.Activity == WeeklyActivity.ActivityKind.TeachGarouToGarou);
-                List<WeeklyActivity> personalPlanLearnTraits =
-                    plan.FindAll(wa => wa.Actor.CharacterName.Equals(actor.Value.CharacterName) && wa.Activity == WeeklyActivity.ActivityKind.LearnTrait);
-                List<WeeklyActivity> personalPlanLearnRites =
-                    plan.FindAll(wa => wa.Actor.CharacterName.Equals(actor.Value.CharacterName) && wa.Activity == WeeklyActivity.ActivityKind.LearnRite);
+                List<WeeklyActivity> characterActivities = WeeklyFilter.ByActor(plan, actor.Key);
+                List<CreateTalens> createTalens = WeeklyFilter.ByCreateTalens(characterActivities); //talens are single
+                List<CreateFetish> createFetish = WeeklyFilter.ByCreateFetish(characterActivities); //fetishes are single
+                List<LearnAbility> learnAbility = WeeklyFilter.ByLearnAbility(characterActivities);
+                List<LearnRiteFromGarou> learnRite = WeeklyFilter.ByLearnRiteFromGarou(characterActivities);
+                List<LearnGiftFromGarou> learnGift = WeeklyFilter.ByLearnGiftFromGarou(characterActivities);
 
-                foreach (var planItem in personalPlanTeachGarouToGarou)
+                //TODO: more checks about conflicting planItems
+
+                foreach (var planItem in createFetish)
                 {
-                    planItem.Actor.LearnAttempts -= planItem.MaxLearnAttempts;
+                    //TODO: need IExtendedActinon aka dynamic trait
+                    planItem.Actor.WeeklyPartialActions -= planItem.MaxCreationAttempts; //hardcoded to 1 in CreateFetish constructor
+                    _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} creating fetish {1} ({2} attempts)",
+                        planItem.Actor.CharacterName,
+                        planItem.FetishName,
+                        planItem.MaxCreationAttempts));
                 }
 
-                foreach (var planItem in personalPlanCreateTalens)
+                foreach (var planItem in createTalens)
                 {
-                    planItem.Actor.LearnAttempts -= planItem.MaxLearnAttempts;
+                    //TODO: need IExtendedActinon aka dynamic trait
+                    planItem.Actor.WeeklyPartialActions -= planItem.MaxCreationAttempts; //limited to 2 in CreateTalens constructor
+                    _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} creating talens {1} ({2} attempts)",
+                        planItem.Actor.CharacterName,
+                        planItem.TalenName,
+                        planItem.MaxCreationAttempts));
                 }
 
-                foreach (var planItem in personalPlanLearnRites)
+                /*
+                foreach (var planItem in learnGift)
+                {
+                    planItem.Actor.AutoLearnRite(planItem.MaxLearnAttempts);
+                }
+                */
+
+                foreach (var planItem in learnRite)
                 {
                     planItem.Actor.AutoLearnRite(planItem.MaxLearnAttempts);
                 }
 
-                foreach (var planItem in personalPlanLearnTraits)
+                foreach (var planItem in learnAbility)
                 {
                     planItem.Actor.AutoLearn(planItem.MaxLearnAttempts);
                 }
 
+                //TODO: need to have priority of learn types per character
+                //actor.Value.AutoLearnGift(HatysPartyMember.SPEND_ALL_ATTEMPTS); //first try to learn more gifts
                 actor.Value.AutoLearn(HatysPartyMember.SPEND_ALL_ATTEMPTS);     //first try to learn more traits
                 actor.Value.AutoLearnRite(HatysPartyMember.SPEND_ALL_ATTEMPTS); //second try to learn more rites
 
@@ -369,6 +440,66 @@ namespace RollerEngine.Character
             _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("<==== Week {0} ends", weekNo));
         }
 
+        private void CheckFullAndCalcPartialActions(int weekNo, List<WeeklyActivity> plan)
+        {
+            CheckFullAndCalcPartialActions(weekNo, plan, weekNo < 10);
+        }
+
+        private void CheckFullAndCalcPartialActions(int weekNo, List<WeeklyActivity> plan, bool bSerialArc6)
+        {            
+            //spiridon casts mind partition to increase base actions.
+            Spiridon.CastMindPartition();
+
+            foreach (var hatysPartyMemberKvp in _party)
+            {
+                var initialWeeklyActions = hatysPartyMemberKvp.Value.WeeklyActions;
+                List<WeeklyActivity> characterActivities = WeeklyFilter.ByActor(plan, hatysPartyMemberKvp.Key);
+                //var markerActivities = WeeklyFilter.ByMarker(characterActivities);
+                var creationActivities = WeeklyFilter.ByCreation(characterActivities);
+                var teachingActivities = WeeklyFilter.ByTeaching(characterActivities);                 //all single
+                //var learningActivitires = WeeklyFilter.ByLearning(characterActivities);                //all extended
+                var creationExtended = WeeklyFilter.ByType(creationActivities, ActivityType.Extended);
+                //var creationSingle = WeeklyFilter.ByType(creationActivities, ActivityType.Single);
+
+                var actions = hatysPartyMemberKvp.Value.WeeklyActions;
+                if (creationExtended.Count > 1)
+                {
+                    throw new Exception(string.Format("No way to perform more than one extended creation roll! ({0})", hatysPartyMemberKvp.Key));
+                }
+                hatysPartyMemberKvp.Value.WeeklyActions -= creationExtended.Count;
+
+                if (teachingActivities.Count > 1)
+                {
+                    throw new Exception(string.Format("Multiple teaching is not supported! ({0})", hatysPartyMemberKvp.Key));
+                }
+                hatysPartyMemberKvp.Value.WeeklyActions -= teachingActivities.Count;
+
+                if (hatysPartyMemberKvp.Value.WeeklyActions < 0)
+                {
+                    throw new Exception(string.Format("Not enough weekly actions! ({0})", hatysPartyMemberKvp.Key));
+                }
+
+                if (hatysPartyMemberKvp.Key.Equals(Yoki.CharacterName))
+                {
+                    //yoki has x4 multiplier from Eidetic memory
+                    hatysPartyMemberKvp.Value.WeeklyPartialActions = hatysPartyMemberKvp.Value.WeeklyActions * (bSerialArc6 ? 4 : 2);
+                }
+                else
+                {
+                    //all others use cacao
+                    hatysPartyMemberKvp.Value.WeeklyPartialActions = hatysPartyMemberKvp.Value.WeeklyActions * 2;
+                    //TODO: Spiridon if Learn was ended at first roll; then skip second roll (LATER)
+                }
+
+                _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} has {1} full and {2} partial actions.",
+                    hatysPartyMemberKvp.Key,
+                    initialWeeklyActions,
+                    hatysPartyMemberKvp.Value.WeeklyPartialActions));
+
+            }
+
+        }
+
         private List<WeeklyActivity> GetPlanByWeekNumber(int weekNo)
         {
             List<WeeklyActivity> plan = new List<WeeklyActivity>();
@@ -378,16 +509,16 @@ namespace RollerEngine.Character
                 //8 Feb (teaching week)
                 case 1:
                     //teach
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Nameless, Kinfolk1, Build.Abilities.Leadership));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Kurt, Yoki, Build.Abilities.Demolitions));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Kinfolk1, Kurt, Build.Abilities.Firearms));
+                    plan.Add(new TeachAbility(Nameless, Kinfolk1, Build.Abilities.Leadership));
+                    plan.Add(new TeachAbility(Kurt, Yoki, Build.Abilities.Demolitions));
+                    plan.Add(new TeachAbility(Kinfolk1, Kurt, Build.Abilities.Firearms));
 
                     //learn
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Kurt, 2));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Kinfolk1, 2));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Yoki, 2));
+                    plan.Add(new LearnAbility(Kurt, 2));
+                    plan.Add(new LearnAbility(Kinfolk1, 2));
+                    plan.Add(new LearnAbility(Yoki, 2));
 
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.CreateTalens, Yoki, 2));
+                    plan.Add(new CreateTalens(Yoki, "Cacao", 1));
                     break;
 
                 //15 Feb (no teaching week)
@@ -395,38 +526,38 @@ namespace RollerEngine.Character
                     //Kinfolks learn nothing special
 
                     //Spiridon,Yoki: create Talens
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.CreateTalens, Spiridon, 2)); //creation used
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.CreateTalens, Yoki, 2));     //creation used
+                    plan.Add(new CreateTalens(Spiridon, "Cacao", 1));
+                    plan.Add(new CreateTalens(Yoki, "Cacao", 1));
 
                     //Nameless teach Kurt Ancestor Veneration
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.TeachGarouToGarou, Nameless, 1));
+                    plan.Add(new TeachRiteToGarou(Nameless, Kurt, Rite.AncestorVeneration, 1));
                     //Spirit teach Yoki Ancestor Seeking
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.TeachGarouToGarou, Spiridon, 1));
+                    plan.Add(new TeachRiteToGarou(Spiridon, Yoki, Rite.AncestorSeeking, 1));
 
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Kurt, RitesDictionary.Rites[Rite.AncestorVeneration]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Yoki, RitesDictionary.Rites[Rite.AncestorSeeking]));
+                    plan.Add(new QueueRiteLearning(Kurt, Rite.AncestorVeneration));
+                    plan.Add(new QueueRiteLearning(Yoki, Rite.AncestorSeeking));
 
                     //MAIN common RITES for nearest future (teached from summoned spirits)
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Nameless, RitesDictionary.Rites[Rite.OpenedCaern]));
-                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.OpenedCaern])); - already learned
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Kurt, RitesDictionary.Rites[Rite.OpenedCaern]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Yoki, RitesDictionary.Rites[Rite.OpenedCaern]));
+                    plan.Add(new QueueRiteLearning(Nameless, Rite.OpenedCaern));
+                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueRiteLearning, Spiridon, Rite.OpenedCaern)); - already learned
+                    plan.Add(new QueueRiteLearning(Kurt, Rite.OpenedCaern));
+                    plan.Add(new QueueRiteLearning(Yoki, Rite.OpenedCaern));
 
-                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Nameless, RitesDictionary.Rites[Rite.BoneRhythms])); -already learned
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.BoneRhythms]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Kurt, RitesDictionary.Rites[Rite.BoneRhythms]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Yoki, RitesDictionary.Rites[Rite.BoneRhythms]));
+                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueRiteLearning, Nameless, Rite.BoneRhythms)); -already learned
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.BoneRhythms));
+                    plan.Add(new QueueRiteLearning(Kurt, Rite.BoneRhythms));
+                    plan.Add(new QueueRiteLearning(Yoki, Rite.BoneRhythms));
 
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Yoki, RitesDictionary.Rites[Rite.SpiritAwakening]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Yoki, RitesDictionary.Rites[Rite.RenewingTalen]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.RenewingTalen]));
+                    plan.Add(new QueueRiteLearning(Yoki, Rite.SpiritAwakening));
+                    plan.Add(new QueueRiteLearning(Yoki, Rite.RenewingTalen));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.RenewingTalen));
 
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.Fetish]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.InvitationToAncestors]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.FeastForSpirits]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.Teachers]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.SacredPeace]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.CaernBuilding]));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Fetish));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.InvitationToAncestors));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.FeastForSpirits));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Teachers));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.SacredPeace));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.CaernBuilding));
                     break;
 
                 //22 Feb (teaching week)
@@ -452,42 +583,43 @@ namespace RollerEngine.Character
                 
 
                 case 4:
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnRite, Spiridon, RitesDictionary.Rites[Rite.AncestorSeeking]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.AncestorSeeking]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueNewRite, Spiridon, RitesDictionary.Rites[Rite.AncestorSeeking]));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnRite, Spiridon, 5));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Nameless, Kinfolk1, Build.Abilities.Leadership));
-                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Yoki, Ptitsa, Self.Abilities.Stealth)); //done
-                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Spiridon, Kurt, Self.Abilities.Rituals)); //can't teach that week
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Kurt, Yoki, Build.Abilities.Demolitions));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Kinfolk1, Kurt, Build.Abilities.Firearms));
-                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.Teaching, Kinfolk2, Nameless, Self.Abilities.Brawl)); //done
+                    plan.Add(new LearnRite(Spiridon, 1));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.AncestorSeeking));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.AncestorSeeking));
+                    plan.Add(new LearnRite(Spiridon, 5));
+                    plan.Add(new TeachAbility(Nameless, Kinfolk1, Build.Abilities.Leadership));
+                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.TeachAbility, Yoki, Ptitsa, Self.Abilities.Stealth)); //done
+                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.TeachAbility, Spiridon, Kurt, Self.Abilities.Rituals)); //can't teach that week
+                    plan.Add(new TeachAbility(Kurt, Yoki, Build.Abilities.Demolitions));
+                    plan.Add(new TeachAbility(Kinfolk1, Kurt, Build.Abilities.Firearms));
+                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.TeachAbility, Kinfolk2, Nameless, Self.Abilities.Brawl)); //done
 
 
                     //learning
                     //plan.Add(new WeeklyActivity(Nameless, 2));
                     //plan.Add(new WeeklyActivity(Spiridon, 2));
                     //plan.Add(new WeeklyActivity(Kurt, 2));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Yoki, 4));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Yoki, 4));
+                    plan.Add(new LearnAbility(Yoki, 4));
+                    plan.Add(new LearnAbility(Yoki, 4));
                     //plan.Add(new WeeklyActivity(Kinfolk1, 2));
                     //plan.Add(new WeeklyActivity(Kinfolk2, 2));
 
                     break;
                 case 5:
                     //learning
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Nameless, 1));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Spiridon, 1));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Kurt, 1));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Yoki, 1));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Yoki, 1));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Kinfolk1, 1));
-                    plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.LearnTrait, Kinfolk2, 1));
+                    plan.Add(new LearnAbility(Nameless, 1));
+                    plan.Add(new LearnAbility(Spiridon, 1));
+                    plan.Add(new LearnAbility(Kurt, 1));
+                    plan.Add(new LearnAbility(Yoki, 1));
+                    plan.Add(new LearnAbility(Yoki, 1));
+                    plan.Add(new LearnAbility(Kinfolk1, 1));
+                    plan.Add(new LearnAbility(Kinfolk2, 1));
 
                     break;
             }
 
             return plan;
         }
+
     }
 }

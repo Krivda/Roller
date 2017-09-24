@@ -80,7 +80,18 @@
     <Compile Include="Character\Party\Kinfolk2.cs" />
     <Compile Include="Character\Party\Kurt.cs" />
     <Compile Include="Character\Party\Lynn.cs" />
-    <Compile Include="Character\WeeklyActivity.cs" />
+    <Compile Include="WeekPlan\CreateDevice.cs" />
+    <Compile Include="WeekPlan\CreateFetish.cs" />
+    <Compile Include="WeekPlan\CreateFetishBase.cs" />
+    <Compile Include="WeekPlan\CreateTalens.cs" />
+    <Compile Include="WeekPlan\LearnGiftFromGarou.cs" />
+    <Compile Include="WeekPlan\LearningActivity.cs" />
+    <Compile Include="WeekPlan\LearnRiteFromGarou.cs" />
+    <Compile Include="WeekPlan\QueueRiteLearning.cs" />
+    <Compile Include="WeekPlan\TeachAbility.cs" />
+    <Compile Include="WeekPlan\TeachRiteToGarou.cs" />
+    <Compile Include="WeekPlan\TeachGiftToGarou.cs" />
+    <Compile Include="WeekPlan\WeeklyActivity.cs" />
     <Compile Include="Logger\BaseLogger.cs" />
     <Compile Include="Extensions\ListExtension.cs" />
     <Compile Include="Modifiers\BonusModifier.cs" />
@@ -121,6 +132,7 @@
     <Compile Include="Logger\IRollLogger.cs" />
     <Compile Include="Rolls\Skills\InstructionTeach.cs" />
     <Compile Include="Rolls\RollBase.cs" />
+    <Compile Include="WeekPlan\WeeklyFilter.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

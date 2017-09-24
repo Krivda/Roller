@@ -104,7 +104,7 @@ namespace RollerEngine.Character.Party
                 string trait = Build.DynamicTraits.GetBaseTrait(traitKeyXpPool, Build.DynamicTraits.ExpiriencePool);
                 bool hasWill = Self.Traits[trait] < 3;
 
-                while (LearnAttempts > 0 )
+                while (WeeklyPartialActions > 0 )
                 {
                     //learn until don't exceed max attempts (or all available for SPEND_ALL_ATTEMPTS)
                     if ((maxLearnAttempts != SPEND_ALL_ATTEMPTS) && (spentAttempts == maxLearnAttempts))
@@ -118,7 +118,7 @@ namespace RollerEngine.Character.Party
                     }
 
                     Learn(trait, hasWill);
-                    LearnAttempts--;
+                    WeeklyPartialActions--;
                     spentAttempts++;
 
                 }
@@ -179,7 +179,7 @@ namespace RollerEngine.Character.Party
 
                 Rite rite = RitesDictionary.Rites.First(ri => ri.Value.Name.Equals(riteName)).Key;
 
-                while (LearnAttempts > 0)
+                while (WeeklyPartialActions > 0)
                 {
                     //learn until don't exceed max attempts (or all available for SPEND_ALL_ATTEMPTS)
                     if ((maxLearnAttempts != SPEND_ALL_ATTEMPTS) && (spentAttempts == maxLearnAttempts))
@@ -192,15 +192,15 @@ namespace RollerEngine.Character.Party
                         break;
                     }
 
-                    LearnRite(rite, false, true); //TODO check for Caern group for Spiridon, Mystic for Yoki etc
+                    LearnRite(rite, false); //TODO check for Caern group for Spiridon, Mystic for Yoki etc
                                                       //always with Will to prevent botches (ask CURATOR!)
-                    LearnAttempts--;
+                    WeeklyPartialActions--;
                     spentAttempts++;
                 }
             }
         }
 
-        public void LearnRite(Rite rite, bool hasSpec, bool hasWill)
+        public void LearnRite(Rite rite, bool hasWill)
         {
             if (! (Self.CharacterClass.Equals(Build.Classes.Werewolf) || Self.CharacterClass.Equals(Build.Classes.Corax)))
             {
@@ -219,7 +219,12 @@ namespace RollerEngine.Character.Party
             }
 
             RitualsLearn roll = new RitualsLearn(Log, Roller);
-            roll.Roll(Self, rite, hasSpec, hasWill);
+            roll.Roll(Self, rite, HasSpecOnRite(rite), hasWill);
+        }
+
+        public virtual bool HasSpecOnRite(Rite rite)
+        {
+            return false;
         }
     }
 }

@@ -75,7 +75,7 @@ namespace RollerEngine.Character.Party
             CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Self, Log);
             //apply
             CommonBuffs.ApplySacredRosemary(Party.Spiridon.Self, Log); //TODO: this usage should be counted once more because its target are spirits (do when we'll count talens)
-            //buff Occult
+            //buff support trait
             ApplyAncestors(suppTrait);
         }
 
@@ -134,8 +134,7 @@ namespace RollerEngine.Character.Party
         {
             //Cast Pesuasion
             var mindPartition = new MindPartition(Log, Roller);
-            int mindParts = 1 + mindPartition.Roll(Self);
-            LearnAttempts *= mindParts; //TODO more complicated (requires reroll of the gift for finished learning activities)
+            WeeklyActions += mindPartition.Roll(Self);
         }
 
         public void CastCaernChanneling(string trait)
@@ -162,6 +161,11 @@ namespace RollerEngine.Character.Party
         {
             CarnyxOfVictory.RemoveFromBuild(Party.Builds.FindAll(build => !build.Name.Equals(CharacterName)));
             Log.Log(Verbosity.Critical, ActivityChannel.Boost, "<== Carnyx ended, Spiridon can act again");
+        }
+
+        public override bool HasSpecOnRite(Rite rite)
+        {
+            return RitesDictionary.Rites[rite].Group == RiteGroup.Caern;
         }
     }
 }

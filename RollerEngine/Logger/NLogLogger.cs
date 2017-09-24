@@ -57,9 +57,7 @@ namespace RollerEngine.Logger
             {
                 return new BaseLogger<NLogLogger, NLog.Logger>(minVerbosity, disabledChannels, new NLogLogger(nlog));
             }
-
         }
-
     }
 
     public static partial class LoggerFactory
@@ -78,6 +76,5 @@ namespace RollerEngine.Logger
         {
             return CreateNLogLogger(Verbosity.Debug, nlog);
         }
-
     }
 }

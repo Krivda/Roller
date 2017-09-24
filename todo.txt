@@ -18,13 +18,11 @@ Info: Spiridon: 16,1836 (0-35)
 todo max priority:
 15. learn bone rythms, veneration, open caern
 
-
-28, check nlog.txt is full!
-29. !!! !!! Bundle to Nameless; Chiminage for Spiridon!!!
+--28, check nlog.txt is full!
 !!! ultimate plan till next Wed
 32 test 3-4 weeks
-33 fortune spirit (Charm from F.Tribebook)
 34 MindPartition logic (2 + Gnosis roll * 2 = learning Sessions)
+	botch clears successes
 35. can one learn rite/trait same week? learn and create talens? CURATOR?
 36. code: rite speciaziationz, conditions (from sprit), enum
 27. code: queue new rite with delay until it will be learned by teacher; incorporate garou to garou case
@@ -34,13 +32,12 @@ SELECT TOKENS:
 	Coforters Archtect (3), children                                  ?? NEED; allows transfer to packmate while sleep (WHY WE NEED IT?)
 	Unbroken Cord (4), children                                       NEED; also need Caern of Gnosis that on open caern will allow to have Gnois>=perma; (+consider Bonding Rite or tagalong)
                                                                           shares Ability/Gift with packmate for scene
-	Torc of Wisdom fiana 3,4 + perma gnos                             NEED
-  Uktena's Scale or Rite to create kinfolks!                        NEED, if there is no perma Gnosis spending
+    Ultimate Search Engine (4)
 
 
 30. Build 
 31. Distrube buffs Nameless (secondary Rituals goal (B.R+Chann+supp Anc.)) //should be param of the week
 32. Learn/Teach/MindP./Creation attetmps
 33. Gnosis/Willpower replenish
-
+34. csv log
 //TODO we should split traits into Atributes, Abilities, Backgrounds, Rollalbe-10-based, Dynamic

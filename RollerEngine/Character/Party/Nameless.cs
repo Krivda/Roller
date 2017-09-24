@@ -14,7 +14,7 @@ namespace RollerEngine.Character.Party
         {
         }
 
-        public void WeeklyPreBoost()
+        public void WeeklyPreBoost(string suppTrait)
         {
             Log.Log(Verbosity.Details, ActivityChannel.Boost, "=== === === === ===");
             Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyPreBoost", Self.Name));
@@ -24,6 +24,9 @@ namespace RollerEngine.Character.Party
 
             //add caern mod (+4 ancestors)
             CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Self, Log);
+
+            //buff support trait
+            ApplyAncestors(suppTrait);
         }
 
         public void WeeklyBoostSkill(string trait)
@@ -31,8 +34,7 @@ namespace RollerEngine.Character.Party
             Log.Log(Verbosity.Details, ActivityChannel.Boost, "=== === === === ===");
             Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, trait));
 
-            //buff Occult
-            ApplyAncestors(Build.Abilities.Occult);
+
 
             //Buff occult from Spiridon
             Party.Spiridon.WeeklyMidBoostOccult(Self);

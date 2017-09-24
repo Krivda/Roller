@@ -15,7 +15,6 @@ namespace RollerEngine.Logger
             return new StringBuilder(CAPACITY);
         }
 
-
         public void AppendInternalLog(StringBuilder logger, Verbosity verbosity, string record)
         {
             logger.Append(string.Format("{0}\n", record));
@@ -32,9 +31,7 @@ namespace RollerEngine.Logger
             {
                 return new BaseLogger<StringBufferLogger, StringBuilder>(minVerbosity, disabledChannels, new StringBufferLogger());
             }
-
         }
-
     }
 
     public static partial class LoggerFactory
@@ -53,6 +50,5 @@ namespace RollerEngine.Logger
         {
             return CreateStringBufferLogger(Verbosity.Debug);
         }
-
     }
 }

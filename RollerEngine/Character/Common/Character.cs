@@ -10,7 +10,8 @@ namespace RollerEngine.Character.Common
         public Build Self { get; private set; }
         public IRollLogger Log { get; set; }
         public IRoller Roller { get; set; }
-        public int LearnAttempts { get; set; }
+        public int WeeklyPartialActions { get; set; }
+        public int WeeklyActions { get; set; }
 
         public Character(string name, Build build, IRollLogger log, IRoller roller)
         {
@@ -19,7 +20,7 @@ namespace RollerEngine.Character.Common
             CharacterName = name;
             Log = log;
             Roller = roller;
-            LearnAttempts = 1;
+            WeeklyPartialActions = 1;
         }
 
         public virtual void Learn(string ability, bool withWill)

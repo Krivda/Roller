@@ -45,7 +45,6 @@ namespace RollerEngine.Character
                 ));
         }
 
-
         public static void ApplyCaernOfVigilPowerAncesctors(Build build, IRollLogger log)
         {
             const string caernOfVigil = "Caern of Vigil";
@@ -102,6 +101,8 @@ namespace RollerEngine.Character
                     ));
             }
         }
+
+        //TODO: ApplyCacao
 
         public static void ApplyMedicalBundle(Build build, IRollLogger log)
         {

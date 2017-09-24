@@ -12,6 +12,8 @@ namespace RollerEngine.Rolls
     {
         private const int BASE_DC = 6;
         private const int MIN_DC = 3;
+        private const int MAX_MULTI_ADJUST = 3;
+        private const int MAX_SINGLE_ADJUST = 5;
         //private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         protected readonly IRollLogger Log;
@@ -320,7 +322,13 @@ namespace RollerEngine.Rolls
             dcInfo.BonusModifers = GetBonusDC(actor, targets, Conditions);
             dcAdjust += dcInfo.BonusModifers.Value;
 
-
+            //TODO: handle single/multiple adjust
+            //hadle limited value
+            if (dcAdjust > MAX_MULTI_ADJUST)
+            {
+                Log.Log(Verbosity, ActivityChannel.Main, string.Format("DC cannot be adjusted more than -3, adjusted as {0}.", MAX_MULTI_ADJUST));
+                dcAdjust = MAX_MULTI_ADJUST;
+            }
 
             int adjectedDC = dcInfo.BaseDC + dcAdjust;
 

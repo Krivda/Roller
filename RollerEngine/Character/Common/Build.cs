@@ -121,7 +121,7 @@ namespace RollerEngine.Character.Common
             public const string AncestorSpirits = "Ancestor Spirits";
             public const string SpiritHeritage = "Spirit Heritage";
             public const string Social = "Social";
-            public const string Teaching = "Teaching";
+            public const string Teaching = "TeachAbility";
             public const string Learning = "Learning";
             public const string MysticRite = "Mysctic Rite";
             public const string SpiritRite = "Spirit Rite";

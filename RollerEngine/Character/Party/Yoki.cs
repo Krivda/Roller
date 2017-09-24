@@ -2,6 +2,7 @@ using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
 using RollerEngine.Rolls.Gifts;
+using RollerEngine.Rolls.Rites;
 
 namespace RollerEngine.Character.Party
 {
@@ -10,7 +11,7 @@ namespace RollerEngine.Character.Party
  
         public Yoki(Build build, IRollLogger log, IRoller roller, HatysParty party) : base("Йоки", build, log, roller, party)
         {
-            LearnAttempts = 4;
+            WeeklyPartialActions = 4;
         }
 
         public void CastPersuasion()
@@ -26,6 +27,11 @@ namespace RollerEngine.Character.Party
             CastPersuasion();
 
             base.Instruct(target, ability, withWill);
+        }
+
+        public override bool HasSpecOnRite(Rite rite)
+        {
+            return RitesDictionary.Rites[rite].Group == RiteGroup.Mystic;
         }
     }
 }

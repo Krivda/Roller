@@ -1,7 +1,9 @@
 namespace RollerEngine.Character.Common
 {
-    interface IStudent
+    public interface IStudent
     {
+        Build Self { get; }
+
         void Learn(string ability, bool withWill);
     }
 }
