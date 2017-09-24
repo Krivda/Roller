@@ -16,8 +16,8 @@ namespace RollerEngine.Character.Party
 
         public void WeeklyPreBoost()
         {
-            Log.Log(Verbosity.Details, "=== === === === ===");
-            Log.Log(Verbosity.Details, string.Format("{0} WeeklyPreBoost", Self.Name));
+            Log.Log(Verbosity.Details, ActivityChannel.Boost, "=== === === === ===");
+            Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyPreBoost", Self.Name));
 
             //-1 dc social rolls
             CastPersuasion();
@@ -28,8 +28,8 @@ namespace RollerEngine.Character.Party
 
         public void WeeklyBoostSkill(string trait)
         {
-            Log.Log(Verbosity.Details, "=== === === === ===");
-            Log.Log(Verbosity.Details, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, trait));
+            Log.Log(Verbosity.Details, ActivityChannel.Boost, "=== === === === ===");
+            Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, trait));
 
             //buff Occult
             ApplyAncestors(Build.Abilities.Occult);
@@ -59,7 +59,7 @@ namespace RollerEngine.Character.Party
 
         public static void ApplyChannellingGift(Build build, IRollLogger log, int value)
         {
-            log.Log(Verbosity.Details, string.Format("{0} Channels {1} Rage to boost his next Action (+{1} Dice on next roll)", build.Name, value));
+            log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} Channels {1} Rage to boost his next Action (+{1} Dice on next roll)", build.Name, value));
 
             build.BonusDicePoolModifiers.Add(
                 new BonusModifier(

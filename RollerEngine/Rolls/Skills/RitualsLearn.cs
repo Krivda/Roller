@@ -64,12 +64,12 @@ namespace RollerEngine.Rolls.Skills
                 if (successesRequired > successesLearned)
                 {
                     //not enought yet!
-                    Log.Log(Verbosity, string.Format("{0} has advanced in learning rite {1} on {2} more success. Now he has {3} of {4} successes!",
+                    Log.Log(Verbosity, ActivityChannel.TeachLearn, string.Format("{0} has advanced in learning rite {1} on {2} more success. Now he has {3} of {4} successes!",
                         actor.Name, riteName, result, successesLearned, successesRequired));
                 }
                 else
                 {
-                    Log.Log(Verbosity, string.Format("{0} has has finally learned rite {1} (+{2} more success. Now he has {3} of {4} successes!)",
+                    Log.Log(Verbosity, ActivityChannel.TeachLearn, string.Format("{0} has has finally learned rite {1} (+{2} more success. Now he has {3} of {4} successes!)",
                         actor.Name, riteName, result, successesLearned, successesRequired));
                     successesLearned = Build.RiteAlreadyLearned;
                 }
@@ -78,7 +78,7 @@ namespace RollerEngine.Rolls.Skills
             }
             else
             {
-                Log.Log(Verbosity, string.Format("{0} didn't learn anything.", actor.Name));
+                Log.Log(Verbosity, ActivityChannel.TeachLearn, string.Format("{0} didn't learn anything.", actor.Name));
             }
             
             return result;

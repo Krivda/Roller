@@ -40,11 +40,11 @@ namespace RollerEngine.Rolls.Gifts
                         TraitModifier.BonusTypeKind.AdditionalDice
                     ));
 
-                Log.Log(Verbosity, string.Format("{0} obtained bonus {1} dice on {2} rolls from {3} gift.", target.Name, result, ability,  Name));
+                Log.Log(Verbosity, ActivityChannel.Intermediate, string.Format("{0} obtained bonus {1} dice on {2} rolls from {3} gift.", target.Name, result, ability, Name));
             }
             else
             {
-                Log.Log(Verbosity, string.Format("{0} didn't get bonus from {1} gift.", target.Name, Name));
+                Log.Log(Verbosity, ActivityChannel.Intermediate, string.Format("{0} didn't get bonus from {1} gift.", target.Name, Name));
             }
 
             return result;

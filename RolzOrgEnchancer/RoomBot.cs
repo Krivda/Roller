@@ -2,29 +2,37 @@
 using System.Collections.Concurrent;
 using System.Threading;
 using RollerEngine.Character;
+using RollerEngine.Logger;
+using RollerEngine.Roller;
 using RolzOrgEnchancer.Interfaces;
 using RolzOrgEnchancer.RoomLog;
 using RolzOrgEnchancer.UI;
-using IRollLogger = RollerEngine.Logger.IRollLogger;
-using IRoller = RollerEngine.Roller.IRoller;
-using RollData = RollerEngine.Roller.RollData;
-using Verbosity = RollerEngine.Logger.Verbosity;
 
 namespace RolzOrgEnchancer
 {
-    internal enum Color
+    public enum Color
     {
-        Black,  //Verbosity.Details
-        Red,    //Verbosity.Error
-        Green,                          //command
-        Blue,   //Verbosity.Critical
-        Gray,   //Verbosity.Debug
-        Maroon,
-        Olive,
-        Orange, //Roll Description
-        Purple, //Session
-        Teal,   //Verbosity.Important
-        Pink    //Verbosity.Warning
+        Gray = 0, //Verbosity.Debug
+        Black = 1, //Verbosity.Details
+        Blue = 2, //Verbosity.Normal
+        Orange = 3, //Verbosity.Important
+        Pink = 4, //Verbosity.Critical
+        Teal = 5, //Verbosity.Warning
+        Red = 6, //Verbosity.Error
+
+        Green,  //UI command
+        Purple, //UI session
+        Maroon, //free
+        Olive   //free
+    }
+
+    public static class VerbosityHelper
+    {
+        public static Color Verbosity2Color(Verbosity verbosity)
+        {
+            return (Color)verbosity;
+        }
+
     }
 
     internal class RoomBootImpl : IRollLogger, IRoller
@@ -46,7 +54,7 @@ namespace RolzOrgEnchancer
         }
 
         //RollerEngine.Logger.IRollLogger
-        public void Log(Verbosity verbosity, string record)
+        public void Log(Verbosity verbosity, ActivityChannel channel, string record)
         {
             if (verbosity > Verbosity.Details) Program.Log(string.Format("RoomBootImpl: {0}: {1}", verbosity, record));
             Color color;

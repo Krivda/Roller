@@ -112,7 +112,7 @@ namespace RollerEngine.Character
 
         private void ShowLearningResults()
         {
-            _log.Log(Verbosity.Critical, "==> week summary:");
+            _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, "==> week summary:");
 
             foreach (var origKvp in OriginalStats)
             {
@@ -133,13 +133,13 @@ namespace RollerEngine.Character
                         {
                             string baseTrait = Build.DynamicTraits.GetBaseTrait(activeTrait.Key, Build.DynamicTraits.ExpirienceLearned);
 
-                            _log.Log(Verbosity.Critical, string.Format("{0} advanced in learning trait {1}: he already learned {2}XP towards next rank!. (changed from {3})!", origKvp.Key, baseTrait, currTraitValue, origTraitValue));
+                            _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} advanced in learning trait {1}: he already learned {2}XP towards next rank!. (changed from {3})!", origKvp.Key, baseTrait, currTraitValue, origTraitValue));
                         }
                         else if (activeTrait.Key.Contains(Build.DynamicTraits.ExpiriencePool))
                         {
                             string baseTrait = Build.DynamicTraits.GetBaseTrait(activeTrait.Key, Build.DynamicTraits.ExpiriencePool);
 
-                            _log.Log(Verbosity.Critical, string.Format("{0} advanced in learning trait {1}: he has {2}XP in trait pool. (changed from {3})!", origKvp.Key, baseTrait, currTraitValue, origTraitValue));
+                            _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} advanced in learning trait {1}: he has {2}XP in trait pool. (changed from {3})!", origKvp.Key, baseTrait, currTraitValue, origTraitValue));
                         }
                         else if (activeTrait.Key.Contains(Build.DynamicTraits.RiteLearned))
                         {
@@ -148,11 +148,11 @@ namespace RollerEngine.Character
                             if (currTraitValue == Build.RiteAlreadyLearned && currTraitValue != origTraitValue)
                             {
                                 //finished learning rite this week
-                                _log.Log(Verbosity.Critical, string.Format("{0} has learned rite {1}!", origKvp.Key, baseTrait));
+                                _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} has learned rite {1}!", origKvp.Key, baseTrait));
                             }
                             else if (currTraitValue != Build.RiteAlreadyLearned)
                             {
-                                _log.Log(Verbosity.Critical, string.Format("{0} advanced in learning rite {1}: he already learned {2} successes!. (changed from {3})!", origKvp.Key, baseTrait, currTraitValue, origTraitValue));
+                                _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} advanced in learning rite {1}: he already learned {2} successes!. (changed from {3})!", origKvp.Key, baseTrait, currTraitValue, origTraitValue));
                             }
                         }
                         else if (activeTrait.Key.Contains(Build.DynamicTraits.RitePool))
@@ -161,7 +161,7 @@ namespace RollerEngine.Character
                         }
                         else 
                         {
-                            _log.Log(Verbosity.Critical, string.Format("{0} advanced in learning trait {1}: he increased trait value from {2} to {3}!", origKvp.Key, activeTrait.Key, origTraitValue, currTraitValue));
+                            _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} advanced in learning trait {1}: he increased trait value from {2} to {3}!", origKvp.Key, activeTrait.Key, origTraitValue, currTraitValue));
                         }
                     }
                 }
@@ -289,7 +289,7 @@ namespace RollerEngine.Character
         {
             List<WeeklyActivity> plan = GetPlanByWeekNumber(weekNo);
 
-            _log.Log(Verbosity.Critical, string.Format("<==== Week {0} starts", weekNo));
+            _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("<==== Week {0} starts", weekNo));
 
             StartScene();
 
@@ -366,7 +366,7 @@ namespace RollerEngine.Character
 
             ShowLearningResults();
 
-            _log.Log(Verbosity.Critical, string.Format("<==== Week {0} ends", weekNo));
+            _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("<==== Week {0} ends", weekNo));
         }
 
         private List<WeeklyActivity> GetPlanByWeekNumber(int weekNo)

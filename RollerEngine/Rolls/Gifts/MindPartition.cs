@@ -39,17 +39,17 @@ namespace RollerEngine.Rolls.Gifts
             {
                 _botchCount = 1;
                 //reroll
-                Log.Log(Verbosity, string.Format("{0} has botched {1} gift on {2} successes and is re-rolling it.", actor.Name, Name,successes));
+                Log.Log(Verbosity, ActivityChannel.TeachLearn, string.Format("{0} has botched {1} gift on {2} successes and is re-rolling it.", actor.Name, Name, successes));
                 successes = base.Roll(actor, new List<Build>() { actor }, false, false);
             }
 
             if (successes > 0)
             {
-                Log.Log(Verbosity, string.Format("{0} obtained {1} bonus extended actions for a scence from {2} gift.", actor.Name, successes, Name));
+                Log.Log(Verbosity, ActivityChannel.TeachLearn, string.Format("{0} obtained {1} bonus extended actions for a scence from {2} gift.", actor.Name, successes, Name));
             } 
             else
             {
-                Log.Log(Verbosity, string.Format("{0} didn't get bonus from {1}.", actor.Name, Name));
+                Log.Log(Verbosity, ActivityChannel.TeachLearn, string.Format("{0} didn't get bonus from {1}.", actor.Name, Name));
             }
 
             return successes;

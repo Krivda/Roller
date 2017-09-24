@@ -1,19 +1,57 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 
 namespace RollerEngine.Logger
 {
-    public class StringBufferLogger : IRollLogger
+    public class StringBufferLogger : ILogWrapper<StringBuilder>
     {
-        private readonly StringBuilder _buf = new StringBuilder(15000);
+        private const int CAPACITY = 64 * 1024;
 
-        public void Log(Verbosity verbosity, string record)
+        //use LoggerFactory class
+        private StringBufferLogger() { }
+
+        public StringBuilder CreateChannelLogger(ActivityChannel channel)
         {
-            _buf.Append(string.Format("{0}\n", record));
+            return new StringBuilder(CAPACITY);
         }
 
-        public string GetLog()
+
+        public void AppendInternalLog(StringBuilder logger, Verbosity verbosity, string record)
         {
-            return _buf.ToString();
+            logger.Append(string.Format("{0}\n", record));
+        }
+
+        public string GetInternalLog(StringBuilder logger)
+        {
+            return logger.ToString();
+        }
+
+        public static class InnerLoggerFactory
+        {
+            public static BaseLogger<StringBufferLogger, StringBuilder> CreateStringBufferLogger(Verbosity minVerbosity, List<ActivityChannel> disabledChannels)
+            {
+                return new BaseLogger<StringBufferLogger, StringBuilder>(minVerbosity, disabledChannels, new StringBufferLogger());
+            }
+
+        }
+
+    }
+
+    public static partial class LoggerFactory
+    {
+        public static BaseLogger<StringBufferLogger, StringBuilder> CreateStringBufferLogger(Verbosity minVerbosity, List<ActivityChannel> disabledChannels)
+        {
+            return StringBufferLogger.InnerLoggerFactory.CreateStringBufferLogger(minVerbosity, disabledChannels);
+        }
+
+        public static BaseLogger<StringBufferLogger, StringBuilder> CreateStringBufferLogger(Verbosity minVerbosity)
+        {
+            return CreateStringBufferLogger(minVerbosity, new List<ActivityChannel>());
+        }
+
+        public static BaseLogger<StringBufferLogger, StringBuilder> CreateStringBufferLogger()
+        {
+            return CreateStringBufferLogger(Verbosity.Debug);
         }
 
     }

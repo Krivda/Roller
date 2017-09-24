@@ -15,8 +15,8 @@ namespace UnitTests
         [Test]
         public void RollSimpleTest()
         {
-            var roller = new OfflineDiceRoller(new StringBufferLogger());
-            IRollLogger logger = new StringBufferLogger();
+            var roller = new OfflineDiceRoller(LoggerFactory.CreateStringBufferLogger());
+            IRollLogger logger = LoggerFactory.CreateStringBufferLogger();
 
             Build build = new Build("Artze");
             int dex = 4;
@@ -51,8 +51,8 @@ namespace UnitTests
         [Test(Description = "Trait modifiers")]
         public void RollTestTraitMods()
         {
-            var roller = new OfflineDiceRoller(new StringBufferLogger());
-            IRollLogger logger = new StringBufferLogger();
+            var roller = new OfflineDiceRoller(LoggerFactory.CreateStringBufferLogger());
+            IRollLogger logger = LoggerFactory.CreateStringBufferLogger();
 
             Build build = new Build("Artze");
             int dex = 3;
@@ -120,8 +120,8 @@ namespace UnitTests
         [Test(Description = "Test conditions")]
         public void RollTestConditionsMods()
         {
-            var roller = new OfflineDiceRoller(new StringBufferLogger());
-            IRollLogger logger = new StringBufferLogger();
+            var roller = new OfflineDiceRoller(LoggerFactory.CreateStringBufferLogger());
+            IRollLogger logger = LoggerFactory.CreateStringBufferLogger();
 
             Build build = new Build("Artze");
             int dex = 3;
@@ -187,7 +187,7 @@ namespace UnitTests
 
             //Umbra applied
             Assert.AreEqual(dex + brawl + 1 + 2 +3, info.DicePoolInfo.Dices, "dice pool");
-            Assert.AreEqual(dex + 1 + 2 + 3, info.DicePoolInfo.Traits[Build.Atributes.Dexterity].ModifiedValue, "dex value");
+            Assert.AreEqual(dex + 1 + 2, info.DicePoolInfo.Traits[Build.Atributes.Dexterity].ModifiedValue, "dex value");
             Assert.AreEqual(brawl, info.DicePoolInfo.Traits[Build.Abilities.Brawl].ModifiedValue, "brawl");
 
 

@@ -17,7 +17,7 @@ namespace UnitTests
         [Test]
         public void TestNameLessBuff()
         {
-            var rollLogger = new NLogLogger(Logger);
+            var rollLogger = LoggerFactory.CreateNLogLogger(Logger);
             Logger.Info("Started");
             var res = HatysParty.LoadFromGoogle(rollLogger, new OfflineDiceRoller(rollLogger));
 
@@ -27,8 +27,8 @@ namespace UnitTests
         [Test]
         public void TestPartyBuff()
         {
-            var rollLogger = new NLogLogger(Logger, Verbosity.Details);
-            var devNullLogger = new StringBufferLogger();
+            var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Details, Logger);
+            var devNullLogger = LoggerFactory.CreateStringBufferLogger();
             var roller = new OfflineDiceRoller(rollLogger);
             var devNullRoller = new OfflineDiceRoller(devNullLogger);
 
@@ -44,8 +44,8 @@ namespace UnitTests
         [Test]
         public void TestPartyBuffStats()
         {
-            var rollLogger = new NLogLogger(Logger);
-            var devNullLogger = new StringBufferLogger();
+            var rollLogger = LoggerFactory.CreateNLogLogger(Logger);
+            var devNullLogger = LoggerFactory.CreateStringBufferLogger();
             var roller = new OfflineDiceRoller(rollLogger);
 
             var devNullRoller = new OfflineDiceRoller(devNullLogger);
@@ -146,8 +146,8 @@ namespace UnitTests
         [Test]
         public void Multiweek()
         {
-            var rollLogger = new NLogLogger(Logger, Verbosity.Important);
-            var devNullLogger = new StringBufferLogger();
+            var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Important, Logger);
+            var devNullLogger = LoggerFactory.CreateStringBufferLogger();
             var roller = new OfflineDiceRoller(rollLogger);
             var devNullRoller = new OfflineDiceRoller(devNullLogger);
 

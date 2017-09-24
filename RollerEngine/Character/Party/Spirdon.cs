@@ -61,8 +61,8 @@ namespace RollerEngine.Character.Party
 
         public void WeeklyPreBoost(string suppTrait)
         {
-            Log.Log(Verbosity.Details, "=== === === === ===");
-            Log.Log(Verbosity.Details, string.Format("{0} WeeklyPreBoost on {1}", Self.Name, suppTrait));
+            Log.Log(Verbosity.Details, ActivityChannel.Boost, "=== === === === ===");
+            Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyPreBoost on {1}", Self.Name, suppTrait));
 
             ShiftToCrinos();
             //apply heighten sences
@@ -81,8 +81,8 @@ namespace RollerEngine.Character.Party
 
         public void WeeklyMidBoostOccult(Build target)
         {
-            Log.Log(Verbosity.Details, "=== === === === ===");
-            Log.Log(Verbosity.Details, string.Format("{0} WeeklyMidBoostOccult for {1}", Self.Name, target.Name));
+            Log.Log(Verbosity.Details, ActivityChannel.Boost, "=== === === === ===");
+            Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyMidBoostOccult for {1}", Self.Name, target.Name));
 
             //for my next Ancestor Seeking
             CastSacredFire(new List<Build>() { Self });
@@ -98,8 +98,8 @@ namespace RollerEngine.Character.Party
 
         public void WeeklyBoostSkill(string mainTrait)
         {
-            Log.Log(Verbosity.Details, "=== === === === ===");
-            Log.Log(Verbosity.Details, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, mainTrait));
+            Log.Log(Verbosity.Details, ActivityChannel.Boost, "=== === === === ===");
+            Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, mainTrait));
 
             //Buff occult from Spiridon
             Party.Spiridon.WeeklyMidBoostOccult(Self);
@@ -148,7 +148,7 @@ namespace RollerEngine.Character.Party
 
         public void ActivateCarnyx()
         {
-            Log.Log(Verbosity.Critical, ">== Carnyx started, now actions from Spiridon");
+            Log.Log(Verbosity.Critical, ActivityChannel.Boost, ">== Carnyx started, now actions from Spiridon");
             //TODO: -1 Gnosis to activate
 
             CastCaernChanneling(Build.Abilities.Performance);
@@ -161,7 +161,7 @@ namespace RollerEngine.Character.Party
         public void DeactivateCarnyx()
         {
             CarnyxOfVictory.RemoveFromBuild(Party.Builds.FindAll(build => !build.Name.Equals(CharacterName)));
-            Log.Log(Verbosity.Critical, "<== Carnyx ended, Spiridon can act again");
+            Log.Log(Verbosity.Critical, ActivityChannel.Boost, "<== Carnyx ended, Spiridon can act again");
         }
     }
 }

@@ -49,12 +49,12 @@ namespace RollerEngine.Rolls.Gifts
                             TraitModifier.BonusTypeKind.AdditionalDice
                         ));
 
-                    Log.Log(Verbosity, string.Format("{0} obtained bonus {1} dices to {2} (Ancestors Spririts related rolls) for next roll from {3} gift performed by {4}.", target.Name, skill, successes/2, Name, actor.Name));
+                    Log.Log(Verbosity, ActivityChannel.Intermediate, string.Format("{0} obtained bonus {1} dices to {2} (Ancestors Spririts related rolls) for next roll from {3} gift performed by {4}.", target.Name, skill, successes / 2, Name, actor.Name));
                 }
             }
             else
             {
-                Log.Log(Verbosity, string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
+                Log.Log(Verbosity, ActivityChannel.Intermediate, string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
             }
 
             return successes/2;

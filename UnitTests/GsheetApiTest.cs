@@ -13,15 +13,17 @@ namespace UnitTests
         public void GetPartySpreadsheet()
         {
             var data = SpreadsheetService.GetNotEmptySpreadsheetRange("1tKXkAjTaUpIDkjmCi7w1QOVbnyYU2f-KOWEnl2EAIZg", "A1:J93", "Party sheet list");
-            Assert.AreEqual("Attributes:", data[0][0]);
+            Assert.AreEqual("Talents:", data[28][0]);
+            Assert.AreEqual("Skills:", data[40][0]);
+            Assert.AreEqual("Knowledge:", data[60][0]);
         }
 
         [Test]
         public void TestPartyLoad()
         {
-            var res = HatysPartyLoader.LoadFromGoogle(new StringBufferLogger());
+            var res = HatysPartyLoader.LoadFromGoogle(LoggerFactory.CreateStringBufferLogger());
 
-            Assert.AreEqual(7, res.Count, "should load 7 characters");
+            Assert.AreEqual(8, res.Count, "should load 8 characters");
 
             Assert.AreEqual(7, res["Krivda"].Traits[Build.RollableTraits.Gnosis], "krivda has Gnosis 7");
             Assert.AreEqual(2, res["Alisa"].Traits[Build.Atributes.Dexterity], "krivda has Dex 2");

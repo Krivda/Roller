@@ -12,10 +12,10 @@ namespace RollerEngine.SpreadSheets
 {
     public class SpreadsheetService
     {
+        private const string APPLICATION_NAME = "Serial Hatys Roller boosted by Rolz.org";
         // If modifying these scopes, delete your previously saved credentials
-        // at ~/.credentials/sheets.googleapis.com-dotnet-quickstart.json
+        // at ~/.credentials/sheets.googleapis.hatys.json
         private static readonly string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
-        private const string ApplicationName = "Serial Hatys Roller boosted by Rolz.org";
         private static SheetsService _service;
 
         private static string AssemblyDirectory
@@ -59,7 +59,7 @@ namespace RollerEngine.SpreadSheets
             _service = new SheetsService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
-                ApplicationName = ApplicationName,
+                ApplicationName = APPLICATION_NAME,
             });
             return _service;
         }

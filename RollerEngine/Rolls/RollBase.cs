@@ -128,17 +128,17 @@ namespace RollerEngine.Rolls
 
             logMessageBefore.Append(".");
 
-            Log.Log(Verbosity, logMessageBefore.ToString());
+            Log.Log(Verbosity, ActivityChannel.Main, logMessageBefore.ToString());
 
             FullRollInfo = GetRollInfo(actor, targets);
 
             string logMessage = GetLogForRoll(actor, targets, FullRollInfo, hasSpec, hasWill);
-            Log.Log(Verbosity, string.Format(logMessage));
+            Log.Log(Verbosity, ActivityChannel.Main, string.Format(logMessage));
 
             RollResult = Roller.Roll(FullRollInfo.DicePoolInfo.Dices, FullRollInfo.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill, Name);
             Successes = RollResult.Successes;
 
-            Log.Log(Verbosity.Debug, string.Format("...and got {0} successes.", Successes));
+            Log.Log(Verbosity.Debug, ActivityChannel.Main, string.Format("...and got {0} successes.", Successes));
 
             //remove used modifiers
             foreach (var traitValueInfo in FullRollInfo.DicePoolInfo.Traits)
@@ -253,7 +253,7 @@ namespace RollerEngine.Rolls
             {
                 if (!modifier.ConditionsMet(this))
                 {
-                    Log.Log(Verbosity.Important, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
+                    Log.Log(Verbosity.Important, ActivityChannel.Main, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {
@@ -269,7 +269,7 @@ namespace RollerEngine.Rolls
                     {
                         triatValue += modValueLimitedValue;
                         modValue = modValueLimitedValue;
-                        Log.Log(Verbosity.Important, string.Format("Modifer {0} is overcapped. Value set to {1}.", modifier.Name, modValueLimitedValue));
+                        Log.Log(Verbosity.Important, ActivityChannel.Main, string.Format("Modifer {0} is overcapped. Value set to {1}.", modifier.Name, modValueLimitedValue));
                     }
 
                     appliedMods.Add(new Tuple<int, TraitModifier>(modValue, modifier));
@@ -290,7 +290,7 @@ namespace RollerEngine.Rolls
             {
                 if (!modifier.ConditionsMet(this))
                 {
-                    Log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
+                    Log.Log(Verbosity.Debug, ActivityChannel.Main, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {
@@ -327,7 +327,7 @@ namespace RollerEngine.Rolls
             //hadle limited value
             if (adjectedDC < MIN_DC)
             {
-                Log.Log(Verbosity, string.Format("DC was lesser then min, adjusted to {0}.", MIN_DC));
+                Log.Log(Verbosity, ActivityChannel.Main, string.Format("DC was lesser then min, adjusted to {0}.", MIN_DC));
                 dcInfo.AdjustedDC = MIN_DC;
             }
             else
@@ -359,7 +359,7 @@ namespace RollerEngine.Rolls
             {
                 if (!modifier.ConditionsMet(this))
                 {
-                    Log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
+                    Log.Log(Verbosity.Debug, ActivityChannel.Main, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {
@@ -385,7 +385,7 @@ namespace RollerEngine.Rolls
             {
                 if (!modifier.ConditionsMet(this))
                 {
-                    Log.Log(Verbosity.Debug, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
+                    Log.Log(Verbosity.Debug, ActivityChannel.Main, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {

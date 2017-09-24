@@ -45,12 +45,12 @@ namespace RollerEngine.Rolls.Rites
                             TraitModifier.BonusTypeKind.AdditionalDice
                         ));
 
-                    Log.Log(Verbosity,
+                    Log.Log(Verbosity, ActivityChannel.Intermediate,
                     string.Format("{0} obtained bonus {1} dice on social rolls from {2} rite to Occult, Enigmas, Investigation for next Ancestor spirit related rolls.", target.Name, result/2, Name));
                 }
                 else
                 {
-                    Log.Log(Verbosity,
+                    Log.Log(Verbosity, ActivityChannel.Intermediate,
                     string.Format("{0} didn't get bonus from {1} rite.", target.Name, Name));
                 }
 

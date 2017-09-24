@@ -15,8 +15,8 @@ namespace UnitTests
         [Test]
         public void TestInstructionTeach()
         {
-            var rollLogger = new NLogLogger(Logger);
-            var roller = new MockFixedRoller(new NLogLogger(Logger));
+            var rollLogger = LoggerFactory.CreateNLogLogger(Logger);
+            var roller = new MockFixedRoller(LoggerFactory.CreateNLogLogger(Logger));
 
             Build teacher = new Build("Teacher");
             teacher.Traits[Build.Abilities.Instruction] = 3;

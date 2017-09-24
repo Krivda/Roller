@@ -24,7 +24,7 @@ namespace RollerEngine.Roller
 
                 for (var index = 0; index < _diceFaceStat.Length; index++)
                 {
-                    rollLogger.Log(Verbosity.Important, string.Format("Percetage of {0} is {1:P2} (of {2} dices)", index+1, decimal.Divide(_diceFaceStat[index], sum), sum));  
+                    rollLogger.Log(Verbosity.Important, ActivityChannel.Main, string.Format("Percetage of {0} is {1:P2} (of {2} dices)", index+1, decimal.Divide(_diceFaceStat[index], sum), sum));  
                 }
             }
 
@@ -94,7 +94,7 @@ namespace RollerEngine.Roller
                 rollData.DiceResult.Add(dice);
             }
 
-            _rollLogger.Log(Verbosity.Details, string.Format("{0} roll was [{1}] and gave {2} successes.", description, bld, info.Item1));
+            _rollLogger.Log(Verbosity.Details, ActivityChannel.Main, string.Format("{0} roll was [{1}] and gave {2} successes.", description, bld, info.Item1));
             
             
 

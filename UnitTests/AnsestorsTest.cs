@@ -16,8 +16,10 @@ namespace UnitTests
         [Test]
         public void AnscestorsTest()
         {
-            var logger = new NLogLogger(Logger);
-            var roller = new MockFixedRoller(new NLogLogger(Logger));
+            var logger = LoggerFactory.CreateNLogLogger(Logger);
+            var roller = new MockFixedRoller(LoggerFactory.CreateNLogLogger(Logger));
+
+            logger.Log(Verbosity.Debug, ActivityChannel.Main, "<== Ancestors Test");
 
             Build user = new Build("Teacher");
             user.Traits[Build.Backgrounds.Ancestors] = 3;
@@ -44,7 +46,7 @@ namespace UnitTests
             user.AncestorsUsesLeft = 50;
             user.HasAncestorVeneration = true;
             //test veneration fixes 
-            var roller2 = new MockFixedRoller(new NLogLogger(Logger), new List<int>(){-1, 1});
+            var roller2 = new MockFixedRoller(LoggerFactory.CreateNLogLogger(Logger), new List<int>(){-1, 1});
             roll = new Ancestors(logger, roller2);
             roll.Roll(user, Build.Abilities.Occult);
             //not recevied mod
@@ -52,7 +54,7 @@ namespace UnitTests
             Assert.AreEqual(1, user.TraitModifiers.Find(tm => tm.Traits.Contains(Build.Abilities.Occult) && tm.Name.Equals(Build.Backgrounds.Ancestors)).Value, "Occult should have 1 bonus after Ancestors use!");
             Assert.AreEqual(50, user.AncestorsUsesLeft, "botch should have 50 further attempts");
 
-            var roller3 = new MockFixedRoller(new NLogLogger(Logger), new List<int>() { -1, 0 });
+            var roller3 = new MockFixedRoller(LoggerFactory.CreateNLogLogger(Logger), new List<int>() { -1, 0 });
             roll = new Ancestors(logger, roller3);
             roll.Roll(user, Build.Abilities.Rituals);
             //not recevied mod

@@ -37,7 +37,7 @@ namespace RollerEngine.Roller
         public RollData Roll(int diceCount, int DC, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill,
             string description)
         {
-            _rollLogger.Log(Verbosity.Important, string.Format("Got {0} successes on mocked fixed roll.", Successes));
+            _rollLogger.Log(Verbosity.Important, ActivityChannel.Main, string.Format("Got {0} successes on mocked fixed roll.", Successes));
 
             int result = Successes;
             _rollIndex++;
