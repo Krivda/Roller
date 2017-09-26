@@ -80,6 +80,7 @@
     <Compile Include="Character\Party\Kinfolk2.cs" />
     <Compile Include="Character\Party\Kurt.cs" />
     <Compile Include="Character\Party\Lynn.cs" />
+    <Compile Include="Character\Party\NamelessBuff.cs" />
     <Compile Include="WeekPlan\CreateDevice.cs" />
     <Compile Include="WeekPlan\CreateFetish.cs" />
     <Compile Include="WeekPlan\CreateFetishBase.cs" />

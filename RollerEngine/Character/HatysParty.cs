@@ -11,6 +11,18 @@ using RollerEngine.WeekPlan;
 
 namespace RollerEngine.Character
 {
+
+    public class HatysBuffPlan
+    {
+        public NamelessBuff Nameless { get; set; }
+    }
+
+    public class WeekPlan
+    {
+        public HatysBuffPlan BuffPlan { get; set; }
+        public List<WeeklyActivity> Activities { get; set; }
+    }
+
     public class HatysParty
     {
         private readonly Dictionary<string, Build> _partyBuilds;
@@ -85,18 +97,16 @@ namespace RollerEngine.Character
             return new HatysParty(party, log, roller);
         }
 
-        public void WeeklyBuff()
+        public void WeeklyBuff(HatysBuffPlan wpBuffPlan)
         {
             //todo: rewrite
 
             //boost
-            Spiridon.ActivateCarnyx();
-            Nameless.WeeklyPreBoost(Build.Abilities.Occult);
-            Spiridon.DeactivateCarnyx();
-
-            Spiridon.WeeklyPreBoost(Build.Abilities.Empathy); //it is important to Spiridon to be second due to -1 dc of Teacher's Ease of Nameless
+            Nameless.WeeklyPreBoost(wpBuffPlan.Nameless);
+            //Nameless can preboost Instruct and his Teacher's Ease will have -1 dc due to Persuasion
+            Spiridon.WeeklyPreBoost(Build.Abilities.Empathy);
             Spiridon.WeeklyBoostSkill(Build.Abilities.Rituals);
-            Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
+            Nameless.WeeklyBoostSkill(wpBuffPlan.Nameless);
         }
 
 
@@ -212,8 +222,6 @@ namespace RollerEngine.Character
             StoreOriginalValues(Kinfolk1.Self);
             StoreOriginalValues(Kinfolk2.Self);
 
-
-            //todo: make if for week #1 (hardcoded) actions 2; partion actions -= 1 for teach (NOW)
             Spiridon.WeeklyActions = 1;
             Nameless.WeeklyActions = 1;
             Kurt.WeeklyActions = 1;
@@ -221,6 +229,8 @@ namespace RollerEngine.Character
             Kinfolk1.WeeklyActions = 1;
             Kinfolk2.WeeklyActions = 1;
             Lynn.WeeklyActions = 1;
+
+            Nameless.BoneRhythmsUsagesLeft = 2;
         }
 
         private static void AddPermanentModifiers(Dictionary<string, Build> result, IRollLogger log)
@@ -291,7 +301,8 @@ namespace RollerEngine.Character
 
         public void DoWeek(int weekNo)
         {
-            List<WeeklyActivity> plan = GetPlanByWeekNumber(weekNo);
+            WeekPlan wp = GetPlanByWeekNumber(weekNo);
+            List<WeeklyActivity> plan = wp.Activities;
 
             _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("<==== Week {0} starts", weekNo));
 
@@ -299,7 +310,18 @@ namespace RollerEngine.Character
 
             CheckFullAndCalcPartialActions(weekNo, plan); //CastMindPartition is inside
 
-            WeeklyBuff();
+            //week1 dirty hack due to desync of automation and manual calculations !!!
+            if (weekNo == 1)
+            {
+                Nameless.WeeklyPartialActions = 0;
+                Spiridon.WeeklyPartialActions = 0;
+                Kinfolk1.WeeklyPartialActions = 2;
+                Kurt.WeeklyPartialActions = 2;
+                Yoki.WeeklyPartialActions = 2;
+                Kinfolk2.WeeklyPartialActions = 0;
+            }
+
+            WeeklyBuff(wp.BuffPlan);
 
             //first of all queue rites and roll teaching
             foreach (var planItem in plan)
@@ -491,38 +513,45 @@ namespace RollerEngine.Character
                     //TODO: Spiridon if Learn was ended at first roll; then skip second roll (LATER)
                 }
 
-                _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} has {1} full and {2} partial actions.",
+                _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} has {1} full spend {2} full and {3} partial actions.",
                     hatysPartyMemberKvp.Key,
                     initialWeeklyActions,
+                    initialWeeklyActions - hatysPartyMemberKvp.Value.WeeklyActions,
                     hatysPartyMemberKvp.Value.WeeklyPartialActions));
 
             }
 
         }
 
-        private List<WeeklyActivity> GetPlanByWeekNumber(int weekNo)
+        private WeekPlan GetPlanByWeekNumber(int weekNo)
         {
             List<WeeklyActivity> plan = new List<WeeklyActivity>();
+            HatysBuffPlan buffPlan = new HatysBuffPlan();
+
+            WeekPlan weekPlan = new WeekPlan()
+            {
+                Activities = plan,
+                BuffPlan = buffPlan
+            };
 
             switch (weekNo)
             {
                 //8 Feb (teaching week)
                 case 1:
+                    buffPlan.Nameless = NamelessBuff.MaxBoostInstruct();
+
                     //teach
                     plan.Add(new TeachAbility(Nameless, Kinfolk1, Build.Abilities.Leadership));
                     plan.Add(new TeachAbility(Kurt, Yoki, Build.Abilities.Demolitions));
                     plan.Add(new TeachAbility(Kinfolk1, Kurt, Build.Abilities.Firearms));
-
-                    //learn
-                    plan.Add(new LearnAbility(Kurt, 2));
-                    plan.Add(new LearnAbility(Kinfolk1, 2));
-                    plan.Add(new LearnAbility(Yoki, 2));
-
+                    //talens
                     plan.Add(new CreateTalens(Yoki, "Cacao", 1));
                     break;
 
                 //15 Feb (no teaching week)
                 case 2:
+                    buffPlan.Nameless = NamelessBuff.BoostSecondaryTrait(Build.Abilities.Rituals);
+
                     //Kinfolks learn nothing special
 
                     //Spiridon,Yoki: create Talens
@@ -530,20 +559,17 @@ namespace RollerEngine.Character
                     plan.Add(new CreateTalens(Yoki, "Cacao", 1));
 
                     //Nameless teach Kurt Ancestor Veneration
-                    plan.Add(new TeachRiteToGarou(Nameless, Kurt, Rite.AncestorVeneration, 1));
-                    //Spirit teach Yoki Ancestor Seeking
-                    plan.Add(new TeachRiteToGarou(Spiridon, Yoki, Rite.AncestorSeeking, 1));
-
-                    plan.Add(new QueueRiteLearning(Kurt, Rite.AncestorVeneration));
-                    plan.Add(new QueueRiteLearning(Yoki, Rite.AncestorSeeking));
+                    plan.Add(new TeachRiteToGarou(Nameless, Spiridon, Rite.AncestorVeneration, 1));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.AncestorVeneration));
+                    plan.Add(new LearnRite(Spiridon, 3));
 
                     //MAIN common RITES for nearest future (teached from summoned spirits)
                     plan.Add(new QueueRiteLearning(Nameless, Rite.OpenedCaern));
-                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueRiteLearning, Spiridon, Rite.OpenedCaern)); - already learned
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.OpenedCaern)); - already learned
                     plan.Add(new QueueRiteLearning(Kurt, Rite.OpenedCaern));
                     plan.Add(new QueueRiteLearning(Yoki, Rite.OpenedCaern));
 
-                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.QueueRiteLearning, Nameless, Rite.BoneRhythms)); -already learned
+                    //plan.Add(new QueueRiteLearning(Nameless, Rite.BoneRhythms)); -already learned
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.BoneRhythms));
                     plan.Add(new QueueRiteLearning(Kurt, Rite.BoneRhythms));
                     plan.Add(new QueueRiteLearning(Yoki, Rite.BoneRhythms));
@@ -560,9 +586,51 @@ namespace RollerEngine.Character
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.CaernBuilding));
                     break;
 
+                //TODO: need to calc/have BoneRhythms and Veneration and OpenCaern
+                //TODO: do fetishes as learn rite
                 //22 Feb (teaching week)
                 case 3:
+                    //teach
+                    plan.Add(new TeachAbility(Nameless, Spiridon, Build.Abilities.Performance));
+                    plan.Add(new TeachAbility(Spiridon, Kinfolk1, Build.Abilities.Occult));
+                    plan.Add(new TeachAbility(Kurt, Kinfolk2, Build.Abilities.SpiritLore));
+                    plan.Add(new TeachAbility(Yoki, Nameless, Build.Abilities.Rituals));
+                    plan.Add(new TeachAbility(Kinfolk1, Yoki, Build.Abilities.Occult));
+                    plan.Add(new TeachAbility(Kinfolk2, Kurt, Build.Abilities.Firearms));
                     break;
+                case 5:
+                    //teach
+                    //plan.Add(new TeachAbility(Nameless, ?, Build.Abilities.Brawl));                    
+                    plan.Add(new TeachAbility(Spiridon, Kinfolk2, Build.Abilities.Meditation));
+                    plan.Add(new TeachAbility(Kurt, Kinfolk1, Build.Abilities.SpiritLore));
+                    plan.Add(new TeachAbility(Yoki, Nameless, Build.Abilities.Rituals));
+                    plan.Add(new TeachAbility(Kinfolk1, Yoki, Build.Abilities.Occult));
+                    //plan.Add(new TeachAbility(Kinfolk2, ?, Build.Abilities.SpiritLore));
+
+                    //plan.Add(new TeachAbility(Kurt, Yoki, Build.Abilities.SpiritLore));
+                    //plan.Add(new TeachAbility(Kurt, ?, Build.Abilities.SpiritLore));
+                    //plan.Add(new TeachAbility(Spiridon, Yoki, Build.Abilities.Herbalism));
+                    //plan.Add(new TeachAbility(?, Nameless, Build.Abilities.Rituals));
+                    //plan.Add(new TeachAbility(?, Nameless, Build.Abilities.Occult));
+
+                    //plan.Add(new TeachAbility(Kinfolk2, Nameless, Build.Abilities.Survival));
+
+                    //plan.Add(new TeachAbility(Kinfolk1, Spiridon, Build.Abilities.Craft));
+                    //UnbrokenCord.plan.Add(new TeachAbility(Lynn, Nameless, Build.Abilities.Enigmas));
+                    //plan.Add(new TeachAbility(Kinfolk2, Lynn, Build.Abilities.Medicine));
+                    //plan.Add(new TeachAbility(Poison, Spiridon, Build.Abilities.Poison));
+                    //plan.Add(new TeachGiftToGarou(Spiridon, Nameless, "Visage of Fenris"));
+
+                    //plan.Add(new TeachAbility(Spiridon, Kinfolk1, Build.Abilities.Meditation));
+
+                    //Spiridon: create Talens
+                    plan.Add(new CreateTalens(Spiridon, "Cacao", 1));
+
+
+                    break;
+
+//
+
 
                     //TODO
                     //Lynn: Talisman Dedication, Cleanising
@@ -582,7 +650,7 @@ namespace RollerEngine.Character
 
                 
 
-                case 4:
+                case 24:
                     plan.Add(new LearnRite(Spiridon, 1));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.AncestorSeeking));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.AncestorSeeking));
@@ -605,7 +673,7 @@ namespace RollerEngine.Character
                     //plan.Add(new WeeklyActivity(Kinfolk2, 2));
 
                     break;
-                case 5:
+                case 25:
                     //learning
                     plan.Add(new LearnAbility(Nameless, 1));
                     plan.Add(new LearnAbility(Spiridon, 1));
@@ -618,7 +686,7 @@ namespace RollerEngine.Character
                     break;
             }
 
-            return plan;
+            return weekPlan;
         }
 
     }

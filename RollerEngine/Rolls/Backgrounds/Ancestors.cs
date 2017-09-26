@@ -19,13 +19,21 @@ namespace RollerEngine.Rolls.Backgrounds
         {
             AdditionalInfo = targetTrait;
 
-            if (actor.AncestorsUsesLeft < 1)
+            if (actor.AncestorsUsesLeft == -1)
             {
                 //Ancestors won't answer this call
-                Log.Log(Verbosity.Warning, ActivityChannel.Boost, string.Format("{0} won't answer {1}'s call this week!", Name, actor.Name));
+                Log.Log(Verbosity.Warning, ActivityChannel.Boost, string.Format("{0} won't answer {1}'s call this week due to botch!", Name, actor.Name));
                 return 0;
             }
 
+            if (actor.AncestorsUsesLeft == 0)
+            {
+                //Ancestors can't be called
+                Log.Log(Verbosity.Warning, ActivityChannel.Boost, string.Format("{0} won't answer {1}'s call this week due to attempts!", Name, actor.Name));
+                return 0;
+            }
+
+            actor.AncestorsUsesLeft--;
             base.Roll(actor, new List<Build>() {actor}, false, false);
 
             if (Successes < 0)
@@ -80,10 +88,10 @@ namespace RollerEngine.Rolls.Backgrounds
                 //botch
 
                 //cancel any uses of Ancestors this week
-                actor.AncestorsUsesLeft = 0;
+                actor.AncestorsUsesLeft = -1;
 
                 Log.Log(Verbosity.Warning, ActivityChannel.Boost,
-                    string.Format("{0} bothced {1} bacground and Anscestors won't answer him for a week.", actor.Name, Name));
+                    string.Format("{0} bothced {1} Anscestors won't answer him for a week.", actor.Name, Name));
             }
 
             return Successes;

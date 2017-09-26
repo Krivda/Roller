@@ -19,6 +19,8 @@ namespace RollerEngine.Character.Party
         public bool HasOpenedCaern { get; set; }
         public bool HasSpecOnInstruction { get; set; }
 
+        public int BoneRhythmsUsagesLeft;
+
         public HatysPartyMember(string name, Build build, IRollLogger log, IRoller roller, HatysParty party) : base(name, build, log, roller)
         {
             Party = party;
@@ -56,7 +58,7 @@ namespace RollerEngine.Character.Party
                     }
                 }*/
 
-                if (!mods.Exists(modifier => modifier.Name.Equals(Build.Backgrounds.Ancestors) && modifier.Value !=0 ))
+                if (Self.AncestorsUsesLeft > 0)
                 {
                     CommonBuffs.ApplyAncestorsChiminage(Self, Log);
                     CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Self, Log);
@@ -73,6 +75,13 @@ namespace RollerEngine.Character.Party
             {
                 //Ask Nameless to buff Ability roll
                 Party.Nameless.CastTeachersEase(Self, ability, false, Verbosity.Details);
+            }
+
+            //Apply Bone Rhythms
+            if (BoneRhythmsUsagesLeft > 0)
+            {
+                BoneRhythmsUsagesLeft--;
+                CommonBuffs.ApplyBoneRythms(Self, Log);
             }
 
             base.Learn(ability, withWill);

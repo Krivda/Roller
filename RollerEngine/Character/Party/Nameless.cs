@@ -14,10 +14,10 @@ namespace RollerEngine.Character.Party
         {
         }
 
-        public void WeeklyPreBoost(string suppTrait)
+        public void WeeklyPreBoost(NamelessBuff buffPlan)
         {
             Log.Log(Verbosity.Details, ActivityChannel.Boost, "=== === === === ===");
-            Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyPreBoost", Self.Name));
+            Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyPreBoost for {1}", Self.Name, buffPlan.PreBuff.Trait));
 
             //-1 dc social rolls
             CastPersuasion();
@@ -25,24 +25,35 @@ namespace RollerEngine.Character.Party
             //add caern mod (+4 ancestors)
             CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Self, Log);
 
+            if (buffPlan.PreBuff.UseBoneRhythms)
+            {
+                CommonBuffs.ApplyBoneRythms(Self, Log);
+            }
+
+            if (buffPlan.PreBuff.UseRageChanneling)
+            {
+                ApplyChannellingGift(Self, Log, 3);
+            }
+
             //buff support trait
-            ApplyAncestors(suppTrait);
+            if (!string.IsNullOrEmpty(buffPlan.PreBuff.Trait))
+            {
+                ApplyAncestors(buffPlan.PreBuff.Trait);
+            }
         }
 
-        public void WeeklyBoostSkill(string trait)
+        public void WeeklyBoostSkill(NamelessBuff buff)
         {
             Log.Log(Verbosity.Details, ActivityChannel.Boost, "=== === === === ===");
-            Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, trait));
-
-
+            Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, buff.MainBuff.Trait));
 
             //Buff occult from Spiridon
             Party.Spiridon.WeeklyMidBoostOccult(Self);
 
             //Maximum boost for trait
-            Party.Spiridon.ActivateCarnyx();
-            CastGhostPack(trait, true);
-            Party.Spiridon.DeactivateCarnyx();
+            //Party.Spiridon.ActivateCarnyx();
+            CastGhostPack(buff.MainBuff);
+            //Party.Spiridon.DeactivateCarnyx();
         }
 
         public void CastPersuasion()
@@ -88,37 +99,43 @@ namespace RollerEngine.Character.Party
             ancestorSeeking.Roll(Self, target, false, true);
         }
 
-
-        private void CastGhostPack(string trait, bool maxBoost)
+        private void CastGhostPack(NamelessBuff.ApplyBuffs buff)
         {
-            //Apply chiminage
-            CommonBuffs.ApplyAncestorsChiminage(Self, Log);
-
-
-            /*Self.DCModifiers.Add(
-                new DCModifer(
-                    "Dreams!",
-                    new List<string>() { Build.Abilities.Occult },
-                    DurationType.Roll,
-                    new List<string>() { },
-                    -2
-                ));*/
-
-
-            //roll Ghost Pack
-            var ghostPackRoll = new GhostPack(Log, Roller);
-            ghostPackRoll.Roll(Self, false, false);
-
-            if (maxBoost)
+            //TODO: no check for multiple GhostPacks
+            if (Self.AncestorsUsesLeft != -1)
             {
-                //Apply Bone Ryhtms
-                CommonBuffs.ApplyBoneRythms(Self, Log);
+                Self.AncestorsUsesLeft += 1; //bonus usage
 
-                //Apply Channelling for 3 Rage
-                ApplyChannellingGift(Self, Log, 3);
+                //Apply chiminage
+                CommonBuffs.ApplyAncestorsChiminage(Self, Log);
+
+                //TODO: Spirit Lore
+                /*Self.DCModifiers.Add(
+                    new DCModifer(
+                        "Spirit Lore Dreams!",
+                        new List<string>() { Build.Abilities.Occult },
+                        DurationType.Roll,
+                        new List<string>() { },
+                        -1
+                    ));*/
+
+                //roll Ghost Pack
+                var ghostPackRoll = new GhostPack(Log, Roller);
+                ghostPackRoll.Roll(Self, false, false);
+
+                if (buff.UseBoneRhythms)
+                {
+                    //Apply Bone Ryhtms
+                    CommonBuffs.ApplyBoneRythms(Self, Log);
+                }
+                if (buff.UseRageChanneling)
+                {
+                    //Apply Channelling for 3 Rage
+                    ApplyChannellingGift(Self, Log, 3);
+                }
+
+                ApplyAncestors(buff.Trait);
             }
-
-            ApplyAncestors(trait);
 
         }
     }

@@ -11,6 +11,8 @@ namespace RollerEngine.Character.Party
 {
     public class Spirdon : HatysPartyMember
     {
+        private bool learnedBoneRhythms = false;
+
         public Spirdon(Build build, IRollLogger log, IRoller roller, HatysParty party) : base("Спиридон", build, log, roller, party)
         {
         }
@@ -87,13 +89,9 @@ namespace RollerEngine.Character.Party
             //for my next Ancestor Seeking
             CastSacredFire(new List<Build>() { Self });
             //cast rite of Anscestor Seeking - boost Occult to target
-            Party.Spiridon.ActivateCarnyx();
             CastAnscestorSeeking(target);
-            Party.Spiridon.DeactivateCarnyx();
             //boost Occult to target
-            Party.Spiridon.ActivateCarnyx();
             CastCallToWyld(new List<Build>() { target }, Build.Abilities.Occult);
-            Party.Spiridon.DeactivateCarnyx();
         }
 
         public void WeeklyBoostSkill(string mainTrait)
@@ -105,20 +103,31 @@ namespace RollerEngine.Character.Party
             Party.Spiridon.WeeklyMidBoostOccult(Self);
 
             //Maximum boost for trait
-            Party.Spiridon.ActivateCarnyx();
+            //Party.Spiridon.ActivateCarnyx();
             CastGhostPack(mainTrait);
-            Party.Spiridon.DeactivateCarnyx();
+            //Party.Spiridon.DeactivateCarnyx();
         }
 
         private void CastGhostPack(string trait)
         {
-            Party.Nameless.CastTeachersEase(Self, Build.Abilities.Occult, false, Verbosity.Details);
+            //TODO: no check for multiple GhostPacks
+            if (Self.AncestorsUsesLeft != -1)
+            {
+                Self.AncestorsUsesLeft += 1; //bonus usage 
 
-            //roll Ghost Pack
-            var ghostPackRoll = new GhostPack(Log, Roller);
-            ghostPackRoll.Roll(Self, true, false);
+                Party.Nameless.CastTeachersEase(Self, Build.Abilities.Occult, false, Verbosity.Details);
 
-            ApplyAncestors(trait);
+                if (learnedBoneRhythms)
+                {
+                    CommonBuffs.ApplyBoneRythms(Self, Log);
+                }
+
+                //roll Ghost Pack
+                var ghostPackRoll = new GhostPack(Log, Roller);
+                ghostPackRoll.Roll(Self, true, false);
+
+                ApplyAncestors(trait);
+            }
         }
 
         public void CastAnscestorSeeking(Build target)
@@ -145,7 +154,7 @@ namespace RollerEngine.Character.Party
             caernChanelling.Roll(Self, trait, false);
         }
 
-        public void ActivateCarnyx()
+        public void __ActivateCarnyx()
         {
             Log.Log(Verbosity.Critical, ActivityChannel.Boost, ">== Carnyx started, now actions from Spiridon");
             //TODO: -1 Gnosis to activate
@@ -157,7 +166,7 @@ namespace RollerEngine.Character.Party
             carnyx.Roll(Self, Party.Builds.FindAll(build => !build.Name.Equals(CharacterName)), false, false);
         }
 
-        public void DeactivateCarnyx()
+        public void __DeactivateCarnyx()
         {
             CarnyxOfVictory.RemoveFromBuild(Party.Builds.FindAll(build => !build.Name.Equals(CharacterName)));
             Log.Log(Verbosity.Critical, ActivityChannel.Boost, "<== Carnyx ended, Spiridon can act again");

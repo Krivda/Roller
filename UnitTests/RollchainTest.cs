@@ -4,6 +4,7 @@ using NLog;
 using NUnit.Framework;
 using RollerEngine.Character;
 using RollerEngine.Character.Common;
+using RollerEngine.Character.Party;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
 using RollerEngine.Rolls;
@@ -21,7 +22,7 @@ namespace UnitTests
             Logger.Info("Started");
             var res = HatysParty.LoadFromGoogle(rollLogger, new OfflineDiceRoller(rollLogger));
 
-            res.Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
+            res.Nameless.WeeklyBoostSkill(NamelessBuff.MaxBoostInstruct());
         }
 
         [Test]
@@ -37,7 +38,8 @@ namespace UnitTests
 
             var res = HatysParty.LoadFromGoogle(currLogger, currRoller);
             res.StartScene();
-            res.WeeklyBuff();
+            //will FAIL
+            res.WeeklyBuff(new HatysBuffPlan());
         }
 
 
@@ -72,7 +74,7 @@ namespace UnitTests
                 try
                 {
                     res.StartScene();
-                    res.Nameless.WeeklyPreBoost();
+                    res.Nameless.WeeklyPreBoost(NamelessBuff.MaxBoostInstruct());
                     
                     /*
                     res.Spiridon.WeeklyPreBoost(Build.Abilities.Occult); //it is important to Spiridon to be second due to -1 dc of Teacher's Ease of Nameless
@@ -82,7 +84,7 @@ namespace UnitTests
                     
                     res.Spiridon.WeeklyPreBoost(Build.Abilities .Empathy); //it is important to Spiridon to be second due to -1 dc of Teacher's Ease of Nameless
                     res.Spiridon.WeeklyBoostSkill(SpiridonBonus);
-                    res.Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
+                    res.Nameless.WeeklyBoostSkill(NamelessBuff.MaxBoostInstruct());
                    
 
                     //Logger.Info("Started");
