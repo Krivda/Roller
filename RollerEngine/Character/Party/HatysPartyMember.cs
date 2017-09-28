@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using RollerEngine.Character.Common;
 using RollerEngine.Logger;
-using RollerEngine.Modifiers;
 using RollerEngine.Roller;
 using RollerEngine.Rolls.Backgrounds;
 using RollerEngine.Rolls.Rites;
@@ -36,8 +35,6 @@ namespace RollerEngine.Character.Party
 
         public override void Learn(string ability, bool withWill)
         {
-            List<TraitModifier> mods = Self.TraitModifiers.FindAll(m => m.Traits.Contains(ability));
-
             //Apply Caern Of Vigil Channelling and Ancestors (for warewolves only)
             if (Self.CharacterClass.Equals(Build.Classes.Werewolf))
             {
@@ -102,7 +99,7 @@ namespace RollerEngine.Character.Party
                 }
             }
 
-            //TODO: sorting order?
+            //TODO: THIS IS WRONG!! NEED TO DEBUG
             xpPoolTraits.Sort((tuple, tuple1) => tuple.Item2.CompareTo(tuple1.Item2));
 
             int spentAttempts = 0;
@@ -129,7 +126,6 @@ namespace RollerEngine.Character.Party
                     Learn(trait, hasWill);
                     WeeklyPartialActions--;
                     spentAttempts++;
-
                 }
             }
         }
@@ -148,7 +144,7 @@ namespace RollerEngine.Character.Party
                 //Apply rosemary
                 CommonBuffs.ApplySacredRosemary(Self, Log);
 
-                if (Self.Traits[Build.Backgrounds.Ancestors] > 0 && !Self.CheckBonusExists(Build.Abilities.Instruction, Build.Backgrounds.Ancestors))
+                if (Self.AncestorsUsesLeft > 0)
                 {
                     CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Self, Log);
                     CommonBuffs.ApplyAncestorsChiminage(Self, Log);
@@ -164,7 +160,7 @@ namespace RollerEngine.Character.Party
 
         public void AutoLearnRite(int maxLearnAttempts)
         {
-            var ritePoolTraits = new List<Tuple<string, int>>();
+            var ritePoolTraits = new List<Tuple<RiteInfo, int>>();
 
             foreach (var traitKvp in Self.Traits)
             {
@@ -172,21 +168,24 @@ namespace RollerEngine.Character.Party
                 {
                     if (traitKvp.Value != Build.RiteAlreadyLearned)
                     {
-                        ritePoolTraits.Add(new Tuple<string, int>(traitKvp.Key, traitKvp.Value));
+                        string riteName = Build.DynamicTraits.GetBaseTrait(traitKvp.Key, Build.DynamicTraits.RiteLearned);                         
+                        RiteInfo rinfo = RitesDictionary.Rites.First(ri => ri.Value.Name.Equals(riteName)).Value;
+                        ritePoolTraits.Add(new Tuple<RiteInfo, int>(rinfo, traitKvp.Value));
                     }
                 }
             }
 
-            ritePoolTraits.Sort((tuple, tuple1) => tuple.Item2.CompareTo(tuple1.Item2));
+            //sort by number of success left to learn the rite
+            ritePoolTraits.Sort((tuple, tuple1) =>
+                (((int) tuple.Item1.Level * 10) - tuple.Item2).CompareTo(
+                    ((int) (tuple1.Item1.Level * 10)) - tuple1.Item2));
 
             int spentAttempts = 0;
 
             foreach (var ritePoolTrait in ritePoolTraits)
             {
-                string traitKeyRitePool = ritePoolTrait.Item1;
-                string riteName = Build.DynamicTraits.GetBaseTrait(traitKeyRitePool, Build.DynamicTraits.RiteLearned);
-
-                Rite rite = RitesDictionary.Rites.First(ri => ri.Value.Name.Equals(riteName)).Key;
+                string riteName = ritePoolTrait.Item1.Name;
+                Rite rite = ritePoolTrait.Item1.Rite;
 
                 while (WeeklyPartialActions > 0)
                 {
@@ -196,7 +195,7 @@ namespace RollerEngine.Character.Party
                         break;
                     }
 
-                    if (Self.Traits[traitKeyRitePool] == Build.RiteAlreadyLearned)
+                    if (Self.IsRiteLearned(riteName))
                     {
                         break;
                     }

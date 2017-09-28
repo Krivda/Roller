@@ -71,6 +71,7 @@
     <Compile Include="Character\Common\Character.cs" />
     <Compile Include="Character\Common\Build.cs" />
     <Compile Include="Character\CommonBuffs.cs" />
+    <Compile Include="Character\HatysParty.Weeks.cs" />
     <Compile Include="Character\Party\HatysPartyMember.cs" />
     <Compile Include="Character\HatysParty.cs" />
     <Compile Include="Character\HatysPartyLoader.cs" />

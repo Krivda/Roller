@@ -23,7 +23,7 @@ namespace RollerEngine.Rolls.Rites
         Contrition,             //Accord, 1
         Renunciation,           //Accord, 2
         MootRite,               //Caern, 1
-        OpenedCaern,            //Caern, 2
+        OpenedCaern,            //Caern, 1
         BadgersBurrow,          //Caern, 4
         OpenedBridge,           //Caern, 4
         ShroudedGlen,           //Caern, 4
@@ -98,6 +98,7 @@ namespace RollerEngine.Rolls.Rites
 
     public class RiteInfo
     {
+        public Rite Rite;
         public string Name { get; private set; }
         public double Level { get; private set; }
         public RiteGroup Group { get; private set; }
@@ -108,9 +109,8 @@ namespace RollerEngine.Rolls.Rites
             Name = riteName;
             Group = riteGroup;
             Level = riteLevel;
-            Conditions = conditions;
+            Conditions = conditions;            
         }
-
     }
 
 
@@ -127,12 +127,11 @@ namespace RollerEngine.Rolls.Rites
                 {Rite.Renunciation, new RiteInfo("Of Renunciation", RiteGroup.Accord, 2, new List<string>())},
 
                 {Rite.MootRite, new RiteInfo("Of Moot", RiteGroup.Caern, 1, new List<string>())},
-                {Rite.OpenedCaern, new RiteInfo("Of Opened Caern", RiteGroup.Caern, 2, new List<string>())},
+                {Rite.OpenedCaern, new RiteInfo("Of Opened Caern", RiteGroup.Caern, 1, new List<string>())},
                 {Rite.BadgersBurrow, new RiteInfo("Of Badger`s Burrow", RiteGroup.Caern, 4, new List<string>())},
                 {Rite.OpenedBridge, new RiteInfo("Of Opened Bridge", RiteGroup.Caern, 4, new List<string>())},
                 {Rite.ShroudedGlen, new RiteInfo("Of Shrouded Glen", RiteGroup.Caern, 4, new List<string>())},
                 {Rite.CaernBuilding, new RiteInfo("Of Caern Building", RiteGroup.Caern, 5, new List<string>())},
-
                 {Rite.GatheringForDeparted, new RiteInfo("Of Gathering For Departed", RiteGroup.Death, 1, new List<string>())},
                 {Rite.WinterWolf, new RiteInfo("Of Winter Wolf", RiteGroup.Death, 3, new List<string>())},
 
@@ -142,7 +141,7 @@ namespace RollerEngine.Rolls.Rites
                 {Rite.TalismanDedication, new RiteInfo("Of Talisman Dedication", RiteGroup.Mystic, 1, new List<string>())},
                 {Rite.Becoming, new RiteInfo("Of Becoming", RiteGroup.Mystic, 2, new List<string>())},
                 {Rite.SpiritAwakening, new RiteInfo("Of Spirit Awakening", RiteGroup.Mystic, 2, new List<string>())},
-                {Rite.Fetish, new RiteInfo("Of FetishRoll", RiteGroup.Mystic, 3, new List<string>())},
+                {Rite.Fetish, new RiteInfo("Of Fetish", RiteGroup.Mystic, 3, new List<string>())},
                 {Rite.Totem, new RiteInfo("Of Totem", RiteGroup.Mystic, 3, new List<string>())},
 
                 {Rite.Accomplishment, new RiteInfo("Of Accomplishment", RiteGroup.Renown, 2, new List<string>())},
@@ -158,7 +157,7 @@ namespace RollerEngine.Rolls.Rites
 
                 {Rite.OpenedSky, new RiteInfo("Of Opened Sky", RiteGroup.Accord, 4, new List<string>())},
                 {Rite.LesserMourning, new RiteInfo("Of Lesser Mourning", RiteGroup.Death, 2, new List<string>())},
-                {Rite.PreservingFetish, new RiteInfo("Of Preserving FetishRoll", RiteGroup.Mystic, 1, new List<string>())},
+                {Rite.PreservingFetish, new RiteInfo("Of Preserving Fetish", RiteGroup.Mystic, 1, new List<string>())},
                 {Rite.RenewingTalen, new RiteInfo("Of Renewing Talen", RiteGroup.Mystic, 2, new List<string>())},
 
                 {Rite.CrashSpace, new RiteInfo("Of Crash Space", RiteGroup.Mystic, 2, new List<string>())},
@@ -171,7 +170,7 @@ namespace RollerEngine.Rolls.Rites
                 {Rite.Comfort, new RiteInfo("Of Comfort", RiteGroup.Accord, 2, new List<string>())},
                 {Rite.Askllepios, new RiteInfo("Of Askllepios", RiteGroup.Mystic, 3, new List<string>())},
                 {Rite.SinEatingGaia, new RiteInfo("Of Sin-Eating (Gaia)", RiteGroup.Mystic, 3, new List<string>())},
-                {Rite.TalismanAdaptation,new RiteInfo("Of Talisman Adaptation", RiteGroup.Mystic, 3, new List<string>())},
+                {Rite.TalismanAdaptation, new RiteInfo("Of Talisman Adaptation", RiteGroup.Mystic, 3, new List<string>())},
                 {Rite.PartedVeil, new RiteInfo("Of Parted Veil", RiteGroup.Mystic, 5, new List<string>())},
                 {Rite.SacredPeace, new RiteInfo("Of Sacred Peace", RiteGroup.Caern, 5, new List<string>())},
 
@@ -179,7 +178,7 @@ namespace RollerEngine.Rolls.Rites
                 {Rite.SacredFire, new RiteInfo("Of Sacred Fire", RiteGroup.Mystic, 1, new List<string>())},
                 {Rite.PrayerOfSeeking, new RiteInfo("Prayer Of the Seeking", RiteGroup.Mystic, 1, new List<string>())},
                 {Rite.SpiritCage, new RiteInfo("Of Spirit Cage", RiteGroup.Mystic, 3, new List<string>())},
-                {Rite.InvitationToAncestors,new RiteInfo("Of Invitation To Ancestors", RiteGroup.Mystic, 4, new List<string>())},
+                {Rite.InvitationToAncestors, new RiteInfo("Of Invitation To Ancestors", RiteGroup.Mystic, 4, new List<string>())},
 
                 {Rite.Rememberance, new RiteInfo("Of Rememberance", RiteGroup.Death, 1, new List<string>())},
                 {Rite.SinEaterWendigo, new RiteInfo("Of Sin-Eater (Wendigo)", RiteGroup.Death, 2, new List<string>())},
@@ -187,13 +186,17 @@ namespace RollerEngine.Rolls.Rites
                 {Rite.SunDance, new RiteInfo("Of Sun Dance", RiteGroup.Mystic, 2, new List<string>())},
                 {Rite.Deliverance, new RiteInfo("Of Deliverance", RiteGroup.Mystic, 3, new List<string>())},
 
-                {Rite.FeastForSpirits, new RiteInfo("Feast For the Spirits", RiteGroup.Mystic, 2, new List<string>())},     //Fianna
-                {Rite.Heritage, new RiteInfo("Of Heritage", RiteGroup.Mystic, 1, new List<string>())},                      //Get of Fenris
-                {Rite.HonorableOath, new RiteInfo("Of Honorable Oath", RiteGroup.Accord, 1, new List<string>())},           //Sliverfangs
-                {Rite.AncestorVeneration,new RiteInfo("Of Ancestor Veneration", RiteGroup.Minor, 0.5, new List<string>())}, //Stargazers
-                {Rite.AncestorSeeking, new RiteInfo("Of Ancestor Seeking", RiteGroup.Mystic, 1, new List<string>())}        //Keltur
+                {Rite.FeastForSpirits, new RiteInfo("Feast For the Spirits", RiteGroup.Mystic, 2, new List<string>())}, //Fianna
+                {Rite.Heritage, new RiteInfo("Of Heritage", RiteGroup.Mystic, 1, new List<string>())}, //Get of Fenris
+                {Rite.HonorableOath, new RiteInfo("Of Honorable Oath", RiteGroup.Accord, 1, new List<string>())}, //Sliverfangs
+                {Rite.AncestorVeneration, new RiteInfo("Of Ancestor Veneration", RiteGroup.Minor, 0.5, new List<string>())}, //Stargazers
+                {Rite.AncestorSeeking, new RiteInfo("Of Ancestor Seeking", RiteGroup.Mystic, 1, new List<string>())} //Keltur
             };
 
+            foreach (var rite in Rites)
+            {
+                rite.Value.Rite = rite.Key;
+            }
         }
     }
 }

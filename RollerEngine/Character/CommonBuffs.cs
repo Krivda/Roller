@@ -33,16 +33,21 @@ namespace RollerEngine.Character
 
         public static void ApplyAncestorsChiminage(Build build, IRollLogger log)
         {
-            log.Log(Verbosity.Details, ActivityChannel.Intermediate, string.Format("Ancestor spirits chiminage done by {0} (-1 DC on Ancestor Spirits interactions)", build.Name));
+            if (!build.BonusDCModifiers.Exists(m => m.Name.Equals("Chiminage")))
+            {
+                log.Log(Verbosity.Details, ActivityChannel.Intermediate,
+                    string.Format("Ancestor spirits chiminage done by {0} (-1 DC on Ancestor Spirits interactions)",
+                        build.Name));
 
-            build.BonusDCModifiers.Add(
-                new DCModifer(
-                    "Chiminage",
-                    new List<string>() {},
-                    DurationType.Roll,
-                    new List<string>() {Build.Conditions.AncestorSpirits},
-                    -1
-                ));
+                build.BonusDCModifiers.Add(
+                    new DCModifer(
+                        "Chiminage",
+                        new List<string>() { },
+                        DurationType.Roll,
+                        new List<string>() {Build.Conditions.AncestorSpirits},
+                        -1
+                    ));
+            }
         }
 
         public static void ApplyCaernOfVigilPowerAncesctors(Build build, IRollLogger log)

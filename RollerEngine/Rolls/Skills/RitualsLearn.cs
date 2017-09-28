@@ -30,7 +30,7 @@ namespace RollerEngine.Rolls.Skills
             }
 
             var riteName = riteInfo.Name;
-            AdditionalInfo = riteName;
+            AdditionalInfo = "rite " + riteName;
 
             int result = base.Roll(actor, new List<Build>() { actor }, hasSpec, hasWill);
 
@@ -74,6 +74,7 @@ namespace RollerEngine.Rolls.Skills
                     successesLearned = Build.RiteAlreadyLearned;
                 }
 
+                keyRiteLearned = Build.DynamicTraits.GetKey(Build.DynamicTraits.RiteLearned, riteName);
                 actor.Traits[keyRiteLearned] = successesLearned;
             }
             else

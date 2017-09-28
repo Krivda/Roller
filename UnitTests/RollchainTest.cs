@@ -148,19 +148,21 @@ namespace UnitTests
         [Test]
         public void Multiweek()
         {
+            //var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Debug, Logger);
             var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Important, Logger);
-            var devNullLogger = LoggerFactory.CreateStringBufferLogger();
             var roller = new OfflineDiceRoller(rollLogger);
-            var devNullRoller = new OfflineDiceRoller(devNullLogger);
 
             var currLogger = rollLogger;
             var currRoller = roller;
 
             var res = HatysParty.LoadFromGoogle(currLogger, currRoller);
 
-
             res.DoWeek(1);
             res.DoWeek(2);
+
+            res.DoWeek(3);
+            res.DoWeek(4);
+            res.DoWeek(5);
 
         }
 

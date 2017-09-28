@@ -146,9 +146,9 @@ namespace RollerEngine.Character.Common
                 return string.Format("{0} {1}", dynamicName, baseName);
             }
 
-            public static string GetBaseTrait(string key, string dynamicName)
+            public static string GetBaseTrait(string key, string dynamicPrefix)
             {
-                string result = key.Replace(dynamicName, "").Trim();
+                string result = key.Replace(dynamicPrefix, "").Trim();
                 return result;
             }
         }
