@@ -6,7 +6,7 @@ using RollerEngine.Roller;
 
 namespace RollerEngine.Rolls.Fetish
 {
-    class CarnyxOfVictory : FetishRoll
+    class CarnyxOfVictory : UsingFetishRoll
     {
         public const string NAME = "Carnyx of Victory";
         public CarnyxOfVictory(

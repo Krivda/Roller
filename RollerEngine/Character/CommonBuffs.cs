@@ -128,7 +128,7 @@ namespace RollerEngine.Character
                     "Medical Bundle",
                     new List<string>(),
                     DurationType.Permanent,
-                    new List<string>() {Build.Conditions.AncestorSocial},
+                    new List<string>() {Build.Conditions.GaianSpiritsSocial}, //TODO: GaianSpiritsGnosis
                     -1
                 ));
 

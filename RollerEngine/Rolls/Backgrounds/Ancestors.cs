@@ -9,9 +9,9 @@ namespace RollerEngine.Rolls.Backgrounds
     public class Ancestors : BackgroundRoll
     {
 
-        public Ancestors(IRollLogger log, IRoller roller)
+        public Ancestors(IRollLogger log, IRoller roller, Verbosity verbosity)
             : base(Build.Backgrounds.Ancestors, log, roller, new List<string>() {Build.Conditions.AncestorSpirits},
-                null, Verbosity.Details)
+                null, verbosity)
         {
         }
 
@@ -75,7 +75,7 @@ namespace RollerEngine.Rolls.Backgrounds
                     )
                 );
 
-                Log.Log(Verbosity.Details, ActivityChannel.Boost,
+                Log.Log(Verbosity, ActivityChannel.Boost,
                     string.Format("{0} obtained bonus {1} dies on {2} for a scene from {3} Background.", actor.Name,
                         Successes, targetTrait, Name));
             }

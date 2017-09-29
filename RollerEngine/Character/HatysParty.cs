@@ -123,6 +123,8 @@ namespace RollerEngine.Character
 
         private void ShowLearningResults()
         {
+            //TODO: summary channel
+            _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, "");
             _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, "==> week summary:");
 
             foreach (var origKvp in OriginalStats)
@@ -319,6 +321,7 @@ namespace RollerEngine.Character
             WeekPlan wp = GetPlanByWeekNumber(weekNo);
             List<WeeklyActivity> plan = wp.Activities;
 
+            _log.Week = weekNo;
             _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("<==== Week {0} starts", weekNo));
 
             StartScene();
@@ -381,16 +384,6 @@ namespace RollerEngine.Character
                             break;
                     }
 
-                    case Activity.CreateFetishBase:
-                    {
-                        CreateFetishBase weeklyActivity = (CreateFetishBase) planItem;
-                            //planItem.Actor.Craft(weeklyActivity.Student.Self, weeklyActivity.DeviceName);
-                        _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} crafts item for fetish {1}",
-                            weeklyActivity.Actor.CharacterName,
-                            weeklyActivity.FetishName));
-                        break;
-                    }
-
                     case Activity.QueueRiteLearning:
                     {
                         QueueRiteLearning weeklyActivity = (QueueRiteLearning) planItem;
@@ -420,31 +413,54 @@ namespace RollerEngine.Character
             {
                 List<WeeklyActivity> characterActivities = WeeklyFilter.ByActor(plan, actor.Key);
                 List<CreateTalens> createTalens = WeeklyFilter.ByCreateTalens(characterActivities); //talens are single
-                List<CreateFetish> createFetish = WeeklyFilter.ByCreateFetish(characterActivities); //fetishes are single
+                List<CreateFetishBase> createFetishBase = WeeklyFilter.ByCreateFetishBase(characterActivities); //fetishe Bases are single
+                List<CreateFetishActivity> createFetish = WeeklyFilter.ByCreateFetish(characterActivities); //fetishes are single
                 List<LearnAbility> learnAbility = WeeklyFilter.ByLearnAbility(characterActivities);
                 List<LearnRiteFromGarou> learnRite = WeeklyFilter.ByLearnRiteFromGarou(characterActivities);
                 List<LearnGiftFromGarou> learnGift = WeeklyFilter.ByLearnGiftFromGarou(characterActivities);
 
                 //TODO: more checks about conflicting planItems
+                if (createTalens.Count > 1)
+                {
+                    throw new Exception("no multiple talens"); //TODO: think?
+                }
+
+                if (createFetishBase.Count > 1)
+                {
+                    throw new Exception("no multiple fetish bases"); //TODO: think?
+                }
+
+                if (createFetish.Count > 1)
+                {
+                    throw new Exception("no multiple fetish"); //TODO: think?
+                }
+
+                if (createTalens.Count + createFetishBase.Count + createFetish.Count > 1)
+                {
+                    throw new Exception("no multiple talens"); //TODO: think?
+                }
+
+                foreach (var planItem in createFetishBase)
+                {
+                    planItem.Actor.WeeklyPartialActions -= 1;
+                    CreateFetishBase weeklyActivity = (CreateFetishBase)planItem;
+                    planItem.Actor.CreateFetishBase(weeklyActivity.Level, weeklyActivity.FetishName);
+                    break;
+                }
 
                 foreach (var planItem in createFetish)
                 {
-                    //TODO: need IExtendedActinon aka dynamic trait
-                    planItem.Actor.WeeklyPartialActions -= planItem.MaxCreationAttempts; //hardcoded to 1 in CreateFetish constructor
-                    _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} creating fetish {1} ({2} attempts)",
-                        planItem.Actor.CharacterName,
-                        planItem.FetishName,
-                        planItem.MaxCreationAttempts));
+                    planItem.Actor.WeeklyPartialActions -= 1;
+                    CreateFetishActivity weeklyActivity = (CreateFetishActivity)planItem;
+                    planItem.Actor.CreateFetish(weeklyActivity.Level, weeklyActivity.FetishName, weeklyActivity.SpiritType);
                 }
 
                 foreach (var planItem in createTalens)
                 {
-                    //TODO: need IExtendedActinon aka dynamic trait
-                    planItem.Actor.WeeklyPartialActions -= planItem.MaxCreationAttempts; //limited to 2 in CreateTalens constructor
-                    _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} creating talens {1} ({2} attempts)",
+                    planItem.Actor.WeeklyPartialActions -= 1;
+                    _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} creating talens {1}",
                         planItem.Actor.CharacterName,
-                        planItem.TalenName,
-                        planItem.MaxCreationAttempts));
+                        planItem.TalenName));
                 }
 
                 /*

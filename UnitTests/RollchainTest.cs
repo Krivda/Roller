@@ -148,8 +148,8 @@ namespace UnitTests
         [Test]
         public void Multiweek()
         {
-            //var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Debug, Logger);
-            var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Important, Logger);
+            var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Details, Logger);
+            //var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Critical, Logger);
             var roller = new OfflineDiceRoller(rollLogger);
 
             var currLogger = rollLogger;
@@ -163,6 +163,7 @@ namespace UnitTests
             res.DoWeek(3);
             res.DoWeek(4);
             res.DoWeek(5);
+            res.DoWeek(6);
 
         }
 

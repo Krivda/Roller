@@ -112,16 +112,16 @@ namespace RollerEngine.Rolls.Skills
 
                 //this is an amount of xp we'll spend to increase trait value
                 int xpSpentIncreasingTrait = 0;
+                int xpCost = 0;
 
                 int currentTraitValue = actor.Traits[ability];
                 for (int i = currentTraitValue+1; i < 6; i++)
                 {
-
-                    int xpCost = Build.GetSkillXpTable()[i];
+                    xpCost = Build.GetSkillXpTable()[i];
 
                     if (xpCost > xpLearned)
                     {
-                        Log.Log(Verbosity.Details, ActivityChannel.TeachLearn, string.Format("{0} don't yet have {1}XP in {2} to increase it's value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool, total {6}XP spent.", 
+                        Log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} don't yet have {1}XP in {2} to increase it's value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool, total {6}XP spent.", 
                             actor.Name, xpCost, ability, i, actor.Traits[traitKeyXpPool], xpLearned, xpSpentIncreasingTrait));
                         break;
                     }
@@ -129,9 +129,8 @@ namespace RollerEngine.Rolls.Skills
                     xpLearned -= xpCost;
                     xpSpentIncreasingTrait += xpCost;
                     actor.Traits[ability] = actor.Traits[ability] + 1; //TODO check i vs. actor.Traits[ability] consistency (should be ok)
-                    Log.Log(Verbosity, ActivityChannel.TeachLearn, string.Format("{0} spent {1} bonus XP on {2}, increasing it's value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool, total {6}XP spent.",
+                    Log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} spent {1} bonus XP on {2}, increasing it's value to {3}. {4} bonus XP remaining in pool, {5}XP learned pool, total {6}XP spent.",
                         actor.Name, xpCost, ability, actor.Traits[ability], actor.Traits[traitKeyXpPool], xpLearned, xpSpentIncreasingTrait));
-
                 }
 
                 //clear xp if trait is raised to 5
@@ -147,14 +146,14 @@ namespace RollerEngine.Rolls.Skills
                     {
                         actor.Traits[traitKeyXpLearned] = actor.Traits[traitKeyXpLearned] - xpSpentIncreasingTrait;
                     }
-                    Log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} spent total {1} bonus XP on {2}, {3}XP remains learned, ({4} bonus XP remains in pool).",
-                        actor.Name, xpSpentIncreasingTrait, ability, actor.Traits[traitKeyXpLearned], actor.Traits[traitKeyXpPool]));
+                    Log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} spent +{1} bonus XP (total {2}) on {3}, {4}XP remains learned, ({5} bonus XP remains in pool).",
+                        actor.Name, xpCost, xpSpentIncreasingTrait, ability, actor.Traits[traitKeyXpLearned], actor.Traits[traitKeyXpPool]));
                 }
             }
             else
             {
                 //TODO: burn pool on botch?
-                Log.Log(Verbosity, ActivityChannel.TeachLearn, string.Format("{0} didn't learn anything.", actor.Name));
+                Log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} didn't learn anything.", actor.Name));
             }
 
             return result;

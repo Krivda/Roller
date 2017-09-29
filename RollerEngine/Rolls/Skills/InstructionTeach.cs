@@ -88,12 +88,18 @@ namespace RollerEngine.Rolls.Skills
 
                 target.Traits[traitKeyXpPool] = currentXpInPool + newXp;
 
-                Log.Log(Verbosity.Warning, ActivityChannel.TeachLearn, string.Format("{0} obtain {1}XP truncated to new {2}XP + old {3}XP = {4}XP in XP pool) to spent on learning {5} from {6}'s {7}.",
-                    target.Name, result, newXp, currentXpInPool, target.Traits[traitKeyXpPool], ability, actor.Name, Name));
+                string truncate = "";
+                if (result != newXp)
+                {
+                    truncate = string.Format(" (truncated to new {0}XP)", newXp);
+                }
+
+                Log.Log(Verbosity.Warning, ActivityChannel.TeachLearn, string.Format("{0} obtain {1}XP{2}. With old {3}XP he has {4}XP in XP pool for learning {5} from {6}'s {7}.",
+                    target.Name, result, truncate, currentXpInPool, target.Traits[traitKeyXpPool], ability, actor.Name, Name));
             }
             else
             {
-                Log.Log(Verbosity.Important, ActivityChannel.TeachLearn, string.Format("{0} didn't get bonus XP from {1}.", target.Name, Name));
+                Log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} didn't get bonus XP from {1}.", target.Name, Name));
             }
 
             return result;

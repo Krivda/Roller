@@ -20,16 +20,17 @@ namespace RollerEngine.Character.Party
 
         public int BoneRhythmsUsagesLeft;
 
-        public HatysPartyMember(string name, Build build, IRollLogger log, IRoller roller, HatysParty party) : base(name, build, log, roller)
+        public HatysPartyMember(string name, Build build, IRollLogger log, IRoller roller, HatysParty party) : base(
+            name, build, log, roller)
         {
             Party = party;
             HasSpecOnInstruction = false;
         }
 
-        public void ApplyAncestors(string trait)
+        public void ApplyAncestors(string trait, Verbosity verbosity)
         {
             CommonBuffs.ApplyAncestorsChiminage(Self, Log);
-            var ansestorsRoll = new Ancestors(Log, Roller);
+            var ansestorsRoll = new Ancestors(Log, Roller, verbosity);
             ansestorsRoll.Roll(Self, trait);
         }
 
@@ -57,11 +58,9 @@ namespace RollerEngine.Character.Party
 
                 if (Self.AncestorsUsesLeft > 0)
                 {
-                    CommonBuffs.ApplyAncestorsChiminage(Self, Log);
                     CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Self, Log);
 
-                    var ancestors = new Ancestors(Log, Roller);
-                    ancestors.Roll(Self, ability);
+                    ApplyAncestors(ability, Verbosity.Important);
                 }
             }
 
@@ -94,7 +93,7 @@ namespace RollerEngine.Character.Party
                 {
                     if (traitKvp.Value != 0)
                     {
-                        xpPoolTraits.Add (new Tuple<string, int>(traitKvp.Key, traitKvp.Value));
+                        xpPoolTraits.Add(new Tuple<string, int>(traitKvp.Key, traitKvp.Value));
                     }
                 }
             }
@@ -110,7 +109,7 @@ namespace RollerEngine.Character.Party
                 string trait = Build.DynamicTraits.GetBaseTrait(traitKeyXpPool, Build.DynamicTraits.ExpiriencePool);
                 bool hasWill = Self.Traits[trait] < 3;
 
-                while (WeeklyPartialActions > 0 )
+                while (WeeklyPartialActions > 0)
                 {
                     //learn until don't exceed max attempts (or all available for SPEND_ALL_ATTEMPTS)
                     if ((maxLearnAttempts != SPEND_ALL_ATTEMPTS) && (spentAttempts == maxLearnAttempts))
@@ -147,11 +146,10 @@ namespace RollerEngine.Character.Party
                 if (Self.AncestorsUsesLeft > 0)
                 {
                     CommonBuffs.ApplyCaernOfVigilPowerAncesctors(Self, Log);
-                    CommonBuffs.ApplyAncestorsChiminage(Self, Log);
 
-                    ApplyAncestors(Build.Abilities.Instruction);
+                    ApplyAncestors(Build.Abilities.Instruction, Verbosity.Important);
                 }
-                
+
                 //give XP to smb
                 var instruct = new InstructionTeach(Log, Roller);
                 instruct.Roll(Self, target, ability, HasSpecOnInstruction, withWill);
@@ -168,7 +166,8 @@ namespace RollerEngine.Character.Party
                 {
                     if (traitKvp.Value != Build.RiteAlreadyLearned)
                     {
-                        string riteName = Build.DynamicTraits.GetBaseTrait(traitKvp.Key, Build.DynamicTraits.RiteLearned);                         
+                        string riteName =
+                            Build.DynamicTraits.GetBaseTrait(traitKvp.Key, Build.DynamicTraits.RiteLearned);
                         RiteInfo rinfo = RitesDictionary.Rites.First(ri => ri.Value.Name.Equals(riteName)).Value;
                         ritePoolTraits.Add(new Tuple<RiteInfo, int>(rinfo, traitKvp.Value));
                     }
@@ -201,7 +200,7 @@ namespace RollerEngine.Character.Party
                     }
 
                     LearnRite(rite, false); //TODO check for Caern group for Spiridon, Mystic for Yoki etc
-                                                      //always with Will to prevent botches (ask CURATOR!)
+                    //always with Will to prevent botches (ask CURATOR!)
                     WeeklyPartialActions--;
                     spentAttempts++;
                 }
@@ -210,9 +209,11 @@ namespace RollerEngine.Character.Party
 
         public void LearnRite(Rite rite, bool hasWill)
         {
-            if (! (Self.CharacterClass.Equals(Build.Classes.Werewolf) || Self.CharacterClass.Equals(Build.Classes.Corax)))
+            if (!(Self.CharacterClass.Equals(Build.Classes.Werewolf) ||
+                  Self.CharacterClass.Equals(Build.Classes.Corax)))
             {
-                throw new Exception(string.Format("{0} is {1}, and they can't learn rites", Self.Name, Self.CharacterClass));
+                throw new Exception(string.Format("{0} is {1}, and they can't learn rites", Self.Name,
+                    Self.CharacterClass));
             }
 
             //Apply rosemary
@@ -234,5 +235,16 @@ namespace RollerEngine.Character.Party
         {
             return false;
         }
+
+        public virtual void CreateFetishBase(int fetishLevel, string fetishName)
+        {
+            throw new Exception("Abstact method, override in actual party member");
+        }
+
+        public virtual void CreateFetish(int fetishLevel, string fetishName, string spiritType)
+        {
+            throw new Exception("Abstact method, override in actual party member");
+        }
+
     }
 }

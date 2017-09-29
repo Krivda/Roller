@@ -30,7 +30,7 @@ namespace RollerEngine.Character
                     plan.Add(new TeachAbility(Kurt, Yoki, Build.Abilities.Demolitions));
                     plan.Add(new TeachAbility(Kinfolk1, Kurt, Build.Abilities.Firearms));
                     //talens
-                    plan.Add(new CreateTalens(Yoki, "Cacao", 1));
+                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
                     break;
 
                 //15 Feb (no teaching week)
@@ -40,8 +40,8 @@ namespace RollerEngine.Character
                     //Kinfolks learn nothing special
 
                     //Spiridon,Yoki: create Talens
-                    plan.Add(new CreateTalens(Spiridon, "Cacao", 1));
-                    plan.Add(new CreateTalens(Yoki, "Cacao", 1));
+                    plan.Add(new CreateTalens(Spiridon, "Cacao", "Plant"));
+                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
 
                     //Nameless teach Spiridon Ancestor Veneration
                     plan.Add(new TeachRiteToGarou(Nameless, Spiridon, Rite.AncestorVeneration, 1));
@@ -102,10 +102,12 @@ namespace RollerEngine.Character
                     plan.Add(new TeachAbility(Kinfolk1, Yoki, Build.Abilities.Occult));
                     //plan.Add(new TeachAbility(Kinfolk2, ?, Build.Abilities.SpiritLore));
 
-                    plan.Add(new CreateFetishBase(Spiridon, "Carnyx of Victory"));
+                    plan.Add(new CreateFetishBase(Spiridon, 4, "Carnyx of Victory"));
                     break;
 
                 case 6:
+                    buffPlan.Nameless = NamelessBuff.MaxBoostInstruct();
+                    plan.Add(new CreateFetishActivity(Spiridon, 4, "Carnyx of Victory", "War"));
                     break;
 
                 case 7:
@@ -128,7 +130,7 @@ namespace RollerEngine.Character
                     //plan.Add(new TeachAbility(Spiridon, Kinfolk1, Build.Abilities.Meditation));
 
                     //Spiridon: create Talens
-                    plan.Add(new CreateTalens(Spiridon, "Cacao", 1));
+                    //plan.Add(new CreateTalens(Spiridon, "Cacao", 1));
                     break;
 
                 //
@@ -146,7 +148,7 @@ namespace RollerEngine.Character
 		Papa Serega: 5 - for Rite of Signpost(4); Rite of Trespassing(5); Crash Space (2); Shopping Chart (2)
 		Golosa Vetrov: 5 - for Rite of Caern Building (5); Rite of Balance (3); Invitation to Ancestors (4)
 		Babka Aine: 5 - for Rite of Sacred Peace(5)/Bowels of Mother(0), Asklepius (3), Comfort (2), Sin-Eating (3); of Teachers (1)
-		Udjin: 4 - for Rite of FetishRoll (3); Rite of Deliverance (3); Nightshade (4); Deliverance (3); Sin-Eater (2)
+		Udjin: 4 - for Rite of Fetish (3); Rite of Deliverance (3); Nightshade (4); Deliverance (3); Sin-Eater (2)
                      */
 
 

@@ -6,6 +6,7 @@ using RollerEngine.Roller;
 using RollerEngine.Rolls.Fetish;
 using RollerEngine.Rolls.Gifts;
 using RollerEngine.Rolls.Rites;
+using RollerEngine.Rolls.Skills;
 
 namespace RollerEngine.Character.Party
 {
@@ -78,7 +79,7 @@ namespace RollerEngine.Character.Party
             //apply
             CommonBuffs.ApplySacredRosemary(Party.Spiridon.Self, Log); //TODO: this usage should be counted once more because its target are spirits (do when we'll count talens)
             //buff support trait
-            ApplyAncestors(suppTrait);
+            ApplyAncestors(suppTrait, Verbosity.Important);
         }
 
         public void WeeklyMidBoostOccult(Build target)
@@ -126,7 +127,7 @@ namespace RollerEngine.Character.Party
                 var ghostPackRoll = new GhostPack(Log, Roller);
                 ghostPackRoll.Roll(Self, true, false);
 
-                ApplyAncestors(trait);
+                ApplyAncestors(trait, Verbosity.Critical);
             }
         }
 
@@ -176,5 +177,44 @@ namespace RollerEngine.Character.Party
         {
             return RitesDictionary.Rites[rite].Group == RiteGroup.Caern;
         }
+
+        public override void CreateFetishBase(int fetishLevel, string fetishName)
+        {
+            CastCaernChanneling(Build.Abilities.Crafts);
+            Party.Nameless.CastTeachersEase(Self, Build.Abilities.Crafts, false, Verbosity.Details);
+
+            //Craft
+            var craftFetishBase = new CraftFetishBase(Log, Roller);
+            craftFetishBase.Roll(Self, fetishLevel, fetishName, false, true);
+        }
+
+        public override void CreateFetish(int fetishLevel, string fetishName, string spiritType)
+        {
+            CastCaernChanneling(Build.Abilities.Leadership);
+
+            //TODO: Rite of Summoning, also Rite of ? to increase it's attitude (should be friendly for social talking)
+            //TODO: Log roleplaying rites (Cleansing, Conrition, Chiminage, etc) - better to write GoogleDoc document
+            /*
+            CastSacredFire(new List<Build>() { Self });
+            Party.Nameless.CastTeachersEase(Self, Build.Abilities.Rituals, false, Verbosity.Details);
+            var riteOfSummoning = new SummonSpirit(Log, Roller, new List<string>());
+            riteOfSummoning.Roll(Self, spiritType, false, true);
+            */
+
+            //Persuade
+            //TODO: add Chiminage
+            Party.Nameless.CastTeachersEase(Self, Build.Abilities.Leadership, false, Verbosity.Details);
+            var persuadeSpirit = new PesuadeSpiritEnterFetish(Log, Roller, Build.Atributes.Charisma, Build.Abilities.Leadership, new List<string>());
+            persuadeSpirit.Roll(Self, fetishName, spiritType, false, true);
+
+            //Rite of Fetish
+            CastSacredFire(new List<Build>() { Self });
+            Party.Nameless.CastTeachersEase(Self, Build.Abilities.Rituals, false, Verbosity.Details);
+            var riteOfFetish = new CreateFetishRite(Log, Roller, new List<string>());
+            riteOfFetish.Roll(Self, fetishLevel, fetishName, false, true);
+        }
+
+        //TODO: Create Talens, Rite of Binding, Rite of Spirit Awakening, CreateCacao
+
     }
 }

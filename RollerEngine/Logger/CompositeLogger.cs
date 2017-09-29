@@ -5,14 +5,43 @@ namespace RollerEngine.Logger
 {
     public sealed class CompositeLogger : IBaseLogger
     {
+        private int _week;
+        private Verbosity _minVerbosity;
         public IBaseLogger[] Loggers { get; private set; }
+
+        public int Week
+        {
+            get { return _week; }
+            set
+            {
+                _week = value;
+                foreach (var logger in Loggers)
+                {
+                    logger.Week = _week;
+                }
+            }
+        }
+
+        public Verbosity MinVerbosity
+        {
+            get { return _minVerbosity; }
+            set
+            {
+                _minVerbosity = value;
+                foreach (var logger in Loggers)
+                {
+                    logger.MinVerbosity = _minVerbosity;
+                }
+            }
+        }
 
         //use LoggerFactory class
         private CompositeLogger(Verbosity minVerbosity, List<ActivityChannel> disabledChannels, params IBaseLogger[] loggers)
         {
             Loggers = loggers;
-            SetMinimalVerbosity(minVerbosity);
+            MinVerbosity = minVerbosity;
             DisableActivityChannels(disabledChannels);
+            Week = -1;
         }
 
         public void Log(Verbosity verbosity, ActivityChannel channel, string record)
@@ -20,14 +49,6 @@ namespace RollerEngine.Logger
             foreach (var logger in Loggers)
             {
                 logger.Log(verbosity, channel, record);
-            }
-        }
-
-        public void SetMinimalVerbosity(Verbosity verbosity)
-        {
-            foreach (var logger in Loggers)
-            {
-                logger.SetMinimalVerbosity(verbosity);
             }
         }
 

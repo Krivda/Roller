@@ -82,6 +82,9 @@
     <Compile Include="Character\Party\Kurt.cs" />
     <Compile Include="Character\Party\Lynn.cs" />
     <Compile Include="Character\Party\NamelessBuff.cs" />
+    <Compile Include="Rolls\Rites\CreateFetish.cs" />
+    <Compile Include="Rolls\Skills\CraftFetishBase.cs" />
+    <Compile Include="Rolls\Skills\PesuadeSpiritEnterFetish.cs" />
     <Compile Include="WeekPlan\CreateDevice.cs" />
     <Compile Include="WeekPlan\CreateFetish.cs" />
     <Compile Include="WeekPlan\CreateFetishBase.cs" />
@@ -123,7 +126,7 @@
     <Compile Include="Rolls\Rites\RiteInfo.cs" />
     <Compile Include="Rolls\Rites\RiteRoll.cs" />
     <Compile Include="Rolls\Rites\SacredFire.cs" />
-    <Compile Include="Rolls\Fetish\FetishRoll.cs" />
+    <Compile Include="Rolls\Fetish\UsingFetishRoll.cs" />
     <Compile Include="Rolls\Skills\SkillRoll.cs" />
     <Compile Include="Rolls\Skills\InstructionLearn.cs" />
     <Compile Include="Rolls\Skills\RitualsLearn.cs" />

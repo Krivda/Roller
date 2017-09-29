@@ -28,7 +28,7 @@ namespace UnitTests
 
             roller.Successes = 4;
 
-            var roll = new Ancestors(logger, roller);
+            var roll = new Ancestors(logger, roller, Verbosity.Critical);
             roll.Roll(user, Build.Abilities.Empathy);
 
             Assert.AreEqual(true, user.TraitModifiers.Any(tm => tm.Traits.Contains(Build.Abilities.Empathy) && tm.Name.Equals(Build.Backgrounds.Ancestors)), "Empathy have 4 bonus after Ancestors use!");
@@ -37,7 +37,7 @@ namespace UnitTests
             user.AncestorsUsesLeft = 50;
 
             roller.Successes = -1;
-            roll = new Ancestors(logger, roller);
+            roll = new Ancestors(logger, roller, Verbosity.Critical);
             roll.Roll(user, Build.Abilities.Occult);
             //not recevied mod
             Assert.AreEqual(false, user.TraitModifiers.Any(tm => tm.Traits.Contains(Build.Abilities.Occult) && tm.Name.Equals(Build.Backgrounds.Ancestors)), "Occult shouldn't have 4 bonus after Ancestors use!");
@@ -47,7 +47,7 @@ namespace UnitTests
             user.HasAncestorVeneration = true;
             //test veneration fixes 
             var roller2 = new MockFixedRoller(LoggerFactory.CreateNLogLogger(Logger), new List<int>(){-1, 1});
-            roll = new Ancestors(logger, roller2);
+            roll = new Ancestors(logger, roller2, Verbosity.Critical);
             roll.Roll(user, Build.Abilities.Occult);
             //not recevied mod
             Assert.AreEqual(true, user.TraitModifiers.Any(tm => tm.Traits.Contains(Build.Abilities.Occult) && tm.Name.Equals(Build.Backgrounds.Ancestors)), "Occult should have a bonus after Ancestors use!");
@@ -55,7 +55,7 @@ namespace UnitTests
             Assert.AreEqual(50, user.AncestorsUsesLeft, "botch should have 50 further attempts");
 
             var roller3 = new MockFixedRoller(LoggerFactory.CreateNLogLogger(Logger), new List<int>() { -1, 0 });
-            roll = new Ancestors(logger, roller3);
+            roll = new Ancestors(logger, roller3, Verbosity.Critical);
             roll.Roll(user, Build.Abilities.Rituals);
             //not recevied mod
             Assert.AreEqual(false, user.TraitModifiers.Any(tm => tm.Traits.Contains(Build.Abilities.Rituals) && tm.Name.Equals(Build.Backgrounds.Ancestors)), "Rituals should have a bonus after Ancestors use!");

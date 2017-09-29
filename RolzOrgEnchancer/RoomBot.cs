@@ -37,6 +37,7 @@ namespace RolzOrgEnchancer
 
     internal class RoomBootImpl : IRollLogger, IRoller
     {
+        public int Week { get; set; }
         private static uint _idRoll = 100;
         //RollerEngine.Roller.IRoller
         public RollData Roll(int diceCount, int dc, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill, string description)

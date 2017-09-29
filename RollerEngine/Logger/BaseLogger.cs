@@ -6,11 +6,13 @@ namespace RollerEngine.Logger
     public class BaseLogger<TWrapper, TLogger> : IBaseLogger
         where TWrapper : ILogWrapper<TLogger>
     {
-        public Verbosity MinVerbosity { get; private set; }
         private readonly TWrapper _wrapper;
         private readonly TLogger _mainLogger;
         private readonly Dictionary<ActivityChannel, TLogger> _loggers;
         private readonly List<ActivityChannel> _disabledChannels;
+
+        public Verbosity MinVerbosity { get; set; }
+        public int Week { get; set; }
 
         //use LoggerFactory class, all TImpl must have private constructor
         public BaseLogger(Verbosity minVerbosity, List<ActivityChannel> disabledChannels, TWrapper wrapper)
@@ -19,23 +21,21 @@ namespace RollerEngine.Logger
             _loggers = new Dictionary<ActivityChannel, TLogger> { { ActivityChannel.Main, _mainLogger = _wrapper.CreateChannelLogger(ActivityChannel.Main) } };
             MinVerbosity = minVerbosity;
             _disabledChannels = disabledChannels;
+            Week = -1;
         }
 
         public void Log(Verbosity verbosity, ActivityChannel channel, string record)
         {
             if (verbosity < MinVerbosity) return;
             if (_disabledChannels.Contains(channel)) return;
-            _wrapper.AppendInternalLog(_mainLogger, verbosity, record);
+            var msg = record;
+            if (Week != -1 ) msg = string.Format("W{0}: {1}", Week, record);
+            _wrapper.AppendInternalLog(_mainLogger, verbosity, msg);
             if (channel == ActivityChannel.Main) return;
 
             TLogger logger;
             if (!_loggers.TryGetValue(channel, out logger)) _loggers.Add(channel, logger = _wrapper.CreateChannelLogger(channel));
             _wrapper.AppendInternalLog(logger, verbosity, record);
-        }
-
-        public void SetMinimalVerbosity(Verbosity verbosity)
-        {
-            MinVerbosity = verbosity;
         }
 
         public void EnableActivityChannels(List<ActivityChannel> channels)

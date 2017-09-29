@@ -5,16 +5,13 @@ namespace RollerEngine.WeekPlan
     public class CreateTalens : CreationActivity
     {
         public string TalenName { get; private set; }
-        public int MaxCreationAttempts { get; protected set; }
+        public string SpiritType { get; private set; }
 
-        public CreateTalens(HatysPartyMember actor, string talenName, int maxCreationAttempts) : base(actor, Activity.CreateTalens, ActivityType.Single, 0 /*0.5*/)
+        public CreateTalens(HatysPartyMember actor, string talenName, string spiritType) : 
+            base(actor, Activity.CreateTalens, ActivityType.Single, 0 /*0.5*/)
         {
             TalenName = talenName;
-            if (maxCreationAttempts > 2)
-            {
-                maxCreationAttempts = 2;
-            }
-            MaxCreationAttempts = maxCreationAttempts;
+            SpiritType = spiritType;
         }
     }
 }

@@ -28,15 +28,16 @@ namespace RollerEngine.Logger
     public interface IRollLogger
     {
         void Log(Verbosity verbosity, ActivityChannel channel, string record);
+        int  Week { get; set; }
     }
 
     public interface IBaseLogger : IRollLogger
     {
-        void SetMinimalVerbosity(Verbosity verbosity);
         void EnableActivityChannels(List<ActivityChannel> channels);
         void DisableActivityChannels(List<ActivityChannel> channels);
         string GetMainLog();
         string GetChannelLog(ActivityChannel channel);
+        Verbosity MinVerbosity { get; set; }
     }
 
     public interface ILogWrapper<TLogger>

@@ -5,9 +5,9 @@ using RollerEngine.Roller;
 
 namespace RollerEngine.Rolls.Fetish
 {
-    public class FetishRoll : RollBase
+    public class UsingFetishRoll : RollBase
     {
-        public FetishRoll(string name, IRollLogger log, IRoller roller, List<string> dicePool, List<string> conditions, string additionalInfo, Verbosity verbosity) :
+        public UsingFetishRoll(string name, IRollLogger log, IRoller roller, List<string> dicePool, List<string> conditions, string additionalInfo, Verbosity verbosity) :
             base(name, log, roller, dicePool, true, true, conditions, additionalInfo, verbosity)
         {
         }

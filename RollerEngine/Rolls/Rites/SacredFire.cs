@@ -8,11 +8,10 @@ using RollerEngine.Roller;
 namespace RollerEngine.Rolls.Rites
 {
     public class SacredFire : RiteRoll
-    {
-        private const string RITE_NAME = "Sacred Fire";
-
+        {
+     
         public SacredFire(IRollLogger log, IRoller roller) : 
-            base(RITE_NAME, log, roller,
+            base(RitesDictionary.Rites[Rite.SacredFire].Name, log, roller,
             new List<string>() { Build.Atributes.Wits, Build.Abilities.Rituals },
             new List<string>() { Build.Conditions.MysticRite }, null, Verbosity.Details)
         {

@@ -21,9 +21,9 @@ namespace RollerEngine.WeekPlan
             return ByActivity<CreateTalens>(plan, Activity.CreateTalens);
         }
 
-        public static List<CreateFetish> ByCreateFetish(List<WeeklyActivity> plan)
+        public static List<CreateFetishActivity> ByCreateFetish(List<WeeklyActivity> plan)
         {
-            return ByActivity<CreateFetish>(plan, Activity.CreateFetish);
+            return ByActivity<CreateFetishActivity>(plan, Activity.CreateFetish);
         }
 
         public static List<CreateFetishBase> ByCreateFetishBase(List<WeeklyActivity> plan)

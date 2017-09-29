@@ -38,7 +38,7 @@ namespace RollerEngine.Character.Party
             //buff support trait
             if (!string.IsNullOrEmpty(buffPlan.PreBuff.Trait))
             {
-                ApplyAncestors(buffPlan.PreBuff.Trait);
+                ApplyAncestors(buffPlan.PreBuff.Trait, Verbosity.Important);
             }
         }
 
@@ -134,7 +134,7 @@ namespace RollerEngine.Character.Party
                     ApplyChannellingGift(Self, Log, 3);
                 }
 
-                ApplyAncestors(buff.Trait);
+                ApplyAncestors(buff.Trait, Verbosity.Critical);
             }
 
         }
