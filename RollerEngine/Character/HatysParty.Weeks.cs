@@ -46,7 +46,6 @@ namespace RollerEngine.Character
                     //Nameless teach Spiridon Ancestor Veneration
                     plan.Add(new TeachRiteToGarou(Nameless, Spiridon, Rite.AncestorVeneration, 1));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.AncestorVeneration));
-                    //plan.Add(new LearnRite(Spiridon, 1)); //TODO: need to select specific rite to learn this week! and priority!
 
                     //MAIN common RITES for nearest future (teached from summoned spirits)
                     plan.Add(new QueueRiteLearning(Nameless, Rite.OpenedCaern));
@@ -70,6 +69,8 @@ namespace RollerEngine.Character
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.Teachers));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.SacredPeace));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.CaernBuilding));
+
+                    //TODO: more rites for spiridon
                     break;
 
                 //TODO: need to calc/have BoneRhythms and Veneration and OpenCaern
@@ -87,50 +88,140 @@ namespace RollerEngine.Character
                     plan.Add(new TeachAbility(Kinfolk2, Kurt, Build.Abilities.Firearms));
                     break;
 
+                //1 Mar
                 case 4:
                     buffPlan.Nameless = NamelessBuff.BoostSecondaryTrait(Build.Abilities.Rituals);
+
                     break;
 
+                //8 Mar (teaching week, Lynn appearance)
                 case 5:
                     buffPlan.Nameless = NamelessBuff.MaxBoostInstruct();
 
                     //teach
-                    //plan.Add(new TeachAbility(Nameless, ?, Build.Abilities.Brawl));                    
+                    //plan.Add(new TeachAbility(Nameless, - need to give Nameless time for learning
                     plan.Add(new TeachAbility(Spiridon, Kinfolk2, Build.Abilities.Meditation));
                     plan.Add(new TeachAbility(Kurt, Kinfolk1, Build.Abilities.SpiritLore));
                     plan.Add(new TeachAbility(Yoki, Nameless, Build.Abilities.Rituals));
                     plan.Add(new TeachAbility(Kinfolk1, Yoki, Build.Abilities.Occult));
-                    //plan.Add(new TeachAbility(Kinfolk2, ?, Build.Abilities.SpiritLore));
+                    plan.Add(new TeachAbility(Kinfolk2, Yoki, Build.Abilities.SpiritLore));
+
+                    //TODO: Curator? make Lynn (as theurge) our main talen creator
+                    plan.Add(new QueueRiteLearning(Lynn, Rite.Cleansing));
+                    plan.Add(new QueueRiteLearning(Lynn, Rite.TalismanDedication));
+                    plan.Add(new QueueRiteLearning(Lynn, Rite.BoneRhythms));
+                    plan.Add(new QueueRiteLearning(Lynn, Rite.OpenedCaern));
+                    plan.Add(new QueueRiteLearning(Lynn, Rite.Contrition));
+                    plan.Add(new QueueRiteLearning(Lynn, Rite.SpiritAwakening));
+                    plan.Add(new QueueRiteLearning(Lynn, Rite.Binding));
+                    plan.Add(new QueueRiteLearning(Lynn, Rite.RenewingTalen));
+                    plan.Add(new QueueRiteLearning(Lynn, Rite.SacredFire));
 
                     plan.Add(new CreateFetishBase(Spiridon, 4, "Carnyx of Victory"));
                     break;
-
+                
+                //15 Mar
                 case 6:
-                    buffPlan.Nameless = NamelessBuff.MaxBoostInstruct();
+                    //Nameless should learn Open Caern this week
+                    buffPlan.Nameless = NamelessBuff.MaxBoostSecondaryTrait(Build.Abilities.Rituals);
+
+                    //Spiridon teach Lynn Ancestor Veneration
+                    plan.Add(new TeachRiteToGarou(Spiridon, Lynn, Rite.AncestorVeneration, 1));
+                    plan.Add(new QueueRiteLearning(Lynn, Rite.AncestorVeneration));
+
                     plan.Add(new CreateFetishActivity(Spiridon, 4, "Carnyx of Victory", "War"));
                     break;
 
+                //22 Mar (teaching week)
                 case 7:
+                    //teach
+                    plan.Add(new TeachAbility(Nameless, Kinfolk1, Build.Abilities.Leadership));
+                    plan.Add(new TeachAbility(Spiridon, Kurt, Build.Abilities.Meditation));
+                    plan.Add(new TeachAbility(Kurt, Kinfolk2, Build.Abilities.Athletics));
+                    plan.Add(new TeachAbility(Yoki, Nameless, Build.Abilities.Occult));
+                    plan.Add(new TeachAbility(Kinfolk1, Spiridon, Build.Abilities.Crafts));
+                    plan.Add(new TeachAbility(Kinfolk2, Yoki, Build.Abilities.Meditation));
                     break;
+
+                //29 Mar
+                case 8:
+
+                    //Lynn teach Yoki Ancestor Veneration
+                    plan.Add(new TeachRiteToGarou(Lynn, Yoki, Rite.AncestorVeneration, 1));
+                    plan.Add(new QueueRiteLearning(Yoki, Rite.AncestorVeneration));
+
+                    break;
+
+                //05 Apr (teaching week)
+                case 9:
+                    //teach
+                    //plan.Add(new TeachAbility(Nameless, ?, Build.Abilities.Brawl));
+                    //plan.Add(new TeachAbility(Spiridon, Kinfolk2, Build.Abilities.Meditation));
+                    //plan.Add(new TeachAbility(Kurt, Kinfolk1, Build.Abilities.SpiritLore));
+                    plan.Add(new TeachAbility(Yoki, Nameless, Build.Abilities.Occult));
+                    plan.Add(new TeachAbility(Kinfolk1, Spiridon, Build.Abilities.Crafts));
+                    plan.Add(new TeachAbility(Kinfolk2, Yoki, Build.Abilities.SpiritLore));
+                    break;
+
+                //12 Apr
+                case 10:
+
+                    //Lynn teach Kurt Ancestor Veneration
+                    plan.Add(new TeachRiteToGarou(Lynn, Kurt, Rite.AncestorVeneration, 1));
+                    plan.Add(new QueueRiteLearning(Kurt, Rite.AncestorVeneration));
+
+
+                    break;
+
+                //19 Apr (teaching week)
+                case 11:
+                    break;
+                
+                //26 Apr
+                case 12:
+                    break;
+
+                //3 May (teaching week)
+                case 13:
+                    break;
+
+                //10 May
+                case 14:
+                    break;
+
+                //17 May (teaching week)
+                case 15:
+                    break;
+                
+                //24 May
+                case 16:
+                    break;
+
+                //31 May (teaching week, last event of 6th arc)
+                case 17:
+                    break;
+
+                //07,14,21,28 June
+                case 18:
+                case 19:
+                case 20:
+                case 21:
+                    break;
+
+                //05 Jul (first event of 7th arc)
+                case 22:
+                    break;
+
 
                     //plan.Add(new TeachAbility(Kurt, Yoki, Build.Abilities.SpiritLore));
                     //plan.Add(new TeachAbility(Kurt, ?, Build.Abilities.SpiritLore));
                     //plan.Add(new TeachAbility(Spiridon, Yoki, Build.Abilities.Herbalism));
-                    //plan.Add(new TeachAbility(?, Nameless, Build.Abilities.Rituals));
-                    //plan.Add(new TeachAbility(?, Nameless, Build.Abilities.Occult));
-
-                    //plan.Add(new TeachAbility(Kinfolk2, Nameless, Build.Abilities.Survival));
-
-                    //plan.Add(new TeachAbility(Kinfolk1, Spiridon, Build.Abilities.Craft));
+                    //plan.Add(new TeachAbility(Kinfolk2, Nameless, Build.Abilities.Survival))
                     //UnbrokenCord.plan.Add(new TeachAbility(Lynn, Nameless, Build.Abilities.Enigmas));
                     //plan.Add(new TeachAbility(Kinfolk2, Lynn, Build.Abilities.Medicine));
                     //plan.Add(new TeachAbility(Poison, Spiridon, Build.Abilities.Poison));
                     //plan.Add(new TeachGiftToGarou(Spiridon, Nameless, "Visage of Fenris"));
-
                     //plan.Add(new TeachAbility(Spiridon, Kinfolk1, Build.Abilities.Meditation));
-
-                    //Spiridon: create Talens
-                    //plan.Add(new CreateTalens(Spiridon, "Cacao", 1));
                     break;
 
                 //

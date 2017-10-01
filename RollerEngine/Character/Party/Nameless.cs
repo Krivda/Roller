@@ -121,7 +121,9 @@ namespace RollerEngine.Character.Party
 
                 //roll Ghost Pack
                 var ghostPackRoll = new GhostPack(Log, Roller);
-                ghostPackRoll.Roll(Self, false, false);
+
+                bool namelessHasSpec = Self.Traits[Build.Abilities.Occult] > 3;
+                ghostPackRoll.Roll(Self, namelessHasSpec, false);
 
                 if (buff.UseBoneRhythms)
                 {
