@@ -25,7 +25,7 @@ namespace RollerEngine.Rolls
         public bool RemoveSuccessesOn1 { get; private set; }
         public bool CanBotch { get; private set; }
         public List<string> Conditions { get; private set; }
-        public Verbosity Verbosity { get; private set; }
+        public Verbosity Verbosity { get; protected set; }
         protected int Successes { get; set; }
         protected RollInfo FullRollInfo { get; set; }
         public RollData RollResult { get; protected set; }

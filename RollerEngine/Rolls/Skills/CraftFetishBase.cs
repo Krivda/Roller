@@ -31,12 +31,14 @@ namespace RollerEngine.Rolls.Skills
 
             if (result >= successesRequires)
             {
-                Log.Log(Verbosity.Critical, ActivityChannel.Creation, string.Format("{0} has got {1} successes (of required {2}) on {3}. Now he has an exellent {4}!",
+                actor.Items.Add(string.Format("base for fetish {0}", fetishName), 1);
+
+                Log.Log(Verbosity.Critical, ActivityChannel.Creation, string.Format("{0} has got {1} successes (of required {2}) on {3}. Now he has an exellent base for {4}!",
                     actor.Name, result, successesRequires, SKILL_NAME, fetishName));
             }
             else
             {
-                Log.Log(Verbosity.Critical, ActivityChannel.Creation, string.Format("{0} has got {1} successes (of required {2}) on {3}. Thats not enough to create a decent {4}!",
+                Log.Log(Verbosity.Critical, ActivityChannel.Creation, string.Format("{0} has got {1} successes (of required {2}) on {3}. Thats not enough to create a decent base for {4}!",
                     actor.Name, result, successesRequires, SKILL_NAME, fetishName));
             }
 

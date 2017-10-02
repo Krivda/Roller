@@ -148,7 +148,7 @@ namespace UnitTests
         [Test]
         public void Multiweek()
         {
-            var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Details, Logger);
+            var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Critical, Logger);
             //var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Critical, Logger);
             var roller = new OfflineDiceRoller(rollLogger);
 
@@ -164,6 +164,9 @@ namespace UnitTests
             res.DoWeek(4);
             res.DoWeek(5);
             res.DoWeek(6);
+
+
+            res.LogTotalProgress();
 
         }
 

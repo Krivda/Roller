@@ -28,6 +28,8 @@ namespace RollerEngine.Rolls.Rites
 
             if (result >= 1)
             {
+                actor.Items.Add(fetishName, 1);
+
                 Log.Log(Verbosity.Critical, ActivityChannel.Creation, string.Format("{0} has got {1} successes on {2}. Now he has an exellent {3}!",
                     actor.Name, result, _rite.Name, fetishName));
             }

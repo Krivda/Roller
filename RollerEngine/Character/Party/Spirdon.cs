@@ -186,6 +186,8 @@ namespace RollerEngine.Character.Party
             //Craft
             var craftFetishBase = new CraftFetishBase(Log, Roller);
             craftFetishBase.Roll(Self, fetishLevel, fetishName, false, true);
+
+
         }
 
         public override void CreateFetish(int fetishLevel, string fetishName, string spiritType)
