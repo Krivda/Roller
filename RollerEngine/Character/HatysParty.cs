@@ -39,7 +39,8 @@ namespace RollerEngine.Character
         public Lynn Lynn { get; private set; }
         
 
-        public Dictionary<string, Dictionary<string, int>> OriginalStats;
+        public Dictionary<string, Dictionary<string, int>> WeekStartingTraits { get; set; }
+        public Dictionary<string, Dictionary<string, int>> RunStartTraits { get; set; }
 
         public int CaernChannellingUsedTimes { get; set; }
 
@@ -71,7 +72,8 @@ namespace RollerEngine.Character
             Lynn = new Lynn(party["NPC 3"], log, roller, this);
             _party.Add(Lynn.CharacterName, Lynn);
 
-            OriginalStats = new Dictionary<string, Dictionary<string, int>>();
+            WeekStartingTraits = new Dictionary<string, Dictionary<string, int>>();
+            RunStartTraits = new Dictionary<string, Dictionary<string, int>>();
 
 
             Spiridon.HasOpenedCaern = true;
@@ -80,6 +82,11 @@ namespace RollerEngine.Character
             Kinfolk2.HasSpecOnInstruction = true;
 
             Nameless.Self.HasAncestorVeneration = true;
+
+            foreach (var hatysPartyMemberKvp in _party)
+            {
+                RunStartTraits[hatysPartyMemberKvp.Value.CharacterName] = CopyTraitValues(hatysPartyMemberKvp.Value.Self);
+            }
         }
 
         public List<Build> Builds
@@ -110,24 +117,219 @@ namespace RollerEngine.Character
         }
 
 
-        private void StoreOriginalValues(Build bld)
+        private Dictionary<string, int> CopyTraitValues(Build bld)
         {
-            Dictionary<string, int> trait=new Dictionary<string, int>();
-            OriginalStats.Add(bld.Name, trait);
+            Dictionary<string, int> traits=new Dictionary<string, int>();
 
             foreach (var traitKvp in bld.Traits)
             {
-                trait.Add(traitKvp.Key, traitKvp.Value);
+                traits.Add(traitKvp.Key, traitKvp.Value);
+            }
+
+            //todo: refac this crap
+            foreach (var itemKvp in bld.Items)
+            {
+                traits.Add("item" + itemKvp.Key, itemKvp.Value);
+            }
+
+            return traits;
+        }
+
+        private Dictionary<string, ProgressSummary> GetProgress(Dictionary<string, Dictionary<string, int>> original)
+        {
+            Dictionary<string, ProgressSummary> progress = new Dictionary<string, ProgressSummary>();
+
+            //for each character
+            foreach (var characterKvp in original)
+            {
+                string characterName = characterKvp.Key;
+
+                var charProgress = new ProgressSummary();
+                progress.Add(characterName, charProgress);
+
+                var origCharacterTraits = characterKvp.Value;
+                var currCharacterTraits = _party[characterName].Self.Traits;
+
+                foreach (var currTraitKvp in currCharacterTraits)
+                {
+                    string trait = currTraitKvp.Key;
+                    Tuple<int, int> traitDiff = GetTraitDiff(trait, origCharacterTraits, currCharacterTraits);
+
+                    //is ability?
+                    if (typeof(Build.Abilities).GetFields().Any(fi => fi.Name.Equals(currTraitKvp.Key)))
+                    {
+                        //calc progress in abilities
+                        
+                        string traitLearnedKey = Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceLearned, trait);
+                        string traitPoolKey = Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpiriencePool, trait);
+
+                        Tuple<int, int> traitLearnedDiff =
+                            GetTraitDiff(traitLearnedKey, origCharacterTraits, currCharacterTraits);
+                        Tuple<int, int> traitPoolDiff =
+                            GetTraitDiff(traitPoolKey, origCharacterTraits, currCharacterTraits);
+
+                        if (
+                            (traitDiff.Item1 != traitDiff.Item2) ||
+                            (traitLearnedDiff.Item1 != traitLearnedDiff.Item2) ||
+                            (traitPoolDiff.Item1 != traitPoolDiff.Item2))
+                        {
+
+                            var traitProgress = new Dictionary<string, Tuple<int, int>>
+                            {
+                                {trait, traitDiff},
+                                {traitLearnedKey, traitLearnedDiff},
+                                {traitPoolKey, traitPoolDiff}
+                            };
+                            charProgress.AbilityProgress.Add(trait, traitProgress);
+                        }
+                    }
+                    //is rite pool learned?
+                    else if (trait.Contains(Build.DynamicTraits.RiteLearned))
+                    {
+                        //calc progress in rites
+
+                        string riteName = Build.DynamicTraits.GetBaseTrait(trait, Build.DynamicTraits.RiteLearned);
+
+                        if (traitDiff.Item2 == Build.RiteAlreadyLearned && traitDiff.Item1 != traitDiff.Item2)
+                        {
+                            //finished learning rite this week
+                            charProgress.RiteProgress.Add(riteName, new Tuple<int, int, int>(0, Build.RiteAlreadyLearned, Build.RiteAlreadyLearned));
+                        }
+                        else if (traitDiff.Item2 != Build.RiteAlreadyLearned && traitDiff.Item1 != traitDiff.Item2)
+                        {
+                            string ritePoolKey = Build.DynamicTraits.GetKey(Build.DynamicTraits.RitePool, riteName);
+                            int ritePool;
+                            if (! currCharacterTraits.TryGetValue(ritePoolKey, out ritePool))
+                            {
+                                ritePool = 0;
+                            }
+
+                            //progressed in learning rite
+                            charProgress.RiteProgress.Add(riteName, new Tuple<int, int, int>(traitDiff.Item1, traitDiff.Item2, ritePool));
+                        }   
+                    }
+                //traits
+                }
+
+                var character = _party[characterName];
+                
+                //items
+                foreach (var item in character.Self.Items)
+                {
+                    int origItemCount;
+                    if (!origCharacterTraits.TryGetValue("item" + item.Key, out origItemCount))
+                    {
+                        //new item
+                        charProgress.ItemsProgress.Add(item.Key, new Tuple<int,int>(0, item.Value));
+                    }
+                    else if (item.Value != origItemCount)
+                    {
+                        charProgress.ItemsProgress.Add(item.Key, new Tuple<int, int>(origItemCount, item.Value));
+                    }
+                }
+
+            //characters
+            }
+
+            return progress;
+        }
+
+        private Tuple<int, int> GetTraitDiff(string trait, Dictionary<string, int> origCharacterTraits, Dictionary<string, int> currCharacterTraits)
+        {
+
+            int origValue;
+            if (!origCharacterTraits.TryGetValue(trait, out origValue))
+            {
+                origValue = 0;
+            }
+
+            int currValue;
+            if (!currCharacterTraits.TryGetValue(trait, out currValue))
+            {
+                origValue = 0;
+            }
+
+            return new Tuple<int, int>(origValue, currValue) ;
+        }
+
+        private void LogProgress(Dictionary<string, ProgressSummary> progress)
+        {
+            foreach (var charProgressKvp in progress)
+            {
+                string characterName = charProgressKvp.Key;
+
+                foreach (var charAbilityProgress in charProgressKvp.Value.AbilityProgress)
+                {
+                    string trait = charAbilityProgress.Key;
+                    var traitDiff = charAbilityProgress.Value[trait];
+                    var traitLearnedDiff =
+                        charAbilityProgress.Value[
+                            Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceLearned, trait)];
+                    var traitPoolDiff =
+                        charAbilityProgress.Value[
+                            Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpiriencePool, trait)];
+
+                    _log.Log(Verbosity.Critical, ActivityChannel.Main,
+                        string.Format(
+                            "{0} has progressed in learning ability {1}:trait value {2}->{3}, XP learned {4}->{5}, XP pool {6}->{7}",
+                            characterName, trait, traitDiff.Item1, traitDiff.Item2, traitLearnedDiff.Item1,
+                            traitLearnedDiff.Item2, traitPoolDiff.Item1, traitPoolDiff.Item2));
+                }
+
+                foreach (var riteProgressKvp in charProgressKvp.Value.RiteProgress)
+                {
+                    string riteName = riteProgressKvp.Key;
+                    if (riteProgressKvp.Value.Item2 == Build.RiteAlreadyLearned)
+                    {
+                        //learned rite!
+                        _log.Log(Verbosity.Critical, ActivityChannel.Main,
+                            string.Format("{0} has learned rite {1}.", characterName, riteName));
+                    }
+                    else
+                    {
+                        _log.Log(Verbosity.Critical, ActivityChannel.Main,
+                            string.Format("{0} has progressed in learning rite {1}: {2}->{3} of {4}.", characterName,
+                                riteName,
+                                riteProgressKvp.Value.Item1, riteProgressKvp.Value.Item2, riteProgressKvp.Value.Item3));
+                    }
+                }
+
+                foreach (var itemKvp in charProgressKvp.Value.ItemsProgress)
+                {
+                    string direction;
+                    if (itemKvp.Value.Item1 < itemKvp.Value.Item2)
+                    {
+                        direction = "got";
+                    }
+                    else
+                    {
+                        direction = "lost";
+                    }
+
+                    _log.Log(Verbosity.Critical, ActivityChannel.Main,
+                        string.Format("{0} has {1} item {2}. Item count: {3}->{4}", characterName, direction,
+                            itemKvp.Key, itemKvp.Value.Item1, itemKvp.Value.Item2));
+                }
             }
         }
 
-        private void ShowLearningResults()
+        public void LogTotalProgress()
+        {
+            var progress = GetProgress(RunStartTraits);
+            _log.Log(Verbosity.Warning, ActivityChannel.Main, "");
+            _log.Log(Verbosity.Warning, ActivityChannel.Main, "");
+            _log.Log(Verbosity.Warning, ActivityChannel.Main, "===== >>>> This run results:");
+            LogProgress(progress);
+            _log.Log(Verbosity.Warning, ActivityChannel.Main, "<<<< =====");
+        }
+
+        /*private void ShowLearningResults()
         {
             //TODO: summary channel
             _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, "");
             _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, "==> week summary:");
 
-            foreach (var origKvp in OriginalStats)
+            foreach (var origKvp in WeekStartingTraits)
             {
                 var activeTraits = _partyBuilds.First(p => p.Value.Name.Equals(origKvp.Key)).Value.Traits;
 
@@ -179,7 +381,7 @@ namespace RollerEngine.Character
                     }
                 }
             }
-        }
+        }*/
 
         public void StartScene()
         {
@@ -214,23 +416,13 @@ namespace RollerEngine.Character
                 build.Value.AncestorsUsesLeft = 1;
             }
 
+            WeekStartingTraits.Clear();
+            foreach (var hatysPartyMemberKvp in _party)
+            {
+                WeekStartingTraits[hatysPartyMemberKvp.Value.CharacterName] = CopyTraitValues(hatysPartyMemberKvp.Value.Self);
+                hatysPartyMemberKvp.Value.WeeklyActions = 1;
+            }
 
-            //todo: loop it!
-            OriginalStats.Clear();
-            StoreOriginalValues(Nameless.Self);
-            StoreOriginalValues(Spiridon.Self);
-            StoreOriginalValues(Yoki.Self);
-            StoreOriginalValues(Kurt.Self);
-            StoreOriginalValues(Kinfolk1.Self);
-            StoreOriginalValues(Kinfolk2.Self);
-
-            Spiridon.WeeklyActions = 1;
-            Nameless.WeeklyActions = 1;
-            Kurt.WeeklyActions = 1;
-            Yoki.WeeklyActions = 1;
-            Kinfolk1.WeeklyActions = 1;
-            Kinfolk2.WeeklyActions = 1;
-            Lynn.WeeklyActions = 1;
 
             //todo: THAT IS A SOLID TRASH. REWRITE IF YOU SEE IT!
             Nameless.BoneRhythmsUsagesLeft = 2;
@@ -276,9 +468,16 @@ namespace RollerEngine.Character
                     buildKvp.Value.Traits[Build.Backgrounds.Ancestors] = 1;
                 }
 
+                if (buildKvp.Key.Equals("Krivda"))
+                {
+                    buildKvp.Value.Rites.Add(RitesDictionary.Rites[Rite.AncestorVeneration].Name, 0);
+                    buildKvp.Value.Rites.Add(RitesDictionary.Rites[Rite.BoneRhythms].Name, 0);
+                }
+
                 if (buildKvp.Key.Equals("Keltur"))
                 {
                     CommonBuffs.ApplyMedicalBundle(buildKvp.Value, log);
+                    buildKvp.Value.Rites.Add(RitesDictionary.Rites[Rite.OpenedCaern].Name, 0);
                 }
 
                 if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur") || buildKvp.Key.Equals("Alisa") || buildKvp.Key.Equals("Urfin") || buildKvp.Key.Equals("NPC 3"))
@@ -488,7 +687,11 @@ namespace RollerEngine.Character
                 //TODO: maybe log attempts.
             }
 
-            ShowLearningResults();
+            //ShowLearningResults();
+            var progress = GetProgress(WeekStartingTraits);
+            _log.Log(Verbosity.Critical, ActivityChannel.Main, "");
+            _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("=>> Week {0} results:", weekNo));
+            LogProgress(progress);
 
             _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("<==== Week {0} ends", weekNo));
         }
@@ -585,5 +788,4 @@ namespace RollerEngine.Character
 
         }
     }
-
 }

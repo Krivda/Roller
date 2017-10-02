@@ -78,8 +78,10 @@ namespace RollerEngine.Rolls.Skills
         {
             AdditionalInfo = ability;
 
-
+            Verbosity saved = Verbosity;
+            Verbosity = Verbosity.Critical;
             int result = base.Roll(actor, new List<Build>() { actor }, hasSpec, hasWill);
+            Verbosity = saved;
 
             if (result > 0)
             {
@@ -104,8 +106,8 @@ namespace RollerEngine.Rolls.Skills
                 actor.Traits[traitKeyXpPool] = actor.Traits[traitKeyXpPool] - xpConsumedFromPool;
                 actor.Traits[traitKeyXpLearned] = actor.Traits[traitKeyXpLearned] + xpConsumedFromPool;
 
-                Log.Log(Verbosity, ActivityChannel.TeachLearn, string.Format("{0} rolls {1} successes on learning {2}, has {3} XP in pool, {4} XP was consumed, now has ({5},{6}) pool/learned XP",
-                    actor.Name, result, ability, xpPoolInitial, xpConsumedFromPool, actor.Traits[traitKeyXpPool], actor.Traits[traitKeyXpLearned]));
+                Log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} rolls {1} successes on learning {2} [{3}XP was XP in pool, {4}XP was consumed]",
+                    actor.Name, result, ability, xpPoolInitial, xpConsumedFromPool));
 
                 //this is an amount of xp we have learned
                 int xpLearned = actor.Traits[traitKeyXpLearned];

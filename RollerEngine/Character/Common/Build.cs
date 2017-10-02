@@ -13,8 +13,7 @@ namespace RollerEngine.Character.Common
             public const string Kinfolk = "Kinfolk";
             public const string Corax = "Corax";
         }
-
-
+        
         public class Atributes
         {
             public const string Strength = "Strength";
@@ -158,6 +157,10 @@ namespace RollerEngine.Character.Common
         public string CharacterClass { get; set; }
 
         public Dictionary<string, int> Traits = new Dictionary<string, int>();
+                                                                     //active count
+        public Dictionary<string, int> Items = new Dictionary<string, int>();
+                                                                     //active from week
+        public Dictionary<string, int> Rites = new Dictionary<string, int>();
 
         public List<TraitModifier> TraitModifiers = new List<TraitModifier>();
         public List<DCModifer> DCModifiers = new List<DCModifer>();

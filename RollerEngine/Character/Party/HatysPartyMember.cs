@@ -107,7 +107,7 @@ namespace RollerEngine.Character.Party
             {
                 string traitKeyXpPool = xpPoolTrait.Item1;
                 string trait = Build.DynamicTraits.GetBaseTrait(traitKeyXpPool, Build.DynamicTraits.ExpiriencePool);
-                bool hasWill = Self.Traits[trait] < 3;
+                bool hasWill = Self.Traits[trait] < 4;
 
                 while (WeeklyPartialActions > 0)
                 {
@@ -215,11 +215,17 @@ namespace RollerEngine.Character.Party
                 throw new Exception(string.Format("{0} is {1}, and they can't learn rites", Self.Name,
                     Self.CharacterClass));
             }
+            RiteInfo riteInfo;
+            if (!RitesDictionary.Rites.TryGetValue(rite, out riteInfo))
+            {
+                throw new Exception(string.Format("Rite {0} is not known by software!", Enum.GetName(typeof(Rite), rite)));
+            }
+
+            var riteName = riteInfo.Name;
 
             //Apply rosemary
             CommonBuffs.ApplySacredRosemary(Self, Log);
-
-
+            
             //ask nameless to buff instruct
             if (!Self.Name.Equals(Party.Nameless.CharacterName))
             {

@@ -73,6 +73,9 @@ namespace RollerEngine.Rolls.Skills
                     Log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} has has finally learned rite {1} (+{2} more success. Now he has {3} of {4} successes!)",
                         actor.Name, riteName, result, successesLearned, successesRequired));
                     successesLearned = Build.RiteAlreadyLearned;
+
+                    //learned a rite
+                    actor.Rites.Add(riteName, 0);
                 }
 
                 keyRiteLearned = Build.DynamicTraits.GetKey(Build.DynamicTraits.RiteLearned, riteName);
