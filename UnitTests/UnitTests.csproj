@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="AnsestorsTest.cs" />
     <Compile Include="BuildTest.cs" />
+    <Compile Include="DictinariesTest.cs" />
     <Compile Include="GsheetApiTest.cs" />
     <Compile Include="InstructionTest.cs" />
     <Compile Include="LoggersTest.cs" />

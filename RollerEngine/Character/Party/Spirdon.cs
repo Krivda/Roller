@@ -142,7 +142,7 @@ namespace RollerEngine.Character.Party
 
         public void CastMindPartition()
         {
-            //Cast Pesuasion
+            //Cast MindPartition
             var mindPartition = new MindPartition(Log, Roller);
             WeeklyActions += mindPartition.Roll(Self);
         }

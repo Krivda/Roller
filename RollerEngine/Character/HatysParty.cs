@@ -500,37 +500,68 @@ namespace RollerEngine.Character
 
         private void CheckFullAndCalcPartialActions(int weekNo, List<WeeklyActivity> plan, bool bSerialArc6)
         {            
-            //spiridon casts mind partition to increase base actions.
-            Spiridon.CastMindPartition();
+
+            //1) Learning is extended activity; while learning you cannot do anything else! But it is partial action (due to cacao)
+            //2) LearnRiteFromGarou / TeachRiteToGarou correspondance
+            //3) Teaching is single activity; but TeachRiteToGarou spend partialAction and must be synced
+            //4) CreateDevice is an extended action; while Fetish/Talen/Base are single
 
             foreach (var hatysPartyMemberKvp in _party)
             {
                 var initialWeeklyActions = hatysPartyMemberKvp.Value.WeeklyActions;
                 List<WeeklyActivity> characterActivities = WeeklyFilter.ByActor(plan, hatysPartyMemberKvp.Key);
-                //var markerActivities = WeeklyFilter.ByMarker(characterActivities);
-                var creationActivities = WeeklyFilter.ByCreation(characterActivities);
-                var teachingActivities = WeeklyFilter.ByTeaching(characterActivities);                 //all single
-                //var learningActivitires = WeeklyFilter.ByLearning(characterActivities);                //all extended
-                var creationExtended = WeeklyFilter.ByType(creationActivities, ActivityType.Extended);
-                //var creationSingle = WeeklyFilter.ByType(creationActivities, ActivityType.Single);
+                
+                var teachingActivities = WeeklyFilter.ByTeaching(characterActivities);                  //all single
+                var teachRiteToGarou = WeeklyFilter.ByTeachRiteToGarou(characterActivities);            //except TeachRiteToGarou which is partial
+                
+                //var learningActivitires = WeeklyFilter.ByLearning(characterActivities);               //always extended and partial
 
-                var actions = hatysPartyMemberKvp.Value.WeeklyActions;
+                var creationActivities = WeeklyFilter.ByCreation(characterActivities);
+                var creationExtended = WeeklyFilter.ByType(creationActivities, ActivityType.Extended);  //creation extended (CreateDevice)
+                var creationSingle = WeeklyFilter.ByType(creationActivities, ActivityType.Single);      //creation single   (CreateTalens, CreateFetish, CreateFetishBase)
+
+                if (teachingActivities.Count > 1)
+                {
+                    throw new Exception(string.Format("Multiple teaching is not supported! ({0})", hatysPartyMemberKvp.Key));
+                }
+                if (teachRiteToGarou.Count == 0)
+                {
+                    hatysPartyMemberKvp.Value.WeeklyActions -= teachingActivities.Count;
+                }
+                else
+                {
+                    //TODO TODO TODO
+                    //teachRiteToGarou[0].MaxLearnAttempts;
+                    //teachRiteToGarou[0]
+                    List<WeeklyActivity> studentActivities = WeeklyFilter.ByActor(plan, teachRiteToGarou[0].Student.Self.Name);
+                    List<LearnRiteFromGarou> learnActivities = WeeklyFilter.ByLearnRiteFromGarou(studentActivities);
+                    foreach(var activity in learnActivities)
+                    {
+                        if (activity.Teacher.Self.Name == hatysPartyMemberKvp.Key)
+                        {
+                            ;
+                        }
+                    }
+                }
+
+
+
+
+                if (hatysPartyMemberKvp.Value.WeeklyActions < 0)
+                {
+                    throw new Exception(string.Format("Not enough weekly actions! ({0})", hatysPartyMemberKvp.Key));
+                }
+
                 if (creationExtended.Count > 1)
                 {
                     throw new Exception(string.Format("No way to perform more than one extended creation roll! ({0})", hatysPartyMemberKvp.Key));
                 }
                 hatysPartyMemberKvp.Value.WeeklyActions -= creationExtended.Count;
 
-                if (teachingActivities.Count > 1)
-                {
-                    throw new Exception(string.Format("Multiple teaching is not supported! ({0})", hatysPartyMemberKvp.Key));
-                }
-                hatysPartyMemberKvp.Value.WeeklyActions -= teachingActivities.Count;
 
-                if (hatysPartyMemberKvp.Value.WeeklyActions < 0)
-                {
-                    throw new Exception(string.Format("Not enough weekly actions! ({0})", hatysPartyMemberKvp.Key));
-                }
+                //spiridon casts mind partition to his extended actions.
+                Spiridon.CastMindPartition();
+
 
                 if (hatysPartyMemberKvp.Key.Equals(Yoki.CharacterName))
                 {

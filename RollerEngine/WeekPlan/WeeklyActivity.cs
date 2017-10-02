@@ -1,4 +1,3 @@
-using RollerEngine.Character.Common;
 using RollerEngine.Character.Party;
 
 namespace RollerEngine.WeekPlan
@@ -6,16 +5,16 @@ namespace RollerEngine.WeekPlan
     public enum ActivityType
     {
         None,
-        Single,     //can't make single & exteneded simultaniously
-        Extended    //can't make extended & extened simultaniously
+        Single,
+        Extended
     }
 
     public enum ActivityKind
     {
         None,
-        Creation,   //can't make creation & creation simultaniously
-        Teaching,   //can't make teaching & teaching simultaniously
-        Learning    //can't make learning & learning simultaniously
+        Creation,
+        Teaching,
+        Learning
     }
 
     public enum Activity
@@ -42,13 +41,12 @@ namespace RollerEngine.WeekPlan
         LearnRite,         //Extended;
         LearnGiftFromGarou,//Extended;
         LearnRiteFromGarou //Extended;
-
     }
 
     public abstract class WeeklyActivity
     {
         public HatysPartyMember Actor { get; private set; }
-        public Activity Activity { get; protected set; }
+        public Activity Activity { get; private set; }
         public ActivityType Type { get; private set; }
         public ActivityKind Kind { get; private set; }
         public int Delay;                                       //block for next this activity
@@ -60,33 +58,6 @@ namespace RollerEngine.WeekPlan
             Type = type;
             Kind = kind;
             Delay = delay;
-        }
-
-    }
-
-    // activity to add something in plan (takes no action, i.e. schedule rite learning)
-    public abstract class MarkerActivity : WeeklyActivity
-    {
-        protected MarkerActivity(HatysPartyMember actor, Activity activity) : base(actor, activity, ActivityType.None, ActivityKind.None, 0)
-        {
-        }
-    }
-
-    public abstract class CreationActivity : WeeklyActivity
-    {
-        //TODO: count components from modules
-        protected CreationActivity(HatysPartyMember actor, Activity activity, ActivityType type, int delay) : base(actor, activity, type, ActivityKind.Creation, delay)
-        {
-        }
-    }
-
-    public abstract class TeachingActivity : WeeklyActivity
-    {
-        public IStudent Student { get; private set; }
-
-        protected TeachingActivity(HatysPartyMember actor, IStudent student, Activity activity, ActivityType type, int delay) : base(actor, activity, type, ActivityKind.Teaching, delay)
-        {
-            Student = student;
         }
     }
 }

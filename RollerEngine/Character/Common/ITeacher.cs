@@ -1,7 +1,8 @@
 namespace RollerEngine.Character.Common
 {
-    interface ITeacher
+    public interface ITeacher
     {
-        void Teach(string ability, bool hasWill, bool hasSpec);
+        Build Self { get; }
+        void Teach(IStudent student, string ability, bool hasWill);
     }
 }

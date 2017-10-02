@@ -19,6 +19,7 @@ namespace RollerEngine.Character
                 BuffPlan = buffPlan
             };
 
+            //TODO: Dates, CacaoCalcs, Priorities
             switch (weekNo)
             {
                 //8 Feb (teaching week)
@@ -45,7 +46,7 @@ namespace RollerEngine.Character
 
                     //Nameless teach Spiridon Ancestor Veneration
                     plan.Add(new TeachRiteToGarou(Nameless, Spiridon, Rite.AncestorVeneration, 1));
-                    plan.Add(new QueueRiteLearning(Spiridon, Rite.AncestorVeneration));
+                    plan.Add(new LearnRiteFromGarou(Spiridon, Nameless, Rite.AncestorVeneration, 2));
 
                     //MAIN common RITES for nearest future (teached from summoned spirits)
                     plan.Add(new QueueRiteLearning(Nameless, Rite.OpenedCaern));
@@ -59,22 +60,58 @@ namespace RollerEngine.Character
                     plan.Add(new QueueRiteLearning(Yoki, Rite.BoneRhythms));
 
                     //TODO: add priority for rite learning
-                    plan.Add(new QueueRiteLearning(Yoki, Rite.SpiritAwakening));
-                    plan.Add(new QueueRiteLearning(Yoki, Rite.RenewingTalen));
-                    plan.Add(new QueueRiteLearning(Spiridon, Rite.RenewingTalen));
+                    plan.Add(new QueueRiteLearning(Kurt, Rite.TalismanAdaptation)); //Urfin has token
 
+                    plan.Add(new QueueRiteLearning(Yoki, Rite.SpiritAwakening));
+                    plan.Add(new QueueRiteLearning(Yoki, Rite.Summoning));
+                    plan.Add(new QueueRiteLearning(Yoki, Rite.Contrition));
+                    plan.Add(new QueueRiteLearning(Yoki, Rite.RenewingTalen));
+                    plan.Add(new QueueRiteLearning(Yoki, Rite.SpiritCage)); //Yoki has token
+
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.RenewingTalen));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.Fetish));
-                    plan.Add(new QueueRiteLearning(Spiridon, Rite.InvitationToAncestors));
-                    plan.Add(new QueueRiteLearning(Spiridon, Rite.FeastForSpirits));
-                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Teachers));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.SacredPeace));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.CaernBuilding));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Signpost));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Trepassing));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.InvitationToAncestors));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.BowelsOfMother));
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.Teachers)); - already learned
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.FeastForSpirits));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Comfort));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Askllepios));                   
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.SinEatingGaia));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.SinEaterWendigo));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Balance));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Nightshade));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Deliverance)); 
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.QuestingStone)); - too much to sort
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.Becoming)); - too much to sort
+               
+                    //TODO: more rites, more tokens
 
-                    //TODO: more rites for spiridon
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.BadgersBurrow)); no token
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.OpenedBridge)); no token
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.ShroudedGlen)); no token
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.OpenedSky)); no token
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.WinterWolf)); no token
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.Totem)); no token
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.PartedVeil)); no token
+
+                    //THERE IS NO MUCH SENSE TO LEARN THEESE RITES 
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.GatheringForDeparted));   //I prefer Rite.Rememberance
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.Passage));
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.BaptismOfFire));
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.Wounding));
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.MootRite));
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.Renunciation));
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.HuntingPrayer));
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.PrayerForPrey));
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.GreetMoon));
+                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.GreetSun));
                     break;
 
                 //TODO: need to calc/have BoneRhythms and Veneration and OpenCaern
-                //TODO: do fetishes as learn rite
                 //22 Feb (teaching week)
                 case 3:
                     buffPlan.Nameless = NamelessBuff.MaxBoostInstruct();
@@ -113,8 +150,9 @@ namespace RollerEngine.Character
                     plan.Add(new QueueRiteLearning(Lynn, Rite.OpenedCaern));
                     plan.Add(new QueueRiteLearning(Lynn, Rite.Contrition));
                     plan.Add(new QueueRiteLearning(Lynn, Rite.SpiritAwakening));
-                    plan.Add(new QueueRiteLearning(Lynn, Rite.Binding));
+                    plan.Add(new QueueRiteLearning(Lynn, Rite.Summoning));
                     plan.Add(new QueueRiteLearning(Lynn, Rite.RenewingTalen));
+                    plan.Add(new QueueRiteLearning(Lynn, Rite.Binding));
                     plan.Add(new QueueRiteLearning(Lynn, Rite.SacredFire));
 
                     plan.Add(new CreateFetishBase(Spiridon, 4, "Carnyx of Victory"));
@@ -162,6 +200,31 @@ namespace RollerEngine.Character
                     plan.Add(new TeachAbility(Kinfolk1, Spiridon, Build.Abilities.Crafts));
                     plan.Add(new TeachAbility(Kinfolk2, Yoki, Build.Abilities.SpiritLore));
                     break;
+
+                //plan.Add(new TeachAbility(Kurt, Yoki, Build.Abilities.SpiritLore));
+                //plan.Add(new TeachAbility(Kurt, ?, Build.Abilities.SpiritLore));
+                //plan.Add(new TeachAbility(Spiridon, Yoki, Build.Abilities.Herbalism));
+                //plan.Add(new TeachAbility(Kinfolk2, Nameless, Build.Abilities.Survival))
+                //UnbrokenCord.plan.Add(new TeachAbility(Lynn, Nameless, Build.Abilities.Enigmas));
+                //plan.Add(new TeachAbility(Kinfolk2, Lynn, Build.Abilities.Medicine));
+                //plan.Add(new TeachAbility(Poison, Spiridon, Build.Abilities.Poison));
+                //plan.Add(new TeachGiftToGarou(Spiridon, Nameless, "Visage of Fenris"));
+                //plan.Add(new TeachAbility(Spiridon, Kinfolk1, Build.Abilities.Meditation));
+
+                //
+                //Lynn: Talisman Dedication, Cleanising
+                //Ancestor Seeking: Krivda; Keltur; <Yoki> ...
+                //Ancestor Veneration: Krivda; <Kurt> ...
+
+                //Spiridon PACK of rites!!!
+                /*
+                     * +bone rythms
+                     * 15b. rites to dictionary for planned
+		Papa Serega: 5 - for Rite of Signpost(4); Rite of Trespassing(5); Crash Space (2); Shopping Chart (2)
+		Golosa Vetrov: 5 - for Rite of Caern Building (5); Rite of Balance (3); Invitation to Ancestors (4)
+		Babka Aine: 5 - for Rite of Sacred Peace(5)/Bowels of Mother(0), Asklepius (3), Comfort (2), Sin-Eating (3); of Teachers (1)
+		Udjin: 4 - for Rite of Fetish (3); Rite of Deliverance (3); Nightshade (4); Deliverance (3); Sin-Eater (2)
+                     */
 
                 //12 Apr
                 case 10:
@@ -211,74 +274,12 @@ namespace RollerEngine.Character
                 //05 Jul (first event of 7th arc)
                 case 22:
                     break;
-
-
-                    //plan.Add(new TeachAbility(Kurt, Yoki, Build.Abilities.SpiritLore));
-                    //plan.Add(new TeachAbility(Kurt, ?, Build.Abilities.SpiritLore));
-                    //plan.Add(new TeachAbility(Spiridon, Yoki, Build.Abilities.Herbalism));
-                    //plan.Add(new TeachAbility(Kinfolk2, Nameless, Build.Abilities.Survival))
-                    //UnbrokenCord.plan.Add(new TeachAbility(Lynn, Nameless, Build.Abilities.Enigmas));
-                    //plan.Add(new TeachAbility(Kinfolk2, Lynn, Build.Abilities.Medicine));
-                    //plan.Add(new TeachAbility(Poison, Spiridon, Build.Abilities.Poison));
-                    //plan.Add(new TeachGiftToGarou(Spiridon, Nameless, "Visage of Fenris"));
-                    //plan.Add(new TeachAbility(Spiridon, Kinfolk1, Build.Abilities.Meditation));
-                    break;
-
-                //
-
-
-                //TODO
-                //Lynn: Talisman Dedication, Cleanising
-                //Ancestor Seeking: Krivda; Keltur; <Yoki> ...
-                //Ancestor Veneration: Krivda; <Kurt> ...
-
-                //Spiridon PACK of rites!!!
-                /*
-                     * +bone rythms
-                     * 15b. rites to dictionary for planned
-		Papa Serega: 5 - for Rite of Signpost(4); Rite of Trespassing(5); Crash Space (2); Shopping Chart (2)
-		Golosa Vetrov: 5 - for Rite of Caern Building (5); Rite of Balance (3); Invitation to Ancestors (4)
-		Babka Aine: 5 - for Rite of Sacred Peace(5)/Bowels of Mother(0), Asklepius (3), Comfort (2), Sin-Eating (3); of Teachers (1)
-		Udjin: 4 - for Rite of Fetish (3); Rite of Deliverance (3); Nightshade (4); Deliverance (3); Sin-Eater (2)
-                     */
-
-
-                case 24:
-                    plan.Add(new LearnRite(Spiridon, 1));
-                    plan.Add(new QueueRiteLearning(Spiridon, Rite.AncestorSeeking));
-                    plan.Add(new QueueRiteLearning(Spiridon, Rite.AncestorSeeking));
-                    plan.Add(new LearnRite(Spiridon, 5));
-                    plan.Add(new TeachAbility(Nameless, Kinfolk1, Build.Abilities.Leadership));
-                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.TeachAbility, Yoki, Ptitsa, Self.Abilities.Stealth)); //done
-                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.TeachAbility, Spiridon, Kurt, Self.Abilities.Rituals)); //can't teach that week
-                    plan.Add(new TeachAbility(Kurt, Yoki, Build.Abilities.Demolitions));
-                    plan.Add(new TeachAbility(Kinfolk1, Kurt, Build.Abilities.Firearms));
-                    //plan.Add(new WeeklyActivity(WeeklyActivity.ActivityKind.TeachAbility, Kinfolk2, Nameless, Self.Abilities.Brawl)); //done
-
-
-                    //learning
-                    //plan.Add(new WeeklyActivity(Nameless, 2));
-                    //plan.Add(new WeeklyActivity(Spiridon, 2));
-                    //plan.Add(new WeeklyActivity(Kurt, 2));
-                    plan.Add(new LearnAbility(Yoki, 4));
-                    plan.Add(new LearnAbility(Yoki, 4));
-                    //plan.Add(new WeeklyActivity(Kinfolk1, 2));
-                    //plan.Add(new WeeklyActivity(Kinfolk2, 2));
-
-                    break;
-                case 25:
-                    //learning
-                    plan.Add(new LearnAbility(Nameless, 1));
-                    plan.Add(new LearnAbility(Spiridon, 1));
-                    plan.Add(new LearnAbility(Kurt, 1));
-                    plan.Add(new LearnAbility(Yoki, 1));
-                    plan.Add(new LearnAbility(Yoki, 1));
-                    plan.Add(new LearnAbility(Kinfolk1, 1));
-                    plan.Add(new LearnAbility(Kinfolk2, 1));
-
-                    break;
             }
 
+            if (buffPlan.Nameless == null)
+            {
+                buffPlan.Nameless = NamelessBuff.MaxBoostInstruct();   
+            }
             return weekPlan;
         }
     }

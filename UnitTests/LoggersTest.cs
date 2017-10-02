@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml.Schema;
 using NLog;
 using NUnit.Framework;
 using RollerEngine.Logger;

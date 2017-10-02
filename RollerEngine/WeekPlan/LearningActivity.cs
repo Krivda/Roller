@@ -1,4 +1,6 @@
-﻿using RollerEngine.Character.Party;
+﻿using RollerEngine.Character.Common;
+using RollerEngine.Character.Party;
+using RollerEngine.Rolls.Rites;
 
 namespace RollerEngine.WeekPlan
 {
@@ -23,6 +25,30 @@ namespace RollerEngine.WeekPlan
     {
         public LearnAbility(HatysPartyMember actor, int maxLearnAttempts) : base(actor, Activity.LearnAbility, maxLearnAttempts)
         {
+        }
+    }
+
+    public class LearnGiftFromGarou : LearningActivity
+    {
+        public string GiftName { get; private set; }
+
+        public LearnGiftFromGarou(HatysPartyMember actor, string giftName, int maxLearnAttempts)
+            : base(actor, Activity.LearnGiftFromGarou, maxLearnAttempts)
+        {
+            GiftName = giftName;
+        }
+    }
+
+    public class LearnRiteFromGarou : LearningActivity
+    {
+        public Rite Rite { get; private set; }
+        public ITeacher Teacher { get; private set; }
+
+        public LearnRiteFromGarou(HatysPartyMember actor, ITeacher teacher, Rite rite, int maxLearnAttempts)
+            : base(actor, Activity.LearnRiteFromGarou, maxLearnAttempts)
+        {
+            Rite = rite;
+            Teacher = teacher;
         }
     }
 }

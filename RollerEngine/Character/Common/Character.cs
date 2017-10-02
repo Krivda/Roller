@@ -1,10 +1,11 @@
+using System;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
 using RollerEngine.Rolls.Skills;
 
 namespace RollerEngine.Character.Common
 {
-    public class Character : IStudent
+    public class Character : IStudent, ITeacher
     {
         public string CharacterName { get; protected set; }
         public Build Self { get; private set; }
@@ -28,6 +29,16 @@ namespace RollerEngine.Character.Common
             //consume Xp from pool
             var instruct = new InstructionLearn(Log, Roller, ability);
             instruct.Roll(Self, ability, false, withWill);
+        }
+
+        public virtual void Instruct(Build target, string ability, bool withWill)
+        {
+            throw new Exception("abstract ");
+        }
+
+        public void Teach(IStudent student, string ability, bool hasWill)
+        {
+            Instruct(student.Self, ability, hasWill);
         }
 
         public virtual void ShiftToCrinos()

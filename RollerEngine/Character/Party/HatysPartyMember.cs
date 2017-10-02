@@ -129,7 +129,7 @@ namespace RollerEngine.Character.Party
             }
         }
 
-        public virtual void Instruct(Build target, string ability, bool withWill)
+        public override void Instruct(Build target, string ability, bool withWill)
         {
             if (Self.Traits[Build.Abilities.Instruction] > 0)
             {
