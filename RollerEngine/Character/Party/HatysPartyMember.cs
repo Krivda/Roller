@@ -176,8 +176,9 @@ namespace RollerEngine.Character.Party
 
             //sort by number of success left to learn the rite
             ritePoolTraits.Sort((tuple, tuple1) =>
-                (((int) tuple.Item1.Level * 10) - tuple.Item2).CompareTo(
-                    ((int) (tuple1.Item1.Level * 10)) - tuple1.Item2));
+                ((int)(tuple .Item1.Level * 10) - tuple .Item2).CompareTo(
+                 (int)(tuple1.Item1.Level * 10) - tuple1.Item2));
+
 
             int spentAttempts = 0;
 

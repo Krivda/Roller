@@ -85,8 +85,8 @@ namespace RollerEngine.Character
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.Balance));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.Nightshade));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.Deliverance)); 
-                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.QuestingStone)); - too much to sort
-                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.Becoming)); - too much to sort
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.QuestingStone));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Becoming));
                
                     //TODO: more rites, more tokens
 

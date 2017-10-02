@@ -23,7 +23,7 @@ namespace RollerEngine.Rolls.Skills
 
         public int Roll(Build actor, int fetishLevel, string fetishName, bool hasSpec, bool hasWill)
         {
-            int successesRequires = fetishLevel;
+            int successesRequires = 1;
             _dc = 3 + fetishLevel;
             AdditionalInfo = fetishName;
 
