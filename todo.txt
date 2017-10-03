@@ -41,3 +41,6 @@ SELECT TOKENS:
 33. Gnosis/Willpower replenish
 34. csv log
 //TODO we should split traits into Atributes, Abilities, Backgrounds, Rollalbe-10-based, Dynamic
+
+35. todo resolve Instruction botch!
+36. review botches on all rolls!

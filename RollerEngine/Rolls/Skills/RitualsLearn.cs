@@ -33,6 +33,7 @@ namespace RollerEngine.Rolls.Skills
             var riteName = riteInfo.Name;
             AdditionalInfo = "rite " + riteName;
 
+            Verbosity = Verbosity.Critical;
             int result = base.Roll(actor, new List<Build>() { actor }, hasSpec, hasWill);
 
             if (result > 0)

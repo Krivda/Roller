@@ -36,7 +36,7 @@ namespace RollerEngine.Character
 
                 //15 Feb (no teaching week)
                 case 2:
-                    buffPlan.Nameless = NamelessBuff.MaxBoostInstruct();
+                    buffPlan.Nameless = NamelessBuff.MaxBoostSecondaryTrait(Build.Abilities.Rituals);
 
                     //Kinfolks learn nothing special
 
@@ -46,7 +46,9 @@ namespace RollerEngine.Character
 
                     //Nameless teach Spiridon Ancestor Veneration
                     plan.Add(new TeachRiteToGarou(Nameless, Spiridon, Rite.AncestorVeneration, 1));
-                    plan.Add(new LearnRiteFromGarou(Spiridon, Nameless, Rite.AncestorVeneration, 2));
+                    plan.Add(new LearnRiteFromGarou(Spiridon, Nameless, Rite.AncestorVeneration, 1));
+
+                    //TODO: Spiridon should learn Fetish!! PRIORITY!!
 
                     //MAIN common RITES for nearest future (teached from summoned spirits)
                     plan.Add(new QueueRiteLearning(Nameless, Rite.OpenedCaern));
@@ -127,8 +129,14 @@ namespace RollerEngine.Character
 
                 //1 Mar
                 case 4:
-                    buffPlan.Nameless = NamelessBuff.BoostSecondaryTrait(Build.Abilities.Rituals);
+                    buffPlan.Nameless = NamelessBuff.MaxBoostSecondaryTrait(Build.Abilities.Rituals);
 
+                    //Spiridon,Yoki: create Talens
+                    plan.Add(new CreateTalens(Spiridon, "Cacao", "Plant"));
+                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
+
+                    //Spiridon: create fetish base for Carnyx
+                    plan.Add(new CreateFetishBase(Spiridon, 4, "Carnyx of Victory"));
                     break;
 
                 //8 Mar (teaching week, Lynn appearance)
@@ -144,18 +152,17 @@ namespace RollerEngine.Character
                     plan.Add(new TeachAbility(Kinfolk2, Yoki, Build.Abilities.SpiritLore));
 
                     //TODO: Curator? make Lynn (as theurge) our main talen creator
-                    plan.Add(new QueueRiteLearning(Lynn, Rite.Cleansing));
-                    plan.Add(new QueueRiteLearning(Lynn, Rite.TalismanDedication));
                     plan.Add(new QueueRiteLearning(Lynn, Rite.BoneRhythms));
                     plan.Add(new QueueRiteLearning(Lynn, Rite.OpenedCaern));
+                    plan.Add(new QueueRiteLearning(Lynn, Rite.Cleansing));
+                    plan.Add(new QueueRiteLearning(Lynn, Rite.TalismanDedication));
                     plan.Add(new QueueRiteLearning(Lynn, Rite.Contrition));
                     plan.Add(new QueueRiteLearning(Lynn, Rite.SpiritAwakening));
                     plan.Add(new QueueRiteLearning(Lynn, Rite.Summoning));
                     plan.Add(new QueueRiteLearning(Lynn, Rite.RenewingTalen));
                     plan.Add(new QueueRiteLearning(Lynn, Rite.Binding));
                     plan.Add(new QueueRiteLearning(Lynn, Rite.SacredFire));
-
-                    plan.Add(new CreateFetishBase(Spiridon, 4, "Carnyx of Victory"));
+                    
                     break;
                 
                 //15 Mar
@@ -163,15 +170,20 @@ namespace RollerEngine.Character
                     //Nameless should learn Open Caern this week
                     buffPlan.Nameless = NamelessBuff.MaxBoostSecondaryTrait(Build.Abilities.Rituals);
 
+                    //Yoki: create Talens
+                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
+
                     //Spiridon teach Lynn Ancestor Veneration
                     plan.Add(new TeachRiteToGarou(Spiridon, Lynn, Rite.AncestorVeneration, 1));
-                    plan.Add(new QueueRiteLearning(Lynn, Rite.AncestorVeneration));
+                    plan.Add(new LearnRiteFromGarou(Lynn, Spiridon, Rite.AncestorVeneration, 1));
 
                     plan.Add(new CreateFetishActivity(Spiridon, 4, "Carnyx of Victory", "War"));
                     break;
 
                 //22 Mar (teaching week)
                 case 7:
+                    buffPlan.Nameless = NamelessBuff.MaxBoostInstruct();
+
                     //teach
                     plan.Add(new TeachAbility(Nameless, Kinfolk1, Build.Abilities.Leadership));
                     plan.Add(new TeachAbility(Spiridon, Kurt, Build.Abilities.Meditation));
@@ -186,7 +198,7 @@ namespace RollerEngine.Character
 
                     //Lynn teach Yoki Ancestor Veneration
                     plan.Add(new TeachRiteToGarou(Lynn, Yoki, Rite.AncestorVeneration, 1));
-                    plan.Add(new QueueRiteLearning(Yoki, Rite.AncestorVeneration));
+                    plan.Add(new LearnRiteFromGarou(Yoki, Lynn, Rite.AncestorVeneration, 1));
 
                     break;
 
@@ -231,7 +243,7 @@ namespace RollerEngine.Character
 
                     //Lynn teach Kurt Ancestor Veneration
                     plan.Add(new TeachRiteToGarou(Lynn, Kurt, Rite.AncestorVeneration, 1));
-                    plan.Add(new QueueRiteLearning(Kurt, Rite.AncestorVeneration));
+                    plan.Add(new LearnRiteFromGarou(Kurt, Lynn, Rite.AncestorVeneration, 1));
 
 
                     break;

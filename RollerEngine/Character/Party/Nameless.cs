@@ -27,6 +27,7 @@ namespace RollerEngine.Character.Party
 
             if (buffPlan.PreBuff.UseBoneRhythms)
             {
+                BoneRhythmsUsagesLeft--;
                 CommonBuffs.ApplyBoneRythms(Self, Log);
             }
 
@@ -127,6 +128,7 @@ namespace RollerEngine.Character.Party
 
                 if (buff.UseBoneRhythms)
                 {
+                    BoneRhythmsUsagesLeft--;
                     //Apply Bone Ryhtms
                     CommonBuffs.ApplyBoneRythms(Self, Log);
                 }

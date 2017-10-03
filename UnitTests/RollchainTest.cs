@@ -158,7 +158,7 @@ namespace UnitTests
 
             var res = HatysParty.LoadFromGoogle(currLogger, currRoller);
 
-            for (int i = 1; i < 20; i++)
+            for (int i = 1; i < 8; i++)
             {
                 res.DoWeek(i);
             }            

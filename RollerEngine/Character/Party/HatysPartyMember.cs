@@ -179,6 +179,17 @@ namespace RollerEngine.Character.Party
                 ((int)(tuple .Item1.Level * 10) - tuple .Item2).CompareTo(
                  (int)(tuple1.Item1.Level * 10) - tuple1.Item2));
 
+            //TODO: very dirty hack!
+            if (Self.Name.Equals(Party.Spiridon.CharacterName))
+            {
+                var x = ritePoolTraits.Find(rpt => rpt.Item1.Rite == Rite.Fetish);
+                if (x != null)
+                {
+                    ritePoolTraits.Remove(x);
+                    ritePoolTraits.Insert(0, x);
+                }
+            }
+
 
             int spentAttempts = 0;
 
@@ -226,7 +237,14 @@ namespace RollerEngine.Character.Party
 
             //Apply rosemary
             CommonBuffs.ApplySacredRosemary(Self, Log);
-            
+
+            //Apply Bone Rhythms
+            if (BoneRhythmsUsagesLeft > 0)
+            {
+                BoneRhythmsUsagesLeft--;
+                CommonBuffs.ApplyBoneRythms(Self, Log);
+            }
+
             //ask nameless to buff instruct
             if (!Self.Name.Equals(Party.Nameless.CharacterName))
             {

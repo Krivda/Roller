@@ -120,6 +120,7 @@ namespace RollerEngine.Character.Party
 
                 if (learnedBoneRhythms)
                 {
+                    BoneRhythmsUsagesLeft--;
                     CommonBuffs.ApplyBoneRythms(Self, Log);
                 }
 
@@ -140,11 +141,13 @@ namespace RollerEngine.Character.Party
             ancestorSeeking.Roll(Self, target, false, true);
         }
 
-        public void CastMindPartition()
+        public int CastMindPartition()
         {
             //Cast MindPartition
             var mindPartition = new MindPartition(Log, Roller);
-            WeeklyActions += mindPartition.Roll(Self);
+            var extraActions = mindPartition.Roll(Self);
+            WeeklyActions += extraActions;
+            return extraActions;
         }
 
         public void CastCaernChanneling(string trait)

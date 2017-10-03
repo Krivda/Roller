@@ -30,7 +30,7 @@ namespace RollerEngine.Character.Party
             {
                 PreBuff = new ApplyBuffs(Build.Abilities.Occult, false, false),
                 MainBuff = new ApplyBuffs(Build.Abilities.Instruction, true, true),
-                LearnBuff = new ApplyBuffs(null, false, true)
+                LearnBuff = null //new ApplyBuffs(null, false, true)
             };
         }
 
@@ -38,9 +38,9 @@ namespace RollerEngine.Character.Party
         {
             return new NamelessBuff()
             {
-                PreBuff = new ApplyBuffs(null, false, false),
+                PreBuff = new ApplyBuffs(trait, false, false),
                 MainBuff = new ApplyBuffs(Build.Abilities.Instruction, true, true),
-                LearnBuff = new ApplyBuffs(AutoDetect, false, true)
+                LearnBuff =  null //new ApplyBuffs(AutoDetect, false, true)
             };
         }
 
@@ -48,9 +48,9 @@ namespace RollerEngine.Character.Party
         {
             return new NamelessBuff()
             {
-                PreBuff = new ApplyBuffs(null, false, false),
+                PreBuff = new ApplyBuffs(trait, true, true),
                 MainBuff = new ApplyBuffs(Build.Abilities.Instruction, false, false),
-                LearnBuff = new ApplyBuffs(AutoDetect, true, true)
+                LearnBuff = null //new ApplyBuffs(AutoDetect, true, true)
             };
         }
     }

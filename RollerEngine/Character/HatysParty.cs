@@ -323,97 +323,42 @@ namespace RollerEngine.Character
             _log.Log(Verbosity.Warning, ActivityChannel.Main, "<<<< =====");
         }
 
-        /*private void ShowLearningResults()
-        {
-            //TODO: summary channel
-            _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, "");
-            _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, "==> week summary:");
-
-            foreach (var origKvp in WeekStartingTraits)
-            {
-                var activeTraits = _partyBuilds.First(p => p.Value.Name.Equals(origKvp.Key)).Value.Traits;
-
-                foreach (var activeTrait in activeTraits)
-                {
-                    int currTraitValue = activeTrait.Value;
-                    int origTraitValue = 0;
-                    if (origKvp.Value.ContainsKey(activeTrait.Key))
-                    {
-                        origTraitValue = origKvp.Value[activeTrait.Key];
-                    }
-
-                    if (currTraitValue != origTraitValue)
-                    {
-                        if (activeTrait.Key.Contains(Build.DynamicTraits.ExpirienceLearned))
-                        {
-                            string baseTrait = Build.DynamicTraits.GetBaseTrait(activeTrait.Key, Build.DynamicTraits.ExpirienceLearned);
-
-                            _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} advanced in learning trait {1}: he already learned {2}XP towards next rank!. (changed from {3})!", origKvp.Key, baseTrait, currTraitValue, origTraitValue));
-                        }
-                        else if (activeTrait.Key.Contains(Build.DynamicTraits.ExpiriencePool))
-                        {
-                            string baseTrait = Build.DynamicTraits.GetBaseTrait(activeTrait.Key, Build.DynamicTraits.ExpiriencePool);
-
-                            _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} advanced in learning trait {1}: he has {2}XP in trait pool. (changed from {3})!", origKvp.Key, baseTrait, currTraitValue, origTraitValue));
-                        }
-                        else if (activeTrait.Key.Contains(Build.DynamicTraits.RiteLearned))
-                        {
-                            string baseTrait = Build.DynamicTraits.GetBaseTrait(activeTrait.Key, Build.DynamicTraits.RiteLearned);
-
-                            if (currTraitValue == Build.RiteAlreadyLearned && currTraitValue != origTraitValue)
-                            {
-                                //finished learning rite this week
-                                _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} has learned rite {1}!", origKvp.Key, baseTrait));
-                            }
-                            else if (currTraitValue != Build.RiteAlreadyLearned)
-                            {
-                                _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} advanced in learning rite {1}: he already learned {2} successes!. (changed from {3})!", origKvp.Key, baseTrait, currTraitValue, origTraitValue));
-                            }
-                        }
-                        else if (activeTrait.Key.Contains(Build.DynamicTraits.RitePool))
-                        {
-                            //skip it
-                        }
-                        else 
-                        {
-                            _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} advanced in learning trait {1}: he increased trait value from {2} to {3}!", origKvp.Key, activeTrait.Key, origTraitValue, currTraitValue));
-                        }
-                    }
-                }
-            }
-        }*/
-
         public void StartScene()
         {
             CaernChannellingUsedTimes = 0;
 
-            foreach (var build in _partyBuilds)
+            foreach (var buildKvp in _partyBuilds)
             {
-                var bDcMods = build.Value.BonusDCModifiers.FindAll(m => m.Duration != DurationType.Permanent);
+                var bDcMods = buildKvp.Value.BonusDCModifiers.FindAll(m => m.Duration != DurationType.Permanent);
                 foreach (var bDcMod in bDcMods)
                 {
-                    build.Value.BonusDCModifiers.Remove(bDcMod);
+                    buildKvp.Value.BonusDCModifiers.Remove(bDcMod);
                 }
 
-                var dcMods = build.Value.DCModifiers.FindAll(m => m.Duration != DurationType.Permanent);
+                var dcMods = buildKvp.Value.DCModifiers.FindAll(m => m.Duration != DurationType.Permanent);
                 foreach (var dcMod in dcMods)
                 {
-                    build.Value.DCModifiers.Remove(dcMod);
+                    buildKvp.Value.DCModifiers.Remove(dcMod);
                 }
 
-                var bdpms = build.Value.BonusDicePoolModifiers.FindAll(m => m.Duration != DurationType.Permanent);
+                var bdpms = buildKvp.Value.BonusDicePoolModifiers.FindAll(m => m.Duration != DurationType.Permanent);
                 foreach (var bdpm in bdpms)
                 {
-                    build.Value.BonusDicePoolModifiers.Remove(bdpm);
+                    buildKvp.Value.BonusDicePoolModifiers.Remove(bdpm);
                 }
 
-                var tms = build.Value.TraitModifiers.FindAll(m => m.Duration != DurationType.Permanent);
+                var tms = buildKvp.Value.TraitModifiers.FindAll(m => m.Duration != DurationType.Permanent);
                 foreach (var tm in tms)
                 {
-                    build.Value.TraitModifiers.Remove(tm);
+                    buildKvp.Value.TraitModifiers.Remove(tm);
                 }
 
-                build.Value.AncestorsUsesLeft = 1;
+                if (buildKvp.Value.CharacterClass.Equals(Build.Classes.Werewolf) &&
+                    buildKvp.Value.Traits[Build.Backgrounds.Ancestors]>0)
+                {
+                    buildKvp.Value.AncestorsUsesLeft = 1;
+                }
+
             }
 
             WeekStartingTraits.Clear();
@@ -532,9 +477,9 @@ namespace RollerEngine.Character
             {
                 Nameless.WeeklyPartialActions = 0;
                 Spiridon.WeeklyPartialActions = 0;
-                Kinfolk1.WeeklyPartialActions = 2;
-                Kurt.WeeklyPartialActions = 2;
-                Yoki.WeeklyPartialActions = 2;
+                Kinfolk1.WeeklyPartialActions = 2;  //see Academic Plan
+                Kurt.WeeklyPartialActions = 2;      //see Academic Plan
+                Yoki.WeeklyPartialActions = 2;      //see Academic Plan
                 Kinfolk2.WeeklyPartialActions = 0;
             }
 
@@ -545,6 +490,28 @@ namespace RollerEngine.Character
             {
                 switch (planItem.Activity)
                 {
+                    case Activity.QueueRiteLearning:
+                    {
+                        QueueRiteLearning weeklyActivity = (QueueRiteLearning)planItem;
+                        RiteInfo riteInfo = RitesDictionary.Rites[weeklyActivity.Rite];
+                        string keyRitePool = Build.DynamicTraits.GetKey(Build.DynamicTraits.RitePool, riteInfo.Name);
+                        string keyRiteLearned =
+                            Build.DynamicTraits.GetKey(Build.DynamicTraits.RiteLearned, riteInfo.Name);
+
+                        //create dynamic trait if it was absent
+                        if (!planItem.Actor.Self.Traits.ContainsKey(keyRitePool))
+                        {
+                            planItem.Actor.Self.Traits.Add(keyRitePool, (int)(10.0 * riteInfo.Level));
+                        }
+
+                        //create dynamic trait if it was absent
+                        if (!planItem.Actor.Self.Traits.ContainsKey(keyRiteLearned))
+                        {
+                            planItem.Actor.Self.Traits.Add(keyRiteLearned, 0);
+                        }
+                        break;
+                    }
+
                     case Activity.TeachAbility:
                     {
                         TeachAbility weeklyActivity = (TeachAbility) planItem;
@@ -583,27 +550,6 @@ namespace RollerEngine.Character
                             break;
                     }
 
-                    case Activity.QueueRiteLearning:
-                    {
-                        QueueRiteLearning weeklyActivity = (QueueRiteLearning) planItem;
-                        RiteInfo riteInfo = RitesDictionary.Rites[weeklyActivity.Rite];
-                        string keyRitePool = Build.DynamicTraits.GetKey(Build.DynamicTraits.RitePool, riteInfo.Name);
-                        string keyRiteLearned =
-                            Build.DynamicTraits.GetKey(Build.DynamicTraits.RiteLearned, riteInfo.Name);
-
-                        //create dynamic trait if it was absent
-                        if (!planItem.Actor.Self.Traits.ContainsKey(keyRitePool))
-                        {
-                            planItem.Actor.Self.Traits.Add(keyRitePool, (int) (10.0 * riteInfo.Level));
-                        }
-
-                        //create dynamic trait if it was absent
-                        if (!planItem.Actor.Self.Traits.ContainsKey(keyRiteLearned))
-                        {
-                            planItem.Actor.Self.Traits.Add(keyRiteLearned, 0);
-                        }
-                        break;
-                    }
                 }
             }
 
@@ -618,30 +564,8 @@ namespace RollerEngine.Character
                 List<LearnRiteFromGarou> learnRite = WeeklyFilter.ByLearnRiteFromGarou(characterActivities);
                 List<LearnGiftFromGarou> learnGift = WeeklyFilter.ByLearnGiftFromGarou(characterActivities);
 
-                //TODO: more checks about conflicting planItems
-                if (createTalens.Count > 1)
-                {
-                    throw new Exception("no multiple talens"); //TODO: think?
-                }
-
-                if (createFetishBase.Count > 1)
-                {
-                    throw new Exception("no multiple fetish bases"); //TODO: think?
-                }
-
-                if (createFetish.Count > 1)
-                {
-                    throw new Exception("no multiple fetish"); //TODO: think?
-                }
-
-                if (createTalens.Count + createFetishBase.Count + createFetish.Count > 1)
-                {
-                    throw new Exception("no multiple talens"); //TODO: think?
-                }
-
                 foreach (var planItem in createFetishBase)
                 {
-                    planItem.Actor.WeeklyPartialActions -= 1;
                     CreateFetishBase weeklyActivity = (CreateFetishBase)planItem;
                     planItem.Actor.CreateFetishBase(weeklyActivity.Level, weeklyActivity.FetishName);
                     break;
@@ -649,18 +573,19 @@ namespace RollerEngine.Character
 
                 foreach (var planItem in createFetish)
                 {
-                    planItem.Actor.WeeklyPartialActions -= 1;
                     CreateFetishActivity weeklyActivity = (CreateFetishActivity)planItem;
                     planItem.Actor.CreateFetish(weeklyActivity.Level, weeklyActivity.FetishName, weeklyActivity.SpiritType);
                 }
 
                 foreach (var planItem in createTalens)
                 {
-                    planItem.Actor.WeeklyPartialActions -= 1;
                     _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} creating talens {1}",
                         planItem.Actor.CharacterName,
                         planItem.TalenName));
                 }
+
+                //HERE WE START TO SPEND LEARNING ATTEMPTS
+                //TODO create LearningPartialActions variable
 
                 /*
                 foreach (var planItem in learnGift)
@@ -684,10 +609,14 @@ namespace RollerEngine.Character
                 actor.Value.AutoLearn(HatysPartyMember.SPEND_ALL_ATTEMPTS);     //first try to learn more traits
                 actor.Value.AutoLearnRite(HatysPartyMember.SPEND_ALL_ATTEMPTS); //second try to learn more rites
 
-                //TODO: maybe log attempts.
+                if (actor.Value.WeeklyPartialActions != 0)
+                {
+                    _log.Log(Verbosity.Error, ActivityChannel.Main, string.Format(
+                        "{0} has {1} unused partial actions!", actor.Key, actor.Value.WeeklyPartialActions));
+                }
             }
 
-            //ShowLearningResults();
+            //Show Learning Results
             var progress = GetProgress(WeekStartingTraits);
             _log.Log(Verbosity.Critical, ActivityChannel.Main, "");
             _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("=>> Week {0} results:", weekNo));
@@ -705,8 +634,8 @@ namespace RollerEngine.Character
         {            
 
             //1) Learning is extended activity; while learning you cannot do anything else! But it is partial action (due to cacao)
-            //2) LearnRiteFromGarou / TeachRiteToGarou correspondance
-            //3) Teaching is single activity; but TeachRiteToGarou spend partialAction and must be synced
+            //2) LearnRiteFromGarou / TeachRiteToGarou correspondence
+            //3) Teaching is single activity; but TeachRiteToGarou spend partial action and must be synced
             //4) CreateDevice is an extended action; while Fetish/Talen/Base are single
 
             foreach (var hatysPartyMemberKvp in _party)
@@ -720,52 +649,84 @@ namespace RollerEngine.Character
                 //var learningActivitires = WeeklyFilter.ByLearning(characterActivities);               //always extended and partial
 
                 var creationActivities = WeeklyFilter.ByCreation(characterActivities);
-                var creationExtended = WeeklyFilter.ByType(creationActivities, ActivityType.Extended);  //creation extended (CreateDevice)
-                var creationSingle = WeeklyFilter.ByType(creationActivities, ActivityType.Single);      //creation single   (CreateTalens, CreateFetish, CreateFetishBase)
+                var creationExtended = WeeklyFilter.ByType(creationActivities, ActivityType.Extended);  //creation full extended (CreateDevice)
+                var creationSingle = WeeklyFilter.ByType(creationActivities, ActivityType.Single);      //creation single, -1 partial (CreateTalens, CreateFetish, CreateFetishBase)
 
+                var creationTalens = WeeklyFilter.ByCreateTalens(characterActivities);
+                var creationFetish = WeeklyFilter.ByCreateFetish(characterActivities);
+                var creationFetishBase = WeeklyFilter.ByCreateFetishBase(characterActivities);
+
+                //check creation single actions!
+                if (creationTalens.Count + creationFetish.Count > 1)
+                {
+                    throw new Exception(string.Format("Only one fetish/talen per week! ({0})", hatysPartyMemberKvp.Key));
+                }
+                if (creationFetishBase.Count > 1)
+                {
+                    throw new Exception(string.Format("Only one fetish base art per week!? ({0})", hatysPartyMemberKvp.Key));
+                }
+
+                //check single actions!
                 if (teachingActivities.Count > 1)
                 {
                     throw new Exception(string.Format("Multiple teaching is not supported! ({0})", hatysPartyMemberKvp.Key));
                 }
                 if (teachRiteToGarou.Count == 0)
                 {
-                    hatysPartyMemberKvp.Value.WeeklyActions -= teachingActivities.Count;
+                    hatysPartyMemberKvp.Value.WeeklyActions -= teachingActivities.Count; //teaching is a full single action
                 }
                 else
                 {
-                    //TODO TODO TODO
-                    //teachRiteToGarou[0].MaxLearnAttempts;
-                    //teachRiteToGarou[0]
-                    List<WeeklyActivity> studentActivities = WeeklyFilter.ByActor(plan, teachRiteToGarou[0].Student.Self.Name);
+                    string teacher = hatysPartyMemberKvp.Key;
+                    string student = teachRiteToGarou[0].Student.Self.Name;
+                    bool match = false;
+
+                    List<WeeklyActivity> studentActivities = WeeklyFilter.ByActor(plan, student);
                     List<LearnRiteFromGarou> learnActivities = WeeklyFilter.ByLearnRiteFromGarou(studentActivities);
-                    foreach(var activity in learnActivities)
+                    if (learnActivities.Count != 0)
                     {
-                        if (activity.Teacher.Self.Name == hatysPartyMemberKvp.Key)
+                        foreach (var activity in learnActivities)
                         {
-                            ;
+                            if (activity.Teacher.Self.Name == teacher)
+                            {
+                                if (activity.MaxLearnAttempts != teachRiteToGarou[0].MaxLearnAttempts)
+                                {
+                                    throw new Exception(string.Format("Learning attempts mismatch {0}/{1}", teacher, student));
+                                }
+                                match = true;
+                            }
                         }
                     }
-                }
-
-
-
-
-                if (hatysPartyMemberKvp.Value.WeeklyActions < 0)
-                {
-                    throw new Exception(string.Format("Not enough weekly actions! ({0})", hatysPartyMemberKvp.Key));
+                    if (!match)
+                    {
+                        throw new Exception(string.Format("Where is the student to learn rite from {0}", teacher));
+                    }
                 }
 
                 if (creationExtended.Count > 1)
                 {
                     throw new Exception(string.Format("No way to perform more than one extended creation roll! ({0})", hatysPartyMemberKvp.Key));
                 }
-                hatysPartyMemberKvp.Value.WeeklyActions -= creationExtended.Count;
 
+                //SIC #1
+                int spentWeeklyActions = initialWeeklyActions - hatysPartyMemberKvp.Value.WeeklyActions;
 
-                //spiridon casts mind partition to his extended actions.
-                Spiridon.CastMindPartition();
+                //SIC #2 spiridon casts mind partition to his extended actions.
+                int extraExtendedActions = 0;
+                if (hatysPartyMemberKvp.Key.Equals(Spiridon.CharacterName))
+                {
+                    extraExtendedActions = Spiridon.CastMindPartition();
+                }
 
+                //SIC #2
+                hatysPartyMemberKvp.Value.WeeklyActions -= creationExtended.Count; //this is a FULL extended action
 
+                if (hatysPartyMemberKvp.Value.WeeklyActions < 0)
+                {
+                    throw new Exception(string.Format("Not enough weekly actions! ({0})", hatysPartyMemberKvp.Key));
+                }
+
+                //SIC #3 - weekly to partial (all learning, teach rite to garou and single creations)
                 if (hatysPartyMemberKvp.Key.Equals(Yoki.CharacterName))
                 {
                     //yoki has x4 multiplier from Eidetic memory
@@ -775,17 +736,37 @@ namespace RollerEngine.Character
                 {
                     //all others use cacao
                     hatysPartyMemberKvp.Value.WeeklyPartialActions = hatysPartyMemberKvp.Value.WeeklyActions * 2;
-                    //TODO: Spiridon if Learn was ended at first roll; then skip second roll (LATER)
+                }
+                int initialPartialActions = hatysPartyMemberKvp.Value.WeeklyPartialActions;
+
+                if (teachRiteToGarou.Count != 0)
+                {
+                    hatysPartyMemberKvp.Value.WeeklyPartialActions -= teachRiteToGarou[0].MaxLearnAttempts; //this is a partial action
                 }
 
-                _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} has {1} full spend {2} full and {3} partial actions.",
+                if (creationSingle.Count != 0 && creationExtended.Count != 0)
+                {
+                    throw new Exception(string.Format("No way to combine extended and single creation rolls! ({0})", hatysPartyMemberKvp.Key));
+                }
+
+                hatysPartyMemberKvp.Value.WeeklyPartialActions -= creationSingle.Count;                        //this is a partial action
+                //all left partial actions are for LEARNING!
+
+                if (hatysPartyMemberKvp.Value.WeeklyPartialActions < 0)
+                {
+                    throw new Exception(string.Format("Not enough partial weekly actions! ({0})", hatysPartyMemberKvp.Key));
+                }
+
+                _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} has {1} full (spent {2}) and {3} partial (spent {4}) actions. MP bonus = {5}.",
                     hatysPartyMemberKvp.Key,
                     initialWeeklyActions,
-                    initialWeeklyActions - hatysPartyMemberKvp.Value.WeeklyActions,
-                    hatysPartyMemberKvp.Value.WeeklyPartialActions));
-
+                    spentWeeklyActions,
+                    initialPartialActions,
+                    initialPartialActions - hatysPartyMemberKvp.Value.WeeklyPartialActions,
+                    extraExtendedActions));
             }
 
         }
     }
 }
+

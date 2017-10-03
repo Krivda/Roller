@@ -9,7 +9,7 @@ namespace RollerEngine.Character
         public Dictionary<string, Dictionary<string, Tuple<int, int>>> AbilityProgress { get; private set; }
         //               riteName       was  now  target 
         public Dictionary<string, Tuple<int, int, int>> RiteProgress { get; private set; }
-
+        //               item           was  now 
         public Dictionary<string, Tuple<int, int>> ItemsProgress { get; private set; }
 
         public ProgressSummary()

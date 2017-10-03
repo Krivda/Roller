@@ -42,7 +42,8 @@ namespace RollerEngine.Rolls.Skills
                 Log.Log(Verbosity.Warning, ActivityChannel.TeachLearn, string.Format("{0} doesn't have more skill in {1} ability ({2}vs{3}) or Instruct {4}  to teach {5}!", actor.Name, ability, actorTraitValue, targetTraitValue, actorInstructAbility, target.Name));
                 return 0;
             }
-            
+
+            Verbosity = Verbosity.Critical;
             int result = base.Roll(actor, new List<Build>() { target }, hasSpec, hasWill);
 
             if (result > 0)
