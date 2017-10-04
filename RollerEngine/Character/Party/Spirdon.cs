@@ -69,7 +69,7 @@ namespace RollerEngine.Character.Party
         {
             Party.Nameless.CastTeachersEase(Self, Build.Abilities.Rituals, true, Verbosity.Details);
 
-            var sacredFire = new SacredFire(Log, Roller);
+            var sacredFire = new SacredFire(Log, Roller, 0);
             sacredFire.Roll(Self, targets,  false, true);
         }
 

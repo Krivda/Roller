@@ -15,84 +15,89 @@ namespace RollerEngine.Rolls.Rites
         Seasonal,
         Minor
     }
-    
+
     public enum Rite
     {
         //Core:
-        Cleansing,              //Accord, 1
-        Contrition,             //Accord, 1
-        Renunciation,           //Accord, 2
-        MootRite,               //Caern, 1
-        OpenedCaern,            //Caern, 1
-        BadgersBurrow,          //Caern, 4
-        OpenedBridge,           //Caern, 4
-        ShroudedGlen,           //Caern, 4
-        CaernBuilding,          //Caern, 5
-        GatheringForDeparted,   //Death, 1
-        WinterWolf,             //Death, 3
-        BaptismOfFire,          //Mystic, 1
-        Binding,                //Mystic, 1
-        QuestingStone,          //Mystic, 1
-        TalismanDedication,     //Mystic, 1
-        Becoming,               //Mystic, 2
-        SpiritAwakening,        //Mystic, 2
-        Summoning,              //Mystic, 2
-        Fetish,                 //Mystic, 3
-        Totem,                  //Mystic, 3
-        //Punishment rites were skipped
-        Accomplishment,         //Renown, 2
-        Passage,                //Renown, 2
-        Wounding,               //Renown, 1
+        Cleansing,              //Accord, 1             //todo: need code due to Gnosis per person; DC=6 -1 at dawn (if not tainted)
+        Contrition,             //Accord, 1             //todo: Spirit Rite; need code due to DC=Rage of spirit
+        Renunciation,           //Accord, 2             //roleplay; manual rolling
+        MootRite,               //Caern, 1              //roleplay; manual rolling
+        OpenedCaern,            //Caern, 1              //todo: need to code
+        BadgersBurrow,          //Caern, 4              //roleplay; manual rolling; NOTOKEN
+        OpenedBridge,           //Caern, 4              //roleplay; manual rolling; NOTOKEN
+        ShroudedGlen,           //Caern, 4              //roleplay; manual rolling; NOTOKEN     DEFENSE
+        CaernBuilding,          //Caern, 5              //roleplay; manual rolling
+        GatheringForDeparted,   //Death, 1              //replaced by Rememverance
+        WinterWolf,             //Death, 3              //roleplay; manual rolling; NOTOKEN
+        BaptismOfFire,          //Mystic, 1             //roleplay; manual rolling
+        Binding,                //Mystic, 1             //todo: need to code
+        QuestingStone,          //Mystic, 1             //roleplay; manual rolling              INVESTIGATION
+        TalismanDedication,     //Mystic, 1             //roleplay; manual rolling
+        Becoming,               //Mystic, 2             //roleplay; manual rolling
+        SpiritAwakening,        //Mystic, 2             //todo: need to code
+        Summoning,              //Mystic, 2             //todo: need to code
+        Fetish,                 //Mystic, 3             //todo CODED
+        Totem,                  //Mystic, 3             //roleplay; manual rolling; NOTOKEN
+        Ostracism,              //Punishment, 1         //roleplay; manual rolling
+        StoneOfScorn,           //Punishment, 2         //roleplay; manual rolling
+        VoiceOfJackal,          //Punishment, 2         //roleplay; manual rolling
+        //Punishment rites 3+ are skipped
+        Accomplishment,         //Renown, 2             //roleplay; manual rolling
+        Passage,                //Renown, 2             //roleplay; manual rolling
+        Wounding,               //Renown, 1             //roleplay; manual rolling
         //Seasonal rites were skipped
-        BoneRhythms,            //Minor
-        BreathOfGaia,           //Minor
-        GreetMoon,              //Minor
-        GreetSun,               //Minor
-        HuntingPrayer,          //Minor
-        PrayerForPrey,          //Minor
+        BoneRhythms,            //Minor                 //todo CODED; NOROLL
+        BreathOfGaia,           //Minor                 //roleplay; manual                   TODO learn all in Arc7
+        GreetMoon,              //Minor                 //roleplay; manual                   TODO learn all in Arc7
+        GreetSun,               //Minor                 //roleplay; manual                   TODO learn all in Arc7
+        HuntingPrayer,          //Minor                 //roleplay; manual                   TODO learn all in Arc7
+        PrayerForPrey,          //Minor                 //roleplay; manual                   TODO learn all in Arc7
 
         //PGtG (selected only)
-        OpenedSky,              //Accord, 4
-        LesserMourning,         //Death, 2
-        PreservingFetish,       //Mystic, 1
-        RenewingTalen,          //Mystic, 2
+        OpenedSky,              //Accord, 4             //roleplay; manual                      SUPER-CLEANSING
+        Adoration,              //Caern, 2              //todo: need to code with Opened Caern
+        LesserMourning,         //Death, 2              //roleplay; manual
+        PreservingFetish,       //Mystic, 1             //roleplay; manual                      ONCE PER MONTH; TODO maybe code later
+        RenewingTalen,          //Mystic, 2             //todo need to CODE
+        Praise,                 //Renown, 2             //roleplay; manual
 
         //Bone Gnawers (selected only)
-        CrashSpace,             //Mystic, 2
-        ShoppingCart,           //Mystic, 2
-        Signpost,               //Caern, 4
-        Trepassing,             //Caern, 5
+        CrashSpace,             //Mystic, 2             //todo: need to code                    REPLENISH
+        ShoppingCart,           //Mystic, 2             //roleplay; manual
+        Signpost,               //Caern, 4              //roleplay; manual                      DEFENSE
+        Trepassing,             //Caern, 5              //roleplay; manual                      DEFENSE
 
         //Children of Gaia (selected only)
-        Teachers,               //Minor
-        BowelsOfMother,         //Minor
-        Comfort,                //Accord, 2
-        Askllepios,             //Mystic, 3
-        SinEatingGaia,          //Mystic, 3
-        TalismanAdaptation,     //Mystic, 3
-        SacredPeace,            //Caern, 5
-        PartedVeil,             //Mystic, 5
+        Teachers,               //Minor                 //roleplay; manual
+        BowelsOfMother,         //Minor                 //roleplay; manual
+        Comfort,                //Accord, 2             //roleplay; manual
+        Askllepios,             //Mystic, 3             //roleplay; manual
+        SinEatingGaia,          //Mystic, 3             //roleplay; manual
+        TalismanAdaptation,     //Mystic, 3             //roleplay; manual
+        SacredPeace,            //Caern, 5              //roleplay; manual                      DEFENSE
+        PartedVeil,             //Mystic, 5             //roleplay; manual
 
         //Uktena (selected only)
-        Balance,                //Accord, 3
-        SacredFire,             //Mystic, 1
-        PrayerOfSeeking,        //Mystic, 1
-        SpiritCage,             //Mystic, 3
-        InvitationToAncestors,  //Mystic, 4
+        Balance,                //Accord, 3             //roleplay; manual
+        SacredFire,             //Mystic, 1             //todo CODED
+        PrayerOfSeeking,        //Mystic, 1             //roleplay; manual
+        SpiritCage,             //Mystic, 3             //roleplay; manual
+        InvitationToAncestors,  //Mystic, 4             //roleplay; manual
 
         //Wendigo (selected only)
-        Rememberance,           //Death, 1
-        SinEaterWendigo,        //Death, 2
-        Nightshade,             //Death, 4
-        SunDance,               //Mystic, 2
-        Deliverance,            //Mystic, 3
-        
+        Rememberance,           //Death, 1              //roleplay; manual
+        SinEaterWendigo,        //Death, 2              //roleplay; manual
+        Nightshade,             //Death, 4              //roleplay; manual
+        SunDance,               //Mystic, 2             //roleplay; manual
+        Deliverance,            //Mystic, 3             //roleplay; manual
+
         //Misc
-        FeastForSpirits,        //Mystic, 2     //Fianna
-        Heritage,               //Mystic, 1     //Get of Fenris
-        HonorableOath,          //Accord, 1     //Silverfangs
-        AncestorVeneration,     //Minor         //Stargazers
-        AncestorSeeking,        //Mystic, 1     //Keltur
+        FeastForSpirits,        //Mystic, 2 //Fianna        //todo need to code
+        Heritage,               //Mystic, 1 //Get of Fenris //roleplay; manual
+        HonorableOath,          //Accord, 1 //Silverfangs   //roleplay; manual
+        AncestorVeneration,     //Minor     //Stargazers    //todo CODED; NOROLL
+        AncestorSeeking,        //Mystic, 1 //Keltur        //todo CODED
 
     }
 
@@ -109,7 +114,7 @@ namespace RollerEngine.Rolls.Rites
             Name = riteName;
             Group = riteGroup;
             Level = riteLevel;
-            Conditions = conditions;            
+            Conditions = conditions;
         }
     }
 
@@ -145,6 +150,10 @@ namespace RollerEngine.Rolls.Rites
                 {Rite.Fetish, new RiteInfo("Of Fetish", RiteGroup.Mystic, 3, new List<string>())},
                 {Rite.Totem, new RiteInfo("Of Totem", RiteGroup.Mystic, 3, new List<string>())},
 
+                {Rite.Ostracism, new RiteInfo("Of Ostracism", RiteGroup.Punishment, 1, new List<string>())},
+                {Rite.StoneOfScorn, new RiteInfo("Stone Of Scorn", RiteGroup.Punishment, 2, new List<string>())},
+                {Rite.VoiceOfJackal, new RiteInfo("Voice Of Jackal", RiteGroup.Punishment, 2, new List<string>())},
+
                 {Rite.Accomplishment, new RiteInfo("Of Accomplishment", RiteGroup.Renown, 2, new List<string>())},
                 {Rite.Passage, new RiteInfo("Of Passage", RiteGroup.Renown, 2, new List<string>())},
                 {Rite.Wounding, new RiteInfo("Of Wounding", RiteGroup.Renown, 1, new List<string>())},
@@ -157,9 +166,11 @@ namespace RollerEngine.Rolls.Rites
                 {Rite.PrayerForPrey, new RiteInfo("Of Prayer For the Prey", RiteGroup.Minor, 0.5, new List<string>())},
 
                 {Rite.OpenedSky, new RiteInfo("Of Opened Sky", RiteGroup.Accord, 4, new List<string>())},
+                {Rite.Adoration, new RiteInfo("Of Adoration", RiteGroup.Caern, 2, new List<string>())},
                 {Rite.LesserMourning, new RiteInfo("Of Lesser Mourning", RiteGroup.Death, 2, new List<string>())},
                 {Rite.PreservingFetish, new RiteInfo("Of Preserving Fetish", RiteGroup.Mystic, 1, new List<string>())},
                 {Rite.RenewingTalen, new RiteInfo("Of Renewing Talen", RiteGroup.Mystic, 2, new List<string>())},
+                {Rite.Praise, new RiteInfo("Of Praise", RiteGroup.Renown, 2, new List<string>())},
 
                 {Rite.CrashSpace, new RiteInfo("Of Crash Space", RiteGroup.Mystic, 2, new List<string>())},
                 {Rite.ShoppingCart, new RiteInfo("Of Shopping Cart", RiteGroup.Mystic, 2, new List<string>())},

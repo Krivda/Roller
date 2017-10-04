@@ -6,7 +6,7 @@ using RollerEngine.Rolls.Rites;
 
 namespace RollerEngine.Character.Common
 {
-    public class Build
+    public partial class Build
     {
         public class Classes
         {
@@ -14,7 +14,7 @@ namespace RollerEngine.Character.Common
             public const string Kinfolk = "Kinfolk";
             public const string Corax = "Corax";
         }
-        
+
         public class Atributes
         {
             public const string Strength = "Strength";
@@ -29,7 +29,7 @@ namespace RollerEngine.Character.Common
             public const string Intellect  = "Intellect";
             public const string Wits       = "Wits";
         }
-        
+
         //TODO we should split traits into Atributes, Abilities, Backgrounds, Rollalbe-10-based, Dynamic
         public class Abilities
         {
@@ -45,7 +45,7 @@ namespace RollerEngine.Character.Common
             public const string Streetwise = "Streetwise";
             public const string Subterfuge = "Subterfuge";
             public const string Instruction = "Instruction";
-            
+
             //skills
             public const string AnimalKen = "Animal Ken";
             public const string Crafts = "Crafts";
@@ -102,7 +102,7 @@ namespace RollerEngine.Character.Common
             public const string AnimalLore = "Animal Lore";
 
             //todo: PIZDA. A bad-ass hack
-            public const string VisageOfFenris = "Visage Of Fenris"; 
+            public const string VisageOfFenris = "Visage Of Fenris";
         }
 
         public class Backgrounds
@@ -205,6 +205,7 @@ namespace RollerEngine.Character.Common
             AddTraits(typeof(Atributes));
             AddTraits(typeof(Backgrounds));
             AddTraits(typeof(RollableTraits));
+            _counters.InitCounters();
         }
 
         protected void AddTraits(Type clazz)
@@ -299,5 +300,8 @@ namespace RollerEngine.Character.Common
             int successesInitial = Traits[keyRiteName];
             return (successesInitial == RiteAlreadyLearned);
         }
+
+
+
     }
 }

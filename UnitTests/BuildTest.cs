@@ -9,7 +9,7 @@ using RollerEngine.Rolls;
 
 namespace UnitTests
 {
-    
+
     public class BuildTest
     {
         [Test]
@@ -95,7 +95,7 @@ namespace UnitTests
 
             info = roll.GetRollInfo(build, new List<Build> { build });
             roll.Roll(build, targets, hasSpec, hasWill);
-            
+
             Assert.AreEqual(dex + brawl + 1 + 3, info.DicePoolInfo.Dices, "dice pool");
             Assert.AreEqual(dex + 1 +1, info.DicePoolInfo.Traits[Build.Atributes.Dexterity].ModifiedValue, "dex value");
             Assert.AreEqual(brawl +2, info.DicePoolInfo.Traits[Build.Abilities.Brawl].ModifiedValue, "brawl");
@@ -114,7 +114,7 @@ namespace UnitTests
             Assert.AreEqual(dex + 1 + 1 + 5 + brawl + 2  +3, info.DicePoolInfo.Dices, "dice pool");
             Assert.AreEqual(dex + 1 + 1 + 5, info.DicePoolInfo.Traits[Build.Atributes.Dexterity].ModifiedValue, "dex value");
             Assert.AreEqual(brawl + 2, info.DicePoolInfo.Traits[Build.Abilities.Brawl].ModifiedValue, "brawl");
-            
+
         }
 
         [Test(Description = "Test conditions")]

@@ -8,33 +8,41 @@ using RollerEngine.Roller;
 namespace RollerEngine.Rolls.Rites
 {
     public class SacredFire : RiteRoll
-        {
-     
-        public SacredFire(IRollLogger log, IRoller roller) : 
+    {
+        private readonly int _gnosisSpent = 1;
+
+        public SacredFire(IRollLogger log, IRoller roller, int additionalGnosisSpent) :
             base(RitesDictionary.Rites[Rite.SacredFire].Name, log, roller,
-            new List<string>() { Build.Atributes.Wits, Build.Abilities.Rituals },
-            new List<string>() { Build.Conditions.MysticRite }, null, Verbosity.Details)
+                new List<string>() {Build.Atributes.Wits, Build.Abilities.Rituals},
+                new List<string>() {Build.Conditions.MysticRite}, null, Verbosity.Details)
         {
+            _gnosisSpent += additionalGnosisSpent;
         }
 
         public override int GetBaseDC(Build actor, List<Build> targets)
         {
-            //should be always 3
+            //Gauntlet; each additional Gnosis spent reduce DC by one
+            //todo: if (Environment.Place == Environemnt.Caern) return 2;
+            //todo: DC -= (_gnosisSpent - 1);
             return 3;
         }
 
         public new int Roll(Build actor, List<Build> targets, bool hasSpec, bool hasWill)
         {
+            //todo: check for a need to reroll if not -5
+            //todo: general remove/add bonus logic
             if (!actor.CheckBonusExists(Build.Atributes.Charisma, Name))
             {
+                actor.SpendGnosis(_gnosisSpent);
+                actor.SpendSanctifiedPlant(Build.Counters.SanctifiedPlants.Tobacco,1);
 
-                int result = base.Roll(actor, new List<Build>() { actor }, hasSpec, hasWill);
+                int result = base.Roll(actor, new List<Build>() {actor}, hasSpec, hasWill);
 
                 if (result > 0)
                 {
                     result = (result - 1) / 2;
 
-                    //can't exceed 5
+                    //todo: remove when will do genreal check, can't exceed 5
                     result = Math.Min(5, result);
 
                     foreach (var target in targets)
@@ -42,13 +50,15 @@ namespace RollerEngine.Rolls.Rites
                         target.DCModifiers.Add(
                             new DCModifer(
                                 Name,
-                                new List<string>(){ Build.Abilities.Rituals},
-                                DurationType.Roll, //TODO WARNING sacred fire lasts for as long as it is tended with sanctified materials
+                                new List<string>() {Build.Abilities.Rituals},
+                                DurationType.Roll, //TODO WARNING sacred fire lasts for as long as it is tended with sanctified materials (including tobacco)
                                 new List<string>() {Build.Conditions.MysticRite, Build.Conditions.SpiritRite},
-                                -result 
+                                -result
                             ));
 
-                        Log.Log(Verbosity, ActivityChannel.Intermediate, string.Format("{0} obtained -{1}DC on Mystic/Spirit-related rites from {2} rite .", target.Name, result, Name));
+                        Log.Log(Verbosity, ActivityChannel.Intermediate,
+                            string.Format("{0} obtained -{1}DC on Mystic/Spirit-related rites from {2} rite .",
+                                target.Name, result, Name));
                     }
                 }
                 else

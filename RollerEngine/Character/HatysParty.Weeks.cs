@@ -81,15 +81,29 @@ namespace RollerEngine.Character
                     //plan.Add(new QueueRiteLearning(Spiridon, Rite.Teachers)); - already learned
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.FeastForSpirits));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.Comfort));
-                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Askllepios));                   
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Askllepios));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.SinEatingGaia));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.SinEaterWendigo));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.Balance));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.Nightshade));
-                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Deliverance)); 
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Deliverance));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.QuestingStone));
                     plan.Add(new QueueRiteLearning(Spiridon, Rite.Becoming));
-               
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Ostracism));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.StoneOfScorn));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.VoiceOfJackal));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Passage));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.BaptismOfFire));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.MootRite));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Renunciation));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Wounding));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.HuntingPrayer));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.PrayerForPrey));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.GreetMoon));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.GreetSun));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Adoration));
+                    plan.Add(new QueueRiteLearning(Spiridon, Rite.Praise));
+
                     //TODO: more rites, more tokens
 
                     //plan.Add(new QueueRiteLearning(Spiridon, Rite.BadgersBurrow)); no token
@@ -100,17 +114,8 @@ namespace RollerEngine.Character
                     //plan.Add(new QueueRiteLearning(Spiridon, Rite.Totem)); no token
                     //plan.Add(new QueueRiteLearning(Spiridon, Rite.PartedVeil)); no token
 
-                    //THERE IS NO MUCH SENSE TO LEARN THEESE RITES 
+                    //THERE IS NO MUCH SENSE TO LEARN THEESE RITES
                     //plan.Add(new QueueRiteLearning(Spiridon, Rite.GatheringForDeparted));   //I prefer Rite.Rememberance
-                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.Passage));
-                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.BaptismOfFire));
-                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.Wounding));
-                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.MootRite));
-                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.Renunciation));
-                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.HuntingPrayer));
-                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.PrayerForPrey));
-                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.GreetMoon));
-                    //plan.Add(new QueueRiteLearning(Spiridon, Rite.GreetSun));
                     break;
 
                 //TODO: need to calc/have BoneRhythms and Veneration and OpenCaern
@@ -123,7 +128,7 @@ namespace RollerEngine.Character
                     plan.Add(new TeachAbility(Spiridon, Kinfolk1, Build.Abilities.Occult));
                     plan.Add(new TeachAbility(Kurt, Kinfolk2, Build.Abilities.SpiritLore));
                     plan.Add(new TeachAbility(Yoki, Nameless, Build.Abilities.Rituals));
-                    plan.Add(new TeachAbility(Kinfolk1, Yoki, Build.Abilities.Occult)); 
+                    plan.Add(new TeachAbility(Kinfolk1, Yoki, Build.Abilities.Occult));
                     plan.Add(new TeachAbility(Kinfolk2, Kurt, Build.Abilities.Firearms)); //TODO: FUCK FUCK "have more skill"
                     break;
 
@@ -162,9 +167,9 @@ namespace RollerEngine.Character
                     plan.Add(new QueueRiteLearning(Lynn, Rite.RenewingTalen));
                     plan.Add(new QueueRiteLearning(Lynn, Rite.Binding));
                     plan.Add(new QueueRiteLearning(Lynn, Rite.SacredFire));
-                    
+
                     break;
-                
+
                 //15 Mar
                 case 6:
                     //Nameless should learn Open Caern this week
@@ -196,7 +201,7 @@ namespace RollerEngine.Character
 
                 //29 Mar
                 case 8:
-                    //todo: very dirty hack                    
+                    //todo: very dirty hack
                     buffPlan.Nameless = NamelessBuff.MaxBoostSecondaryTrait(Build.Abilities.VisageOfFenris);
 
                     //Lynn teach Yoki Ancestor Veneration
@@ -253,7 +258,7 @@ namespace RollerEngine.Character
                 //19 Apr (teaching week)
                 case 11:
                     break;
-                
+
                 //26 Apr
                 case 12:
                     break;
@@ -269,7 +274,7 @@ namespace RollerEngine.Character
                 //17 May (teaching week)
                 case 15:
                     break;
-                
+
                 //24 May
                 case 16:
                     break;
@@ -292,7 +297,7 @@ namespace RollerEngine.Character
 
             if (buffPlan.Nameless == null)
             {
-                buffPlan.Nameless = NamelessBuff.MaxBoostInstruct();   
+                buffPlan.Nameless = NamelessBuff.MaxBoostInstruct();
             }
             return weekPlan;
         }

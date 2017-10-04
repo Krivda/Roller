@@ -35,7 +35,7 @@ SELECT TOKENS:
     Ultimate Search Engine (4)
 
 
-30. Build 
+30. Build
 31. Distrube buffs Nameless (secondary Rituals goal (B.R+Chann+supp Anc.)) //should be param of the week
 33. Gnosis/Willpower replenish
 34. csv log
@@ -49,4 +49,4 @@ SELECT TOKENS:
 42. Lynn to pack (Engimas)
 48. CastCreateTalens - Spiridon; Yoki; Lynn; RiteOfBindingRoll
 39. create talens for arc 7
-40. counters: summon, rosemary, cacao
+40. counters: summon, rosemary, cacao - continue all rolls

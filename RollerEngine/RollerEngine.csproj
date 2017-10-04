@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Character\Common\Build.Counters.cs" />
     <Compile Include="Character\Common\Character.cs" />
     <Compile Include="Character\Common\Build.cs" />
     <Compile Include="Character\CommonBuffs.cs" />

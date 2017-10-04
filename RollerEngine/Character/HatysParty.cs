@@ -38,7 +38,7 @@ namespace RollerEngine.Character
         public Kinfolk1 Kinfolk1 { get; private set; }
         public Kinfolk2 Kinfolk2 { get; private set; }
         public Lynn Lynn { get; private set; }
-        
+
 
         public Dictionary<string, Dictionary<string, int>> WeekStartingTraits { get; set; }
         public Dictionary<string, Dictionary<string, int>> RunStartTraits { get; set; }
@@ -106,7 +106,7 @@ namespace RollerEngine.Character
         {
             if (Spiridon.HasCarnyx)
             {
-                if (!wpBuffPlan.Nameless.MainBuff.Trait.Equals(Build.Abilities.Instruction)) 
+                if (!wpBuffPlan.Nameless.MainBuff.Trait.Equals(Build.Abilities.Instruction))
                 {
                     throw new Exception("If we have carnyx - we should use IT!");
                 }
@@ -179,7 +179,7 @@ namespace RollerEngine.Character
                     if (typeof(Build.Abilities).GetFields().Any(fi => fi.GetValue(null).ToString().Equals(currTraitKvp.Key)))
                     {
                         //calc progress in abilities
-                        
+
                         string traitLearnedKey = Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceLearned, trait);
                         string traitPoolKey = Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpiriencePool, trait);
 
@@ -226,13 +226,13 @@ namespace RollerEngine.Character
 
                             //progressed in learning rite
                             charProgress.RiteProgress.Add(riteName, new Tuple<int, int, int>(traitDiff.Item1, traitDiff.Item2, ritePool));
-                        }   
+                        }
                     }
                 //traits
                 }
 
                 var character = _party[characterName];
-                
+
                 //items
                 foreach (var item in character.Self.Items)
                 {
@@ -417,7 +417,7 @@ namespace RollerEngine.Character
                     //TODO check lupus & gift
                     if (!buildKvp.Key.Equals(Kurt.CharacterName))
                     {
-                        buildKvp.Value.ShiftToCrinos();                        
+                        buildKvp.Value.ShiftToCrinos();
                         //apply heighten sences
                         CommonBuffs.ApplyHeightenSenses(buildKvp.Value.Self, _log);
                     }
@@ -578,7 +578,7 @@ namespace RollerEngine.Character
                     {
                         TeachRiteToGarou weeklyActivity = (TeachRiteToGarou)planItem;
                         _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} teachs {1} for Rite {2}",
-                            weeklyActivity.Actor.CharacterName, 
+                            weeklyActivity.Actor.CharacterName,
                             weeklyActivity.Student.Self.Name,
                             RitesDictionary.Rites[weeklyActivity.Rite].Name));
                         break;
@@ -693,7 +693,7 @@ namespace RollerEngine.Character
         }
 
         private void CheckFullAndCalcPartialActions(int weekNo, List<WeeklyActivity> plan, bool bSerialArc6)
-        {            
+        {
 
             //1) Learning is extended activity; while learning you cannot do anything else! But it is partial action (due to cacao)
             //2) LearnRiteFromGarou / TeachRiteToGarou correspondence
@@ -704,10 +704,10 @@ namespace RollerEngine.Character
             {
                 var initialWeeklyActions = hatysPartyMemberKvp.Value.WeeklyActions;
                 List<WeeklyActivity> characterActivities = WeeklyFilter.ByActor(plan, hatysPartyMemberKvp.Key);
-                
+
                 var teachingActivities = WeeklyFilter.ByTeaching(characterActivities);                  //all single
                 var teachRiteToGarou = WeeklyFilter.ByTeachRiteToGarou(characterActivities);            //except TeachRiteToGarou which is partial
-                
+
                 //var learningActivitires = WeeklyFilter.ByLearning(characterActivities);               //always extended and partial
 
                 var creationActivities = WeeklyFilter.ByCreation(characterActivities);
