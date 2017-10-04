@@ -34,13 +34,13 @@ namespace RollerEngine.Character.Party
             };
         }
 
-        public static NamelessBuff BoostSecondaryTrait(string trait)
+        public static NamelessBuff MaxBoostCarnyx()
         {
             return new NamelessBuff()
             {
-                PreBuff = new ApplyBuffs(trait, false, false),
+                PreBuff = new ApplyBuffs(Build.Abilities.Instruction, false, false),
                 MainBuff = new ApplyBuffs(Build.Abilities.Instruction, true, true),
-                LearnBuff =  null //new ApplyBuffs(AutoDetect, false, true)
+                LearnBuff = null //new ApplyBuffs(AutoDetect, false, true)
             };
         }
 
@@ -48,9 +48,9 @@ namespace RollerEngine.Character.Party
         {
             return new NamelessBuff()
             {
-                PreBuff = new ApplyBuffs(trait, true, true),
+                PreBuff = new ApplyBuffs(trait, false, false),
                 MainBuff = new ApplyBuffs(Build.Abilities.Instruction, false, false),
-                LearnBuff = null //new ApplyBuffs(AutoDetect, true, true)
+                LearnBuff = new ApplyBuffs("AUTO", true, false) //new ApplyBuffs(AutoDetect, true, true)
             };
         }
     }

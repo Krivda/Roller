@@ -5,6 +5,7 @@ using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
 using RollerEngine.Rolls.Backgrounds;
+using RollerEngine.Rolls.Gifts;
 using RollerEngine.Rolls.Rites;
 using RollerEngine.Rolls.Skills;
 
@@ -15,10 +16,10 @@ namespace RollerEngine.Character.Party
         public const int SPEND_ALL_ATTEMPTS = -1;
 
         public HatysParty Party { get; private set; }
-        public bool HasOpenedCaern { get; set; }
         public bool HasSpecOnInstruction { get; set; }
 
-        public int BoneRhythmsUsagesLeft;
+        public int BoneRhythmsUsagesLeft { get; set; }
+        public bool HasOpenedCaern { get; set; }
 
         public HatysPartyMember(string name, Build build, IRollLogger log, IRoller roller, HatysParty party) : base(
             name, build, log, roller)
@@ -34,27 +35,39 @@ namespace RollerEngine.Character.Party
             ansestorsRoll.Roll(Self, trait);
         }
 
-        public override void Learn(string ability, bool withWill)
+        public void CastCaernChanneling(string trait)
+        {
+            if (HasOpenedCaern)
+            {
+                if (Self.GetModifiedTrait(trait) < 5)
+                {
+                    var traitMod = Self.TraitModifiers.Find(tm =>
+                        tm.Traits.Contains(trait) && tm.Name.Equals(CaernOfVigilChannelling.PowerName));
+                    if (traitMod != null)
+                    {
+                        Self.TraitModifiers.Remove(traitMod);
+                    }
+
+                    bool useWill = true;
+                    if (!Self.Name.Equals(Party.Nameless.CharacterName))
+                    {
+                        Party.Nameless.CastTeachersEase(Self, Build.Abilities.PrimalUrge, false, Verbosity.Details);
+                        useWill = false;
+                    }
+
+                    var caernChanelling = new CaernOfVigilChannelling(Log, Roller);
+                    caernChanelling.Roll(Self, trait, useWill);
+                }
+            }
+        }
+
+        public override void LearnAbility(string ability, bool withWill)
         {
             //Apply Caern Of Vigil Channelling and Ancestors (for warewolves only)
             if (Self.CharacterClass.Equals(Build.Classes.Werewolf))
             {
-                //not already buffed with caern
-                /*if (HasOpenedCaern && !mods.Exists(modifier => modifier.Name.Equals(CaernOfVigilChannelling.GiftName)))
-                {
-                    if (Party.CaernChannellingUsedTimes < 7)
-                    {
-                        if (!Self.Name.Equals(Party.Nameless.CharacterName))
-                        {
-                            //Ask Nameless to buff allertness
-                            Party.Nameless.CastTeachersEase(Self, Self.Abilities.Alertness, false, Verbosity.Details);
-                        }
-
-                        Party.CaernChannellingUsedTimes++;
-                        var caernChanelling = new CaernOfVigilChannelling(Log, Roller);
-                        caernChanelling.Roll(Self, ability, true);
-                    }
-                }*/
+                //buff ability
+                CastCaernChanneling(ability);
 
                 if (Self.AncestorsUsesLeft > 0)
                 {
@@ -70,7 +83,7 @@ namespace RollerEngine.Character.Party
             if (!Self.Name.Equals(Party.Nameless.CharacterName))
             {
                 //Ask Nameless to buff Ability roll
-                Party.Nameless.CastTeachersEase(Self, ability, false, Verbosity.Details);
+                Party.Nameless.CastTeachersEase(Self, ability, false, Verbosity.Details, true);
             }
 
             //Apply Bone Rhythms
@@ -80,7 +93,18 @@ namespace RollerEngine.Character.Party
                 CommonBuffs.ApplyBoneRythms(Self, Log);
             }
 
-            base.Learn(ability, withWill);
+            //TODO: MUDIZZM
+            if (Self.Name.Equals(Party.Nameless.CharacterName) && Party.Nameless.BoostPlan.LearnBuff != null)
+            {
+                if (Party.Nameless.BoostPlan.LearnBuff.UseRageChanneling)
+                {
+                    Nameless.ApplyChannellingGift(Self, Log, 3);
+                    Party.Nameless.BoostPlan.LearnBuff.UseRageChanneling = false;
+                }
+            }
+
+            //CARNYX CANNOT BE APPLIED!!!
+            base.LearnAbility(ability, withWill);
         }
 
         public void AutoLearn(int maxLearnAttempts)
@@ -122,7 +146,7 @@ namespace RollerEngine.Character.Party
                         break;
                     }
 
-                    Learn(trait, hasWill);
+                    LearnAbility(trait, hasWill);
                     WeeklyPartialActions--;
                     spentAttempts++;
                 }
@@ -137,7 +161,7 @@ namespace RollerEngine.Character.Party
                 if (!Self.Name.Equals(Party.Nameless.CharacterName))
                 {
                     //Ask Nameless to buff allertness
-                    Party.Nameless.CastTeachersEase(Self, Build.Abilities.Instruction, false, Verbosity.Details);
+                    Party.Nameless.CastTeachersEase(Self, Build.Abilities.Instruction, false, Verbosity.Details, true);
                 }
 
                 //Apply rosemary
@@ -150,6 +174,8 @@ namespace RollerEngine.Character.Party
                     ApplyAncestors(Build.Abilities.Instruction, Verbosity.Important);
                 }
 
+                
+                //CARNYX CANNOT BE APPLIED!!!
                 //give XP to smb
                 var instruct = new InstructionTeach(Log, Roller);
                 instruct.Roll(Self, target, ability, HasSpecOnInstruction, withWill);
@@ -219,7 +245,7 @@ namespace RollerEngine.Character.Party
             }
         }
 
-        public void LearnRite(Rite rite, bool hasWill)
+        public virtual void LearnRite(Rite rite, bool hasWill)
         {
             if (!(Self.CharacterClass.Equals(Build.Classes.Werewolf) ||
                   Self.CharacterClass.Equals(Build.Classes.Corax)))
@@ -249,9 +275,20 @@ namespace RollerEngine.Character.Party
             if (!Self.Name.Equals(Party.Nameless.CharacterName))
             {
                 //Ask Nameless to buff rituals
-                Party.Nameless.CastTeachersEase(Self, Build.Abilities.Rituals, false, Verbosity.Details);
+                Party.Nameless.CastTeachersEase(Self, Build.Abilities.Rituals, false, Verbosity.Details, true);
             }
 
+            //TODO: MUDIZZM
+            if (Self.Name.Equals(Party.Nameless.CharacterName) && Party.Nameless.BoostPlan.LearnBuff != null)
+            {
+                if (Party.Nameless.BoostPlan.LearnBuff.UseRageChanneling)
+                {
+                    Nameless.ApplyChannellingGift(Self, Log, 3);
+                    Party.Nameless.BoostPlan.LearnBuff.UseRageChanneling = false;
+                }
+            }
+
+            //CARNYX CANNOT BE APPLIED!!!
             RitualsLearn roll = new RitualsLearn(Log, Roller);
             roll.Roll(Self, rite, HasSpecOnRite(rite), hasWill);
         }

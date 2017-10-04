@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using RollerEngine.Modifiers;
+using RollerEngine.Rolls.Rites;
 
 namespace RollerEngine.Character.Common
 {
@@ -99,6 +100,9 @@ namespace RollerEngine.Character.Common
             public const string FaerieLore = "Faerie Lore";
             public const string TribalLore = "Tribal Lore";
             public const string AnimalLore = "Animal Lore";
+
+            //todo: PIZDA. A bad-ass hack
+            public const string VisageOfFenris = "Visage Of Fenris"; 
         }
 
         public class Backgrounds
@@ -160,7 +164,7 @@ namespace RollerEngine.Character.Common
                                                                      //active count
         public Dictionary<string, int> Items = new Dictionary<string, int>();
                                                                      //active from week
-        public Dictionary<string, int> Rites = new Dictionary<string, int>();
+        public Dictionary<Rite, int> Rites = new Dictionary<Rite, int>();
 
         public List<TraitModifier> TraitModifiers = new List<TraitModifier>();
         public List<DCModifer> DCModifiers = new List<DCModifer>();

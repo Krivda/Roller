@@ -14,9 +14,20 @@ namespace RollerEngine.Character.Party
 
         public void CastPersuasion()
         {
-            //Cast Pesuasion
-            var persuasionRoll = new Persuasion(Log, Roller);
-            persuasionRoll.Roll(Self, false, true);
+            if (!Self.CheckBonusExists(Build.Atributes.Manipulation, Persuasion.GIFT_NAME))
+            {
+                Party.Nameless.CastTeachersEase(Self, Build.Abilities.Subterfuge, true, Verbosity.Details);
+                //Cast Pesuasion
+                var persuasionRoll = new Persuasion(Log, Roller);
+                persuasionRoll.Roll(Self, false, false);
+            }
+        }
+
+        public override void Instruct(Build target, string ability, bool withWill)
+        {
+            //Cast persuasion before teaching
+            CastPersuasion();
+            base.Instruct(target, ability, withWill);
         }
 
     }

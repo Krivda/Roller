@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
@@ -12,7 +12,13 @@ namespace RollerEngine.Character.Party
 {
     public class Spirdon : HatysPartyMember
     {
-        private bool learnedBoneRhythms = false;
+        public bool HasCarnyx
+        {
+            get
+            {
+                return Self.Items.ContainsKey(CarnyxOfVictory.FetishName);
+            }
+        }
 
         public Spirdon(Build build, IRollLogger log, IRoller roller, HatysParty party) : base("Спиридон", build, log, roller, party)
         {
@@ -20,19 +26,24 @@ namespace RollerEngine.Character.Party
 
         public void CastPersuasion()
         {
-            Party.Nameless.CastTeachersEase(Self, Build.Abilities.Subterfuge, true, Verbosity.Details);
-            //Cast Pesuasion
-            var persuasionRoll = new Persuasion(Log, Roller);
-            persuasionRoll.Roll(Self, false, false);
+            if (!Self.CheckBonusExists(Build.Atributes.Manipulation, Persuasion.GIFT_NAME))
+            {          
+                Party.Nameless.CastTeachersEase(Self, Build.Abilities.Subterfuge, true, Verbosity.Details);
+                //Cast Pesuasion
+                var persuasionRoll = new Persuasion(Log, Roller);
+                persuasionRoll.Roll(Self, false, false);
+            }
         }
 
         public void CastVisageOfFenris()
         {
-
-            Party.Nameless.CastTeachersEase(Self, Build.Abilities.Intimidation, true, Verbosity.Details);
-            //Cast Visage of fenfis
-            var vizageOfFenris = new VizageOfFenris(Log, Roller);
-            vizageOfFenris.Roll(Self, false, false);
+            if (!Self.CheckBonusExists(Build.Atributes.Manipulation, VizageOfFenris.GIFT_NAME))
+            {
+                Party.Nameless.CastTeachersEase(Self, Build.Abilities.Intimidation, true, Verbosity.Details);
+                //Cast Visage of fenfis
+                var vizageOfFenris = new VizageOfFenris(Log, Roller);
+                vizageOfFenris.Roll(Self, false, false);
+            }
         }
 
         public void CastCallToWyld(List<Build> target, string skill)
@@ -67,9 +78,6 @@ namespace RollerEngine.Character.Party
             Log.Log(Verbosity.Details, ActivityChannel.Boost, "=== === === === ===");
             Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyPreBoost on {1}", Self.Name, suppTrait));
 
-            ShiftToCrinos();
-            //apply heighten sences
-            CommonBuffs.ApplyHeightenSenses(Self, Log);
             //-1 dc social rolls
             CastVisageOfFenris();
             //-1 dc social rolls
@@ -104,9 +112,7 @@ namespace RollerEngine.Character.Party
             Party.Spiridon.WeeklyMidBoostOccult(Self);
 
             //Maximum boost for trait
-            //Party.Spiridon.ActivateCarnyx();
             CastGhostPack(mainTrait);
-            //Party.Spiridon.DeactivateCarnyx();
         }
 
         private void CastGhostPack(string trait)
@@ -116,9 +122,9 @@ namespace RollerEngine.Character.Party
             {
                 Self.AncestorsUsesLeft += 1; //bonus usage 
 
-                Party.Nameless.CastTeachersEase(Self, Build.Abilities.Occult, false, Verbosity.Details);
+                Party.Nameless.CastTeachersEase(Self, Build.Abilities.Occult, false, Verbosity.Details, true);
 
-                if (learnedBoneRhythms)
+                if (BoneRhythmsUsagesLeft > 0)
                 {
                     BoneRhythmsUsagesLeft--;
                     CommonBuffs.ApplyBoneRythms(Self, Log);
@@ -150,30 +156,38 @@ namespace RollerEngine.Character.Party
             return extraActions;
         }
 
-        public void CastCaernChanneling(string trait)
+        public void __ActivateCarnyx(Build target, string purpose, bool withWill)
         {
-            Party.Nameless.CastTeachersEase(Self, Build.Abilities.PrimalUrge, false, Verbosity.Details);
-
-            var caernChanelling = new CaernOfVigilChannelling(Log, Roller);
-            caernChanelling.Roll(Self, trait, false);
+            __ActivateCarnyx(new List<Build>() {target}, purpose, withWill);
         }
 
-        public void __ActivateCarnyx()
+        public void __ActivateCarnyx(List<Build> targets, string purpose, bool withWill)
         {
-            Log.Log(Verbosity.Critical, ActivityChannel.Boost, ">== Carnyx started, now actions from Spiridon");
-            //TODO: -1 Gnosis to activate
+            if (HasCarnyx)
+            {
+                Log.Log(Verbosity.Details, ActivityChannel.Boost, ">== Carnyx started, now actions from Spiridon");
+                //TODO: -1 Gnosis to activate
+                
+                CastCaernChanneling(Build.Abilities.Performance);
+                Party.Nameless.CastTeachersEase(Self, Build.Abilities.Performance, false, Verbosity.Details, false); //NO RECURSION false
 
-            CastCaernChanneling(Build.Abilities.Performance);
-            Party.Nameless.CastTeachersEase(Self, Build.Abilities.Performance, false, Verbosity.Details);
+                if (targets.Contains(Self))
+                {
+                    throw new Exception("Spridon can't use Carnyx to buff himself");
+                }
 
-            var carnyx = new CarnyxOfVictory(Log, Roller, Verbosity.Critical);
-            carnyx.Roll(Self, Party.Builds.FindAll(build => !build.Name.Equals(CharacterName)), false, false);
+                var carnyx = new CarnyxOfVictory(Log, Roller, Verbosity.Details);
+                carnyx.Roll(Self, targets, purpose, false, withWill);
+            }
         }
 
         public void __DeactivateCarnyx()
         {
-            CarnyxOfVictory.RemoveFromBuild(Party.Builds.FindAll(build => !build.Name.Equals(CharacterName)));
-            Log.Log(Verbosity.Critical, ActivityChannel.Boost, "<== Carnyx ended, Spiridon can act again");
+            if (HasCarnyx)
+            {
+                CarnyxOfVictory.RemoveFromBuild(Party.Builds.FindAll(build => !build.Name.Equals(CharacterName)));
+                Log.Log(Verbosity.Details, ActivityChannel.Boost, "<== Carnyx ended, Spiridon can act again");
+            }
         }
 
         public override bool HasSpecOnRite(Rite rite)
@@ -220,6 +234,7 @@ namespace RollerEngine.Character.Party
         }
 
         //TODO: Create Talens, Rite of Binding, Rite of Spirit Awakening, CreateCacao
+        //!!!Create Talens WITH carnyx!!!
 
     }
 }

@@ -8,7 +8,7 @@ namespace RollerEngine.Rolls.Gifts
 {
     public class Persuasion : GiftRoll
     {
-        private const string GIFT_NAME = "Persuasion";
+        public const string GIFT_NAME = "Persuasion";
 
         public Persuasion(IRollLogger log, IRoller roller) 
             : base(GIFT_NAME, log, roller, new List<string>(){Build.Atributes.Charisma, Build.Abilities.Subterfuge}, new List<string>() {Build.Conditions.Social}, null, Verbosity.Details)

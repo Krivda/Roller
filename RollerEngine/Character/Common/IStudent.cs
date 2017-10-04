@@ -4,6 +4,6 @@ namespace RollerEngine.Character.Common
     {
         Build Self { get; }
 
-        void Learn(string ability, bool withWill);
+        void LearnAbility(string ability, bool withWill);
     }
 }

@@ -25,6 +25,7 @@ namespace RollerEngine.Character
 
     public partial class HatysParty
     {
+        private const int ANCESTOR_VENERATION_DELAY = 4;
         private readonly Dictionary<string, Build> _partyBuilds;
         private readonly Dictionary<string, HatysPartyMember> _party;
 
@@ -41,8 +42,6 @@ namespace RollerEngine.Character
 
         public Dictionary<string, Dictionary<string, int>> WeekStartingTraits { get; set; }
         public Dictionary<string, Dictionary<string, int>> RunStartTraits { get; set; }
-
-        public int CaernChannellingUsedTimes { get; set; }
 
         public HatysParty(Dictionary<string, Build> party, IRollLogger log, IRoller roller)
         {
@@ -76,7 +75,6 @@ namespace RollerEngine.Character
             RunStartTraits = new Dictionary<string, Dictionary<string, int>>();
 
 
-            Spiridon.HasOpenedCaern = true;
             Yoki.HasSpecOnInstruction = true;
             Kinfolk1.HasSpecOnInstruction = true;
             Kinfolk2.HasSpecOnInstruction = true;
@@ -106,14 +104,29 @@ namespace RollerEngine.Character
 
         public void WeeklyBuff(HatysBuffPlan wpBuffPlan)
         {
-            //todo: rewrite
+            if (Spiridon.HasCarnyx)
+            {
+                if (!wpBuffPlan.Nameless.MainBuff.Trait.Equals(Build.Abilities.Instruction)) 
+                {
+                    throw new Exception("If we have carnyx - we should use IT!");
+                }
+                //boost
+                Spiridon.WeeklyPreBoost(Build.Abilities.Rituals);
+                Nameless.WeeklyPreBoost(wpBuffPlan.Nameless);
+                Spiridon.WeeklyBoostSkill(Build.Abilities.Performance);
+                Nameless.WeeklyBoostSkill(wpBuffPlan.Nameless);
+            }
+            else
+            {
+                //boost
+                Nameless.WeeklyPreBoost(wpBuffPlan.Nameless);
+                //Nameless can preboost Instruct and his Teacher's Ease will have -1 dc due to Persuasion
+                Spiridon.WeeklyPreBoost(Build.Abilities.Empathy);
+                Spiridon.WeeklyBoostSkill(Build.Abilities.Rituals);
+                Nameless.WeeklyBoostSkill(wpBuffPlan.Nameless);
+            }
 
-            //boost
-            Nameless.WeeklyPreBoost(wpBuffPlan.Nameless);
-            //Nameless can preboost Instruct and his Teacher's Ease will have -1 dc due to Persuasion
-            Spiridon.WeeklyPreBoost(Build.Abilities.Empathy);
-            Spiridon.WeeklyBoostSkill(Build.Abilities.Rituals);
-            Nameless.WeeklyBoostSkill(wpBuffPlan.Nameless);
+
         }
 
 
@@ -129,6 +142,7 @@ namespace RollerEngine.Character
             //todo: refac this crap
             foreach (var itemKvp in bld.Items)
             {
+                //todo: PIZDA. A bad-ass hack
                 traits.Add("item" + itemKvp.Key, itemKvp.Value);
             }
 
@@ -150,13 +164,19 @@ namespace RollerEngine.Character
                 var origCharacterTraits = characterKvp.Value;
                 var currCharacterTraits = _party[characterName].Self.Traits;
 
+                int a = 0;
+
                 foreach (var currTraitKvp in currCharacterTraits)
                 {
+
+                    a++;
                     string trait = currTraitKvp.Key;
                     Tuple<int, int> traitDiff = GetTraitDiff(trait, origCharacterTraits, currCharacterTraits);
 
+
                     //is ability?
-                    if (typeof(Build.Abilities).GetFields().Any(fi => fi.Name.Equals(currTraitKvp.Key)))
+                    //todo: PIIIIZZZDDDAAA
+                    if (typeof(Build.Abilities).GetFields().Any(fi => fi.GetValue(null).ToString().Equals(currTraitKvp.Key)))
                     {
                         //calc progress in abilities
                         
@@ -217,6 +237,7 @@ namespace RollerEngine.Character
                 foreach (var item in character.Self.Items)
                 {
                     int origItemCount;
+                    //todo: PIZDA. A bad-ass hack
                     if (!origCharacterTraits.TryGetValue("item" + item.Key, out origItemCount))
                     {
                         //new item
@@ -323,9 +344,8 @@ namespace RollerEngine.Character
             _log.Log(Verbosity.Warning, ActivityChannel.Main, "<<<< =====");
         }
 
-        public void StartScene()
+        public void StartScene(int weekNo)
         {
-            CaernChannellingUsedTimes = 0;
 
             foreach (var buildKvp in _partyBuilds)
             {
@@ -368,25 +388,44 @@ namespace RollerEngine.Character
                 hatysPartyMemberKvp.Value.WeeklyActions = 1;
             }
 
-
-            //todo: THAT IS A SOLID TRASH. REWRITE IF YOU SEE IT!
-            Nameless.BoneRhythmsUsagesLeft = 2;
-            string keyBoneRythmsLearned = Build.DynamicTraits.GetKey(Build.DynamicTraits.RiteLearned, RitesDictionary.Rites[Rite.BoneRhythms].Name);
-            foreach (var build in _partyBuilds)
+            foreach (var buildKvp in _party)
             {
-                if (! build.Value.Name.Equals(Nameless.CharacterName))
+                if (buildKvp.Value.Self.Rites.ContainsKey(Rite.BoneRhythms))
                 {
-                    if (build.Value.Traits.ContainsKey(keyBoneRythmsLearned))
+                    buildKvp.Value.BoneRhythmsUsagesLeft = 2;
+                }
+
+                if (buildKvp.Value.Self.Rites.ContainsKey(Rite.OpenedCaern))
+                {
+                    buildKvp.Value.HasOpenedCaern = true;
+                }
+
+                if (buildKvp.Value.Self.Rites.ContainsKey(Rite.AncestorVeneration))
+                {
+                    //enabled 4 weeks after learn
+                    if (weekNo > buildKvp.Value.Self.Rites[Rite.AncestorVeneration] + ANCESTOR_VENERATION_DELAY)
                     {
-                        if (build.Value.Traits[keyBoneRythmsLearned] == Build.RiteAlreadyLearned)
-                        {
-                            _party[build.Value.Name].BoneRhythmsUsagesLeft = 2;
-                        }
+                        buildKvp.Value.Self.HasAncestorVeneration = true;
+                    }
+                }
+            }
+
+            foreach (var buildKvp in _party)
+            {
+                if (buildKvp.Value.Self.CharacterClass.Equals(Build.Classes.Werewolf))
+                {
+                    //TODO check lupus & gift
+                    if (!buildKvp.Key.Equals(Kurt.CharacterName))
+                    {
+                        buildKvp.Value.ShiftToCrinos();                        
+                        //apply heighten sences
+                        CommonBuffs.ApplyHeightenSenses(buildKvp.Value.Self, _log);
                     }
                 }
             }
         }
 
+        //Called ONCE after load from google!!!
         private static void AddPermanentModifiers(Dictionary<string, Build> result, IRollLogger log)
         {
             foreach (KeyValuePair<string, Build> buildKvp in result)
@@ -415,14 +454,17 @@ namespace RollerEngine.Character
 
                 if (buildKvp.Key.Equals("Krivda"))
                 {
-                    buildKvp.Value.Rites.Add(RitesDictionary.Rites[Rite.AncestorVeneration].Name, 0);
-                    buildKvp.Value.Rites.Add(RitesDictionary.Rites[Rite.BoneRhythms].Name, 0);
+                    buildKvp.Value.Rites.Add(Rite.AncestorVeneration, 0);
+                    buildKvp.Value.Rites.Add(Rite.BoneRhythms, 0);
                 }
 
                 if (buildKvp.Key.Equals("Keltur"))
                 {
                     CommonBuffs.ApplyMedicalBundle(buildKvp.Value, log);
-                    buildKvp.Value.Rites.Add(RitesDictionary.Rites[Rite.OpenedCaern].Name, 0);
+                    buildKvp.Value.Rites.Add(Rite.OpenedCaern, 0);
+                    //todo: very dirty hack
+                    buildKvp.Value.Traits[Build.Abilities.VisageOfFenris] = 2;
+
                 }
 
                 if (buildKvp.Key.Equals("Krivda") || buildKvp.Key.Equals("Keltur") || buildKvp.Key.Equals("Alisa") || buildKvp.Key.Equals("Urfin") || buildKvp.Key.Equals("NPC 3"))
@@ -465,10 +507,12 @@ namespace RollerEngine.Character
             WeekPlan wp = GetPlanByWeekNumber(weekNo);
             List<WeeklyActivity> plan = wp.Activities;
 
+            Nameless.BoostPlan = wp.BuffPlan.Nameless;
+
             _log.Week = weekNo;
             _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("<==== Week {0} starts", weekNo));
 
-            StartScene();
+            StartScene(weekNo);
 
             CheckFullAndCalcPartialActions(weekNo, plan); //CastMindPartition is inside
 
@@ -618,9 +662,27 @@ namespace RollerEngine.Character
 
             //Show Learning Results
             var progress = GetProgress(WeekStartingTraits);
+
+            //calculate progress for rites and items for each character
+            foreach (var progressSummaryKvp in progress)
+            {
+                foreach (var riteProgress in progressSummaryKvp.Value.RiteProgress)
+                {
+                    if (riteProgress.Value.Item2 == Build.RiteAlreadyLearned)
+                    {
+                        //todo: create method RitesDictionary.GetByName()
+                        var rite = RitesDictionary.Rites.Values.First(ri => ri.Name.Equals(riteProgress.Key));
+                        //learned rite this week
+                        _party[progressSummaryKvp.Key].Self.Rites[rite.Rite] = weekNo;
+                    }
+                }
+            }
+
             _log.Log(Verbosity.Critical, ActivityChannel.Main, "");
             _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("=>> Week {0} results:", weekNo));
             LogProgress(progress);
+
+
 
             _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("<==== Week {0} ends", weekNo));
         }

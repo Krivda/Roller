@@ -204,7 +204,7 @@ namespace RollerEngine.Character
 
             if (_expPoolStarted)
             {
-                if (typeof(Build.Abilities).GetFields().Any(info => info.Name.Equals(traitName)))
+                if (typeof(Build.Abilities).GetFields().Any(info => info.GetValue(null).ToString().Equals(traitName)))
                 {
                     return Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpiriencePool, traitName);
                 }

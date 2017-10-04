@@ -37,7 +37,7 @@ namespace UnitTests
             var currRoller = roller;
 
             var res = HatysParty.LoadFromGoogle(currLogger, currRoller);
-            res.StartScene();
+            res.StartScene(1);
             //will FAIL
             res.WeeklyBuff(new HatysBuffPlan());
         }
@@ -73,7 +73,7 @@ namespace UnitTests
 
                 try
                 {
-                    res.StartScene();
+                    res.StartScene(1);
                     res.Nameless.WeeklyPreBoost(NamelessBuff.MaxBoostInstruct());
                     
                     /*
@@ -148,8 +148,8 @@ namespace UnitTests
         [Test]
         public void Multiweek()
         {
+            //var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Details, Logger);
             var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Critical, Logger);
-            //var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Critical, Logger);
 
             var roller = new OfflineDiceRoller(rollLogger);
 
@@ -158,7 +158,7 @@ namespace UnitTests
 
             var res = HatysParty.LoadFromGoogle(currLogger, currRoller);
 
-            for (int i = 1; i < 8; i++)
+            for (int i = 1; i < 9; i++)
             {
                 res.DoWeek(i);
             }            

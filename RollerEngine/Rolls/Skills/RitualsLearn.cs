@@ -76,7 +76,7 @@ namespace RollerEngine.Rolls.Skills
                     successesLearned = Build.RiteAlreadyLearned;
 
                     //learned a rite
-                    actor.Rites.Add(riteName, 0);
+                    actor.Rites.Add(rite, 0);
                 }
 
                 keyRiteLearned = Build.DynamicTraits.GetKey(Build.DynamicTraits.RiteLearned, riteName);

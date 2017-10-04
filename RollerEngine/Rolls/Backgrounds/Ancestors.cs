@@ -35,7 +35,7 @@ namespace RollerEngine.Rolls.Backgrounds
 
             actor.AncestorsUsesLeft--;
             base.Roll(actor, new List<Build>() {actor}, false, false);
-
+            //todo: reroll ALWAYS if SUC != MAX
             if (Successes < 0)
             {
                 if (Successes > -3) // can be fixed with veneration.In Theory

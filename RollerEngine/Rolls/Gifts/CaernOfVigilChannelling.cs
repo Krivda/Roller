@@ -8,10 +8,10 @@ namespace RollerEngine.Rolls.Gifts
 {
     public class CaernOfVigilChannelling : GiftRoll
     {
-        public const string GiftName = "Caern of Vigil (Chanelling)";
+        public const string PowerName = "Caern of Vigil (Chanelling)";
 
         public CaernOfVigilChannelling(IRollLogger log, IRoller roller)
-            : base(GiftName, log, roller,
+            : base(PowerName, log, roller,
                 new List<string>() {Build.Atributes.Perception, Build.Abilities.PrimalUrge},
                 new List<string>(), "", Verbosity.Details)
         {
@@ -27,7 +27,7 @@ namespace RollerEngine.Rolls.Gifts
             if (successes > 0)
             {
                 actor.TraitModifiers.Add(new TraitModifier(
-                        GiftName,
+                        PowerName,
                         new List<string>() { targetTrait },
                         DurationType.Scene,
                         new List<string>(),

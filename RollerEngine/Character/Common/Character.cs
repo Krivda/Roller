@@ -24,7 +24,7 @@ namespace RollerEngine.Character.Common
             WeeklyPartialActions = 1;
         }
 
-        public virtual void Learn(string ability, bool withWill)
+        public virtual void LearnAbility(string ability, bool withWill)
         {
             //consume Xp from pool
             var instruct = new InstructionLearn(Log, Roller, ability);

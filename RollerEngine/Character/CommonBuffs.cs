@@ -86,7 +86,7 @@ namespace RollerEngine.Character
 
         public static void ApplySacredRosemary(Build build, IRollLogger log)
         {
-            log.Log(Verbosity.Details, ActivityChannel.Intermediate, string.Format("Rosemary sanctified plant power applied on {0} (-2 Dice on learning to next roll)", build.Name));
+            log.Log(Verbosity.Details, ActivityChannel.Intermediate, string.Format("Rosemary sanctified plant power applied on {0} (-2 Dice on memory&teaching&learning for scene)", build.Name));
 
             if (!build.CheckBonusExists(null, "Rosemary"))
             {
@@ -180,7 +180,7 @@ namespace RollerEngine.Character
                 new DCModifer(
                     "Heighten senses",
                     new List<string>() {Build.Atributes.Perception},
-                    DurationType.Roll,
+                    DurationType.Scene,
                     new List<string>() {},
                     -3
                 ));

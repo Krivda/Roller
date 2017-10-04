@@ -39,7 +39,7 @@ namespace RollerEngine.Rolls.Skills
                     var props = typeof(Build.Abilities).GetFields();
                     foreach (var prop in props)
                     {
-                        if (prop.Name.Equals(trait))
+                        if (prop.GetValue(null).ToString().Equals(trait))
                         {
                             //this is a zero ability
                             learningTrait = trait;
@@ -61,6 +61,12 @@ namespace RollerEngine.Rolls.Skills
                     if (!increaseDC)
                         break;
                 }
+            }
+
+            //TODO: PIZDA dirty hack to learn gift
+            if (DicePool.Contains(Build.Abilities.VisageOfFenris))
+            {
+                increaseDC = true;
             }
 
             if (increaseDC)

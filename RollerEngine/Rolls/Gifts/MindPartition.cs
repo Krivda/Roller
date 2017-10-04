@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using RollerEngine.Character.Common;
 using RollerEngine.Logger;
-using RollerEngine.Modifiers;
 using RollerEngine.Roller;
-using RollerEngine.Rolls.Fetish;
 
 namespace RollerEngine.Rolls.Gifts
 {
@@ -72,7 +70,7 @@ namespace RollerEngine.Rolls.Gifts
         {
             BonusValueInfo mods = base.GetBonusDices(actor, targets, conditions);
 
-            var carnyx = mods.Modifires.Find(m => m.Item2.Name.Equals(CarnyxOfVictory.NAME));
+            var carnyx = mods.Modifires.Find(m => m.Item2.Name.Equals(CarnyxOfVictory.FetishName));
             if (carnyx != null)
             {
                 mods.Modifires.Remove(carnyx);

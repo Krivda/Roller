@@ -8,13 +8,13 @@ namespace RollerEngine.Rolls.Fetish
 {
     class CarnyxOfVictory : UsingFetishRoll
     {
-        public const string NAME = "Carnyx of Victory";
+        public const string FetishName = "Carnyx of Victory";
         public CarnyxOfVictory(
             IRollLogger log,
             IRoller roller,
             Verbosity verbosity) :
             base(
-                NAME,
+                FetishName,
                 log,
                 roller,
                 new List<string>() {Build.Atributes.Manipulation, Build.Abilities.Performance},
@@ -28,7 +28,7 @@ namespace RollerEngine.Rolls.Fetish
         {
             foreach (var target in targets)
             {
-                var carnyx = target.BonusDicePoolModifiers.Find(m => m.Name.Equals(NAME));
+                var carnyx = target.BonusDicePoolModifiers.Find(m => m.Name.Equals(FetishName));
                 if (carnyx != null)
                 {
                     target.BonusDicePoolModifiers.Remove(carnyx);
@@ -36,8 +36,10 @@ namespace RollerEngine.Rolls.Fetish
             }
         }
 
-        public new int Roll(Build actor, List<Build> targets, bool hasSpec, bool hasWill)
+        public int Roll(Build actor, List<Build> targets, string purpose, bool hasSpec, bool hasWill)
         {
+            AdditionalInfo = purpose;
+
             int result = base.Roll(actor, targets, hasSpec, hasWill);
             if (result <= 0)
             {
@@ -48,7 +50,7 @@ namespace RollerEngine.Rolls.Fetish
 
             foreach (var target in targets)
             {
-                if (!target.CheckBonusExists(null, NAME))
+                if (!target.CheckBonusExists(null, FetishName))
                 {
                     int bonus = result;
 

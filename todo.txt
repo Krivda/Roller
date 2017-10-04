@@ -37,10 +37,16 @@ SELECT TOKENS:
 
 30. Build 
 31. Distrube buffs Nameless (secondary Rituals goal (B.R+Chann+supp Anc.)) //should be param of the week
-32. Learn/Teach/MindP./Creation attetmps
 33. Gnosis/Willpower replenish
 34. csv log
 //TODO we should split traits into Atributes, Abilities, Backgrounds, Rollalbe-10-based, Dynamic
-
 35. todo resolve Instruction botch!
 36. review botches on all rolls!
+37. ancestor veneration always reroll die (if this has meaning)
+
+43. doWeek, startScene
+37. Unbroken Cord: gnosis, te на меня, передать скилы которые учат; Spiridon: CastMindPartition
+42. Lynn to pack (Engimas)
+48. CastCreateTalens - Spiridon; Yoki; Lynn; RiteOfBindingRoll
+39. create talens for arc 7
+40. counters: summon, rosemary, cacao
