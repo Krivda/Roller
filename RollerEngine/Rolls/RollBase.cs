@@ -326,7 +326,7 @@ namespace RollerEngine.Rolls
             //hadle limited value
             if (dcAdjust > MAX_MULTI_ADJUST)
             {
-                Log.Log(Verbosity, ActivityChannel.Main, string.Format("DC cannot be adjusted more than -3, adjusted as {0}.", MAX_MULTI_ADJUST));
+                Log.Log(Verbosity.Debug, ActivityChannel.Main, string.Format("DC cannot be adjusted more than -3, adjusted as {0}.", MAX_MULTI_ADJUST));
                 dcAdjust = MAX_MULTI_ADJUST;
             }
 
@@ -335,7 +335,7 @@ namespace RollerEngine.Rolls
             //hadle limited value
             if (adjectedDC < MIN_DC)
             {
-                Log.Log(Verbosity, ActivityChannel.Main, string.Format("DC was lesser then min, adjusted to {0}.", MIN_DC));
+                Log.Log(Verbosity.Debug, ActivityChannel.Main, string.Format("DC was lesser then min, adjusted to {0}.", MIN_DC));
                 dcInfo.AdjustedDC = MIN_DC;
             }
             else

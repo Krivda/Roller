@@ -20,6 +20,7 @@ namespace RollerEngine.Character
             };
 
             //TODO: Dates, CacaoCalcs, Priorities
+            //TODO: Count weeks when kinfolks "spread" to SCHOOL
             switch (weekNo)
             {
                 //8 Feb (teaching week)
@@ -118,18 +119,17 @@ namespace RollerEngine.Character
                     //plan.Add(new QueueRiteLearning(Spiridon, Rite.GatheringForDeparted));   //I prefer Rite.Rememberance
                     break;
 
-                //TODO: need to calc/have BoneRhythms and Veneration and OpenCaern
                 //22 Feb (teaching week)
                 case 3:
                     buffPlan.Nameless = NamelessBuff.MaxBoostInstruct();
 
                     //teach
-                    plan.Add(new TeachAbility(Nameless, Spiridon, Build.Abilities.Performance));
-                    plan.Add(new TeachAbility(Spiridon, Kinfolk1, Build.Abilities.Occult));
-                    plan.Add(new TeachAbility(Kurt, Kinfolk2, Build.Abilities.SpiritLore));
                     plan.Add(new TeachAbility(Yoki, Nameless, Build.Abilities.Rituals));
                     plan.Add(new TeachAbility(Kinfolk1, Yoki, Build.Abilities.Occult));
-                    plan.Add(new TeachAbility(Kinfolk2, Kurt, Build.Abilities.Firearms)); //TODO: FUCK FUCK "have more skill"
+                    plan.Add(new TeachAbility(Nameless, Spiridon, Build.Abilities.Performance));
+                    plan.Add(new TeachAbility(Spiridon, Kinfolk2, Build.Abilities.Meditation)); //for week 5
+                    plan.Add(new TeachAbility(Kurt, Kinfolk1, Build.Abilities.SpiritLore));     //for future spread
+                    plan.Add(new TeachAbility(Kinfolk2, Kurt, Build.Abilities.Drive));          //for future spread
                     break;
 
                 //1 Mar
@@ -150,11 +150,11 @@ namespace RollerEngine.Character
 
                     //teach
                     //plan.Add(new TeachAbility(Nameless, - need to give Nameless time for learning
-                    plan.Add(new TeachAbility(Spiridon, Kinfolk2, Build.Abilities.Meditation));
-                    plan.Add(new TeachAbility(Kurt, Kinfolk1, Build.Abilities.SpiritLore));
                     plan.Add(new TeachAbility(Yoki, Nameless, Build.Abilities.Rituals));
-                    plan.Add(new TeachAbility(Kinfolk1, Yoki, Build.Abilities.Occult));
-                    plan.Add(new TeachAbility(Kinfolk2, Yoki, Build.Abilities.SpiritLore));
+                    plan.Add(new TeachAbility(Kinfolk1, Yoki, Build.Abilities.Firearms));           //no need for 2nd Occult teaching 
+                    plan.Add(new TeachAbility(Spiridon, Kinfolk1, Build.Abilities.Meditation));
+                    plan.Add(new TeachAbility(Kinfolk2, Kurt, Build.Abilities.Meditation));
+                    plan.Add(new TeachAbility(Kurt, Yoki, Build.Abilities.SpiritLore));             //double learner
 
                     //TODO: Curator? make Lynn (as theurge) our main talen creator
                     plan.Add(new QueueRiteLearning(Lynn, Rite.BoneRhythms));
@@ -176,7 +176,6 @@ namespace RollerEngine.Character
                     buffPlan.Nameless = NamelessBuff.MaxBoostSecondaryTrait(Build.Abilities.Rituals);
 
                     plan.Add(new CreateFetishActivity(Spiridon, 4, "Carnyx of Victory", "War"));
-
                     //Yoki: create Talens
                     plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
 
@@ -191,18 +190,22 @@ namespace RollerEngine.Character
                     buffPlan.Nameless = NamelessBuff.MaxBoostCarnyx();
 
                     //teach
-                    plan.Add(new TeachAbility(Nameless, Kinfolk1, Build.Abilities.Leadership));
                     plan.Add(new TeachAbility(Spiridon, Nameless, Build.Abilities.VisageOfFenris));
-                    plan.Add(new TeachAbility(Kurt, Kinfolk2, Build.Abilities.Athletics));
-                    plan.Add(new TeachAbility(Yoki, Kurt, Build.Abilities.Occult));
                     plan.Add(new TeachAbility(Kinfolk1, Spiridon, Build.Abilities.Crafts));
-                    plan.Add(new TeachAbility(Kinfolk2, Yoki, Build.Abilities.Meditation));
+                    plan.Add(new TeachAbility(Kurt, Kinfolk2, Build.Abilities.SpiritLore)); //always spread
+                    plan.Add(new TeachAbility(Kinfolk2, Yoki, Build.Abilities.Meditation)); //always spread
+                    plan.Add(new TeachAbility(Yoki, Kurt, Build.Abilities.Occult));
+                    plan.Add(new TeachAbility(Nameless, Kinfolk1, Build.Abilities.Leadership)); //2nd time
                     break;
 
                 //29 Mar
                 case 8:
                     //todo: very dirty hack
                     buffPlan.Nameless = NamelessBuff.MaxBoostSecondaryTrait(Build.Abilities.VisageOfFenris);
+
+                    plan.Add(new CreateFetishBase(Spiridon, 4, "Carnyx of Victory"));
+                    //Yoki: create Talens
+                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
 
                     //Lynn teach Yoki Ancestor Veneration
                     plan.Add(new TeachRiteToGarou(Lynn, Yoki, Rite.AncestorVeneration, 1));
@@ -211,76 +214,113 @@ namespace RollerEngine.Character
 
                 //05 Apr (teaching week)
                 case 9:
+                    buffPlan.Nameless = NamelessBuff.MaxBoostCarnyx();
+
                     //teach
-                    //plan.Add(new TeachAbility(Nameless, ?, Build.Abilities.Brawl));
-                    //plan.Add(new TeachAbility(Spiridon, Name, Build.Abilities.Meditation));
-                    //plan.Add(new TeachAbility(Kurt, Kinfolk1, Build.Abilities.SpiritLore));
-                    plan.Add(new TeachAbility(Yoki, Nameless, Build.Abilities.Occult));
-                    plan.Add(new TeachAbility(Kinfolk1, Spiridon, Build.Abilities.Crafts));
-                    plan.Add(new TeachAbility(Kinfolk2, Yoki, Build.Abilities.SpiritLore));
+                    plan.Add(new TeachAbility(Kinfolk1, Nameless, Build.Abilities.Occult));
+                    plan.Add(new TeachAbility(Yoki, Spiridon, Build.Abilities.SpiritLore));
+                    plan.Add(new TeachAbility(Kurt, Kinfolk1, Build.Abilities.Drive));
+                    plan.Add(new TeachAbility(Kinfolk2, Kurt, Build.Abilities.Survival));
+                    plan.Add(new TeachAbility(Nameless, Kinfolk2, Build.Abilities.Leadership));
+                    plan.Add(new TeachAbility(Spiridon, Yoki, Build.Abilities.Herbalism));
                     break;
-
-                //plan.Add(new TeachAbility(Kurt, Yoki, Build.Abilities.SpiritLore));
-                //plan.Add(new TeachAbility(Kurt, ?, Build.Abilities.SpiritLore));
-                //plan.Add(new TeachAbility(Spiridon, Yoki, Build.Abilities.Herbalism));
-                //plan.Add(new TeachAbility(Kinfolk2, Nameless, Build.Abilities.Survival))
-                //UnbrokenCord.plan.Add(new TeachAbility(Lynn, Nameless, Build.Abilities.Enigmas));
-                //plan.Add(new TeachAbility(Kinfolk2, Lynn, Build.Abilities.Medicine));
-                //plan.Add(new TeachAbility(Poison, Spiridon, Build.Abilities.Poison));
-                //plan.Add(new TeachGiftToGarou(Spiridon, Nameless, "Visage of Fenris"));
-                //plan.Add(new TeachAbility(Spiridon, Kinfolk1, Build.Abilities.Meditation));
-
-                //
-                //Lynn: Talisman Dedication, Cleanising
-                //Ancestor Seeking: Krivda; Keltur; <Yoki> ...
-                //Ancestor Veneration: Krivda; <Kurt> ...
-
-                //Spiridon PACK of rites!!!
-                /*
-                     * +bone rythms
-                     * 15b. rites to dictionary for planned
-		Papa Serega: 5 - for Rite of Signpost(4); Rite of Trespassing(5); Crash Space (2); Shopping Chart (2)
-		Golosa Vetrov: 5 - for Rite of Caern Building (5); Rite of Balance (3); Invitation to Ancestors (4)
-		Babka Aine: 5 - for Rite of Sacred Peace(5)/Bowels of Mother(0), Asklepius (3), Comfort (2), Sin-Eating (3); of Teachers (1)
-		Udjin: 4 - for Rite of Fetish (3); Rite of Deliverance (3); Nightshade (4); Deliverance (3); Sin-Eater (2)
-                     */
 
                 //12 Apr
                 case 10:
+                    buffPlan.Nameless = NamelessBuff.MaxBoostSecondaryTrait(Build.Abilities.Occult);
+
+                    plan.Add(new CreateFetishActivity(Spiridon, 4, "Carnyx of Victory", "War"));
+                    //Yoki: create Talens
+                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
 
                     //Lynn teach Kurt Ancestor Veneration
                     plan.Add(new TeachRiteToGarou(Lynn, Kurt, Rite.AncestorVeneration, 1));
                     plan.Add(new LearnRiteFromGarou(Kurt, Lynn, Rite.AncestorVeneration, 1));
 
-
                     break;
 
                 //19 Apr (teaching week)
                 case 11:
+                    buffPlan.Nameless = NamelessBuff.MaxBoostCarnyx();
+
+                    //teach
+                    plan.Add(new TeachAbility(Kinfolk2, Nameless, Build.Abilities.Linguistics));
+                    plan.Add(new TeachAbility(Kinfolk1, Spiridon, Build.Abilities.Occult));
+                    plan.Add(new TeachAbility(Kurt, Yoki, Build.Abilities.Poison)); //TODO: manually add Science 1 for 3 XP
+                    plan.Add(new TeachAbility(Spiridon, Kinfolk2, Build.Abilities.Crafts));
+                    plan.Add(new TeachAbility(Nameless, Kinfolk1, Build.Abilities.Brawl));
+                    plan.Add(new TeachAbility(Yoki, Kurt, Build.Abilities.Traps));
+
                     break;
 
                 //26 Apr
                 case 12:
+                    buffPlan.Nameless = NamelessBuff.MaxBoostSecondaryTrait(Build.Abilities.Linguistics);
+
+                    plan.Add(new CreateFetishBase(Spiridon, 4, "Unbroken Cord"));
+                    //Yoki: create Talens
+                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
                     break;
 
                 //3 May (teaching week)
                 case 13:
+                    buffPlan.Nameless = NamelessBuff.MaxBoostCarnyx();
+
+                    //teach
+                    plan.Add(new TeachAbility(Kurt, Nameless, Build.Abilities.Meditation));
+                    plan.Add(new TeachAbility(Kinfolk2, Yoki, Build.Abilities.Dodge));
+                    plan.Add(new TeachAbility(Kinfolk1, Kinfolk2, Build.Abilities.Hypnotism));
+                    plan.Add(new TeachAbility(Nameless, Spiridon, Build.Abilities.Brawl));
+                    plan.Add(new TeachAbility(Spiridon, Kurt, Build.Abilities.Brawl));
+                    plan.Add(new TeachAbility(Yoki, Kinfolk1, Build.Abilities.Investigation));
+
                     break;
 
                 //10 May
                 case 14:
+                    //TODO: add rites for Nameless earlier than this week, but this week os for rites!
+                    buffPlan.Nameless = NamelessBuff.MaxBoostSecondaryTrait(Build.Abilities.Rituals);
+
+                    plan.Add(new CreateFetishActivity(Spiridon, 4, "Unbroken Cord", "Unity"));
+                    //Yoki: create Talens
+                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
                     break;
 
                 //17 May (teaching week)
                 case 15:
+                    buffPlan.Nameless = NamelessBuff.MaxBoostCarnyx();
+
+                    //teach
+                    plan.Add(new TeachAbility(Kurt, Nameless, Build.Abilities.SpiritLore));
+                    plan.Add(new TeachAbility(Kinfolk2, Spiridon, Build.Abilities.Dodge));
+                    plan.Add(new TeachAbility(Yoki, Kinfolk1, Build.Abilities.Dodge));
+                    plan.Add(new TeachAbility(Nameless, Yoki, Build.Abilities.Brawl));
+                    plan.Add(new TeachAbility(Kinfolk1, Kurt, Build.Abilities.Firearms));
+                    plan.Add(new TeachAbility(Spiridon, Kinfolk2, Build.Abilities.Performance));
+
                     break;
 
                 //24 May
                 case 16:
+                    buffPlan.Nameless = NamelessBuff.MaxBoostCarnyx();
+
+                    plan.Add(new CreateFetishBase(Spiridon, 3, "Ultimate Search Engine"));
+                    plan.Add(new CreateFetishActivity(Spiridon, 3, "Ultimate Search Engine", "Cockroach"));
+                    //Yoki: create Talens
+                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
                     break;
 
                 //31 May (teaching week, last event of 6th arc)
                 case 17:
+                    buffPlan.Nameless = NamelessBuff.MaxBoostCarnyx();
+
+                    //teach
+                    plan.Add(new TeachAbility(Kurt, Nameless, Build.Abilities.Drive));
+                    plan.Add(new TeachAbility(Kinfolk2, Yoki, Build.Abilities.Survival));
+                    plan.Add(new TeachAbility(Kinfolk1, Kinfolk2, Build.Abilities.Firearms));
+                    plan.Add(new TeachAbility(Nameless, Kinfolk1, Build.Abilities.Enigmas));
+                    plan.Add(new TeachAbility(Yoki, Kurt, Build.Abilities.Dodge));
+                    plan.Add(new TeachAbility(Spiridon, Lynn, Build.Abilities.Herbalism));
                     break;
 
                 //07,14,21,28 June
@@ -288,7 +328,12 @@ namespace RollerEngine.Character
                 case 19:
                 case 20:
                 case 21:
-                    break;
+                    return null; //pause between arcs
+
+                //plan.Add(new TeachAbility(Kinfolk2, Nameless, Build.Abilities.Survival))
+                //UnbrokenCord.plan.Add(new TeachAbility(Lynn, Nameless, Build.Abilities.Enigmas));
+                //plan.Add(new TeachAbility(Kinfolk2, Lynn, Build.Abilities.Medicine));
+                //plan.Add(new TeachAbility(Poison, Spiridon, Build.Abilities.Poison));
 
                 //05 Jul (first event of 7th arc)
                 case 22:

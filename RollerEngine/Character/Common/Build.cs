@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using RollerEngine.Modifiers;
 using RollerEngine.Rolls.Rites;
+using RollerEngine.Rolls.Skills;
 
 namespace RollerEngine.Character.Common
 {
@@ -301,7 +303,50 @@ namespace RollerEngine.Character.Common
             return (successesInitial == RiteAlreadyLearned);
         }
 
+        public string FetishBaseKey(string fetishName)
+        {
+            return CraftFetishBase.FetishBasePrefix + " " + fetishName;
+        }
 
+        public void AddFetishBase(string fetishName)
+        {
+            var key = FetishBaseKey(fetishName);
+            if (!Items.ContainsKey(key))
+            {
+                Items.Add(key, 0);
+            }
+            Items[key]++;
+        }
+
+        public void RemoveFetishBase(string fetishName)
+        {
+            var key = FetishBaseKey(fetishName);
+
+            int count;
+            if (!Items.TryGetValue(key, out count))
+            {
+                throw new KeyNotFoundException(string.Format("{0} doesn't have a {1} to remove (no key)!", Name, fetishName));
+            }
+
+            count--;
+
+            if (count < 0)
+            {
+                throw new Exception(string.Format("{0} doesn't have a {1} to remove! (count < 0)", Name, fetishName));
+            }
+
+            Items[key] = count;
+        }
+
+        public void AddFetish(string fetishName)
+        {
+            var key = fetishName;
+            if (!Items.ContainsKey(key))
+            {
+                Items.Add(key, 0);
+            }
+            Items[key]++;
+        }
 
     }
 }

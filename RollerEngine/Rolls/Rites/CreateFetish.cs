@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using RollerEngine.Character.Common;
 using RollerEngine.Logger;
@@ -26,16 +27,19 @@ namespace RollerEngine.Rolls.Rites
 
             int result = base.Roll(actor, new List<Build>(), hasSpec, hasWill);
 
+            Log.Log(Verbosity.Critical, ActivityChannel.Creation, "");
             if (result >= 1)
             {
-                actor.Items.Add(fetishName, 1);
+                actor.RemoveFetishBase(fetishName);
+
+                actor.AddFetish(fetishName);
 
                 Log.Log(Verbosity.Critical, ActivityChannel.Creation, string.Format("{0} has got {1} successes on {2}. Now he has an exellent {3}!",
                     actor.Name, result, _rite.Name, fetishName));
             }
             else
             {
-                Log.Log(Verbosity.Critical, ActivityChannel.Creation, string.Format("{0} has got {1} successes {2}. Fetish base should be recrafted!",
+                Log.Log(Verbosity.Error, ActivityChannel.Creation, string.Format("{0} has got {1} successes {2}. Fetish {3} should be recrafted!",
                     actor.Name, result, _rite.Name, fetishName));
             }
 

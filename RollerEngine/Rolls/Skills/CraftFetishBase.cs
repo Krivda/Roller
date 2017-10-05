@@ -7,7 +7,8 @@ namespace RollerEngine.Rolls.Skills
 {
     public class CraftFetishBase : SkillRoll
     {
-        private const string SKILL_NAME = "Craft fetish base";
+        public const string FetishBasePrefix = "fetish base";
+        private const string SKILL_NAME = "Craft " + FetishBasePrefix;
 
         private int _dc;
 
@@ -29,9 +30,10 @@ namespace RollerEngine.Rolls.Skills
 
             int result = base.Roll(actor, new List<Build>(), hasSpec, hasWill);
 
+            Log.Log(Verbosity.Critical, ActivityChannel.Creation, "");
             if (result >= successesRequires)
             {
-                actor.Items.Add(string.Format("base for fetish {0}", fetishName), 1);
+                actor.AddFetishBase(fetishName);
 
                 Log.Log(Verbosity.Critical, ActivityChannel.Creation, string.Format("{0} has got {1} successes (of required {2}) on {3}. Now he has an exellent base for {4}!",
                     actor.Name, result, successesRequires, SKILL_NAME, fetishName));

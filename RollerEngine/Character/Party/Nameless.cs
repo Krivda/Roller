@@ -74,7 +74,7 @@ namespace RollerEngine.Character.Party
             //buff support trait
             if (!string.IsNullOrEmpty(buffPlan.PreBuff.Trait))
             {
-                ApplyAncestors(buffPlan.PreBuff.Trait, Verbosity.Important);
+                ApplyAncestors(buffPlan.PreBuff.Trait, Verbosity.Details);
             }
         }
 
@@ -104,7 +104,7 @@ namespace RollerEngine.Character.Party
             var teachersEase = new TeachersEase(Log, Roller, verbosity);
             if (carnyxed)
             {
-                Party.Spiridon.__ActivateCarnyx(Self, "Teacher's ease", false);
+                Party.Spiridon.__ActivateCarnyx(Self, "Teacher's ease", true);
             }
             teachersEase.Roll(Self, target, ability, true, withWill);
             if (carnyxed)
@@ -195,7 +195,7 @@ namespace RollerEngine.Character.Party
                     Self.TraitModifiers.Remove(traitMod);
                 }
 
-                ApplyAncestors(buff.Trait, Verbosity.Critical);
+                ApplyAncestors(buff.Trait, Verbosity.Important);
             }
         }
 

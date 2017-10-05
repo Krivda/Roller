@@ -318,6 +318,7 @@ namespace RollerEngine.Character
                 foreach (var itemKvp in charProgressKvp.Value.ItemsProgress)
                 {
                     string direction;
+                    //TODO: bug
                     if (itemKvp.Value.Item1 < itemKvp.Value.Item2)
                     {
                         direction = "got";
@@ -505,6 +506,11 @@ namespace RollerEngine.Character
         public void DoWeek(int weekNo)
         {
             WeekPlan wp = GetPlanByWeekNumber(weekNo);
+            if (wp == null)
+            {
+                return;
+            }
+
             List<WeeklyActivity> plan = wp.Activities;
 
             Nameless.BoostPlan = wp.BuffPlan.Nameless;
@@ -623,6 +629,7 @@ namespace RollerEngine.Character
 
                 foreach (var planItem in createTalens)
                 {
+                    _log.Log(Verbosity.Critical, ActivityChannel.Main, "");
                     _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} creating talens {1}",
                         planItem.Actor.CharacterName,
                         planItem.TalenName));

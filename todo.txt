@@ -50,3 +50,28 @@ SELECT TOKENS:
 48. CastCreateTalens - Spiridon; Yoki; Lynn; RiteOfBindingRoll
 39. create talens for arc 7
 40. counters: summon, rosemary, cacao - continue all rolls
+
+!!! rites from our tribebooks !!!
+//vigor of the departed etc.
+
+// Drv: Keltur,Alisa
+// Lead: Keltur, Urfin, Alisa
+// Surv: Keltur,Krivda,K1
+// Dodge: Krivda
+// Fire: Krivda,Keltur,Alisa
+
+//Perform ->> K2, Yoki
+/*
+ * Kinfolk 1 [UC: Urfin] => Firearms 5
+ * Kinfolk1 => Kinfolk2 Bureacracy 4
+ * Kinfolk 1 => Hypnotism 4 {all?}
+ * [UC: Keltur] Herbalism 4 -> (Lynn)
+ * 
+ * Medicine to Urfin/Lynn
+ * Kinfolk2 => Dodge 5 (Krivda first)
+ * Krivda, [Kinfolk 2] => Leadership 5
+ * Kinfolk2 [UC: Keltur] => Survival 5
+ * Kinfolk1 => Urfin Computers 5
+ * Enigmas 5 [UC: Lynn] => Krivda
+ * Kinfolk2 -> Politics 4
+ */

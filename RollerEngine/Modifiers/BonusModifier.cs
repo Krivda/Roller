@@ -11,5 +11,7 @@ namespace RollerEngine.Modifiers
         public BonusModifier(string name, DurationType duration, List<string> conditions, List<string> ignoredConditions, int value) : base(name, null, duration, conditions, ignoredConditions, value)
         {
         }
+
+
     }
 }

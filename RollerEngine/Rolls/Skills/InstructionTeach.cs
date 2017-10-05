@@ -39,6 +39,7 @@ namespace RollerEngine.Rolls.Skills
 
             if (maxTeachValue <= targetTraitValue)
             {
+                Log.Log(Verbosity.Warning, ActivityChannel.TeachLearn, "");
                 Log.Log(Verbosity.Warning, ActivityChannel.TeachLearn, string.Format("{0} doesn't have more skill in {1} ability ({2}vs{3}) or Instruct {4}  to teach {5}!", actor.Name, ability, actorTraitValue, targetTraitValue, actorInstructAbility, target.Name));
                 return 0;
             }
