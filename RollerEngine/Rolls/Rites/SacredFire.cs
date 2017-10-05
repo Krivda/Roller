@@ -12,8 +12,8 @@ namespace RollerEngine.Rolls.Rites
         private readonly int _gnosisSpent = 1;
 
         public SacredFire(IRollLogger log, IRoller roller, int additionalGnosisSpent) :
-            base(RitesDictionary.Rites[Rite.SacredFire].Name, log, roller,
-                new List<string>() {Build.Atributes.Wits, Build.Abilities.Rituals},
+            base(Rite.SacredFire, log, roller,
+                null, //default
                 new List<string>() {Build.Conditions.MysticRite}, null, Verbosity.Details)
         {
             _gnosisSpent += additionalGnosisSpent;
@@ -31,7 +31,7 @@ namespace RollerEngine.Rolls.Rites
         {
             //todo: check for a need to reroll if not -5
             //todo: general remove/add bonus logic
-            if (!actor.CheckBonusExists(Build.Atributes.Charisma, Name))
+            if (!actor.CheckBonusExists(Build.Abilities.Rituals, Name))
             {
                 actor.SpendGnosis(_gnosisSpent);
                 actor.SpendSanctifiedPlant(Build.Counters.SanctifiedPlants.Tobacco,1);

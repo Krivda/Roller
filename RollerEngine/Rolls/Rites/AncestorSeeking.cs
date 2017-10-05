@@ -8,11 +8,10 @@ namespace RollerEngine.Rolls.Rites
 {
     class AncestorSeeking : RiteRoll
     {
-        private const string RITE_NAME = "Ancestor Seeking";
-
-        public AncestorSeeking(IRollLogger log, IRoller roller) : base(RITE_NAME, log, roller, 
+        public AncestorSeeking(IRollLogger log, IRoller roller) :
+            base(Rite.AncestorSeeking, log, roller,
             new List<string>() {Build.Atributes.Wits, Build.Abilities.Rituals },
-            new List<string>() {Build.Conditions.MysticRite}, null, Verbosity.Details) 
+            new List<string>() {Build.Conditions.MysticRite}, null, Verbosity.Details)
         {
         }
 

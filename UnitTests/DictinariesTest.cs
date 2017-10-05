@@ -18,7 +18,7 @@ namespace UnitTests
 
             foreach (var rite in Enum.GetValues(typeof(Rite)).Cast<Rite>())
             {
-                var riteInfo = RitesDictionary.Rites[rite];
+                var riteInfo = rite.Info();
 
                 var conditions = riteInfo.Conditions.Aggregate("", (current, condition) =>
                     string.Format("{0}{1}{2}", current, string.IsNullOrEmpty(current) ? "" : " ,", condition));

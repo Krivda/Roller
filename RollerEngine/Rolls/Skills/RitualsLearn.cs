@@ -9,7 +9,7 @@ namespace RollerEngine.Rolls.Skills
 {
     public class RitualsLearn : SkillRoll
     {
-             
+
         private const string SKILL_NAME = "Rite (learn)";
 
         public RitualsLearn(IRollLogger log, IRoller roller) : base(
@@ -17,18 +17,14 @@ namespace RollerEngine.Rolls.Skills
             log,
             roller,
             new List<string>() { Build.Atributes.Intellect, Build.Abilities.Rituals },
-            new List<string>() { Build.Conditions.LearningRites }, 
+            new List<string>() { Build.Conditions.LearningRites },
             null, Verbosity.Important)
         {
         }
 
         public int Roll(Build actor, Rite rite, bool hasSpec, bool hasWill)
         {
-            RiteInfo riteInfo;
-            if (!RitesDictionary.Rites.TryGetValue(rite, out riteInfo))
-            {
-                throw new Exception(string.Format("Rite {0} is not known by software!", Enum.GetName(typeof(Rite), rite)));
-            }
+            RiteInfo riteInfo = rite.Info();
 
             var riteName = riteInfo.Name;
             AdditionalInfo = "rite " + riteName;
@@ -40,7 +36,7 @@ namespace RollerEngine.Rolls.Skills
             {
                 string keyRitePool = Build.DynamicTraits.GetKey(Build.DynamicTraits.RitePool, riteName);
                 string keyRiteLearned = Build.DynamicTraits.GetKey(Build.DynamicTraits.RiteLearned, riteName);
-              
+
                 //create dynamic trait if it was absent
                 if (!actor.Traits.ContainsKey(keyRitePool))
                 {
@@ -86,7 +82,7 @@ namespace RollerEngine.Rolls.Skills
             {
                 Log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} didn't learn anything.", actor.Name));
             }
-            
+
             return result;
         }
     }

@@ -174,7 +174,7 @@ namespace RollerEngine.Character.Party
                     ApplyAncestors(Build.Abilities.Instruction, Verbosity.Important);
                 }
 
-                
+
                 //CARNYX CANNOT BE APPLIED!!!
                 //give XP to smb
                 var instruct = new InstructionTeach(Log, Roller);
@@ -194,7 +194,7 @@ namespace RollerEngine.Character.Party
                     {
                         string riteName =
                             Build.DynamicTraits.GetBaseTrait(traitKvp.Key, Build.DynamicTraits.RiteLearned);
-                        RiteInfo rinfo = RitesDictionary.Rites.First(ri => ri.Value.Name.Equals(riteName)).Value;
+                        RiteInfo rinfo = RiteInfo.ByName(riteName);
                         ritePoolTraits.Add(new Tuple<RiteInfo, int>(rinfo, traitKvp.Value));
                     }
                 }
@@ -202,8 +202,8 @@ namespace RollerEngine.Character.Party
 
             //sort by number of success left to learn the rite
             ritePoolTraits.Sort((tuple, tuple1) =>
-                ((int)(tuple .Item1.Level * 10) - tuple .Item2).CompareTo(
-                 (int)(tuple1.Item1.Level * 10) - tuple1.Item2));
+                (tuple .Item1.SuccessesRequiredToLearn() * 10 - tuple .Item2).CompareTo(
+                 tuple1.Item1.SuccessesRequiredToLearn() * 10 - tuple1.Item2));
 
             //TODO: very dirty hack!
             if (Self.Name.Equals(Party.Spiridon.CharacterName))
@@ -253,11 +253,7 @@ namespace RollerEngine.Character.Party
                 throw new Exception(string.Format("{0} is {1}, and they can't learn rites", Self.Name,
                     Self.CharacterClass));
             }
-            RiteInfo riteInfo;
-            if (!RitesDictionary.Rites.TryGetValue(rite, out riteInfo))
-            {
-                throw new Exception(string.Format("Rite {0} is not known by software!", Enum.GetName(typeof(Rite), rite)));
-            }
+            RiteInfo riteInfo = rite.Info();
 
             var riteName = riteInfo.Name;
 

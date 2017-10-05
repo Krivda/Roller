@@ -8,7 +8,7 @@ namespace RollerEngine.Character.Party
 {
     public class Yoki : HatysPartyMember
     {
- 
+
         public Yoki(Build build, IRollLogger log, IRoller roller, HatysParty party) : base("Йоки", build, log, roller, party)
         {
             //todo: check for arc 7
@@ -37,7 +37,7 @@ namespace RollerEngine.Character.Party
 
         public override bool HasSpecOnRite(Rite rite)
         {
-            return RitesDictionary.Rites[rite].Group == RiteGroup.Mystic;
+            return rite.Info().Group == RiteGroup.Mystic;
         }
     }
 }

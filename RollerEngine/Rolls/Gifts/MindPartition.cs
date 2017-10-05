@@ -22,10 +22,10 @@ namespace RollerEngine.Rolls.Gifts
         public MindPartition(IRollLogger log, IRoller roller)
             : base(GiftName, log, roller,
                 new List<string>() { Build.RollableTraits.Gnosis },
-                new List<string>() { Build.Conditions.RollableTrait }, 
+                new List<string>() { Build.Conditions.RollableTrait },
                 null, Verbosity.Important)
         {
-            
+
         }
 
         public int Roll(Build actor)
@@ -44,7 +44,7 @@ namespace RollerEngine.Rolls.Gifts
             if (successes > 0)
             {
                 Log.Log(Verbosity, ActivityChannel.TeachLearn, string.Format("{0} obtained {1} bonus extended actions for a scence from {2} gift.", actor.Name, successes, Name));
-            } 
+            }
             else
             {
                 Log.Log(Verbosity, ActivityChannel.TeachLearn, string.Format("{0} didn't get bonus from {1}.", actor.Name, Name));
@@ -80,6 +80,6 @@ namespace RollerEngine.Rolls.Gifts
             return mods;
         }
         */
-        
+
     }
 }

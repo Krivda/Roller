@@ -27,7 +27,7 @@ namespace RollerEngine.Character.Party
         public void CastPersuasion()
         {
             if (!Self.CheckBonusExists(Build.Atributes.Manipulation, Persuasion.GIFT_NAME))
-            {          
+            {
                 Party.Nameless.CastTeachersEase(Self, Build.Abilities.Subterfuge, true, Verbosity.Details);
                 //Cast Pesuasion
                 var persuasionRoll = new Persuasion(Log, Roller);
@@ -50,7 +50,7 @@ namespace RollerEngine.Character.Party
         {
             //Nameless buffs Empthy
             Party.Nameless.CastTeachersEase(Self, Build.Abilities.Empathy, true, Verbosity.Details);
-            
+
             //Cast Call to Wyld
             var callToWyld = new CallOfTheWyldDirgeToTheFallen(Log, Roller);
             callToWyld.Roll(Self, target, skill, true, false);
@@ -120,7 +120,7 @@ namespace RollerEngine.Character.Party
             //TODO: no check for multiple GhostPacks
             if (Self.AncestorsUsesLeft != -1)
             {
-                Self.AncestorsUsesLeft += 1; //bonus usage 
+                Self.AncestorsUsesLeft += 1; //bonus usage
 
                 Party.Nameless.CastTeachersEase(Self, Build.Abilities.Occult, false, Verbosity.Details, true);
 
@@ -141,7 +141,7 @@ namespace RollerEngine.Character.Party
         public void CastAnscestorSeeking(Build target)
         {
             Party.Nameless.CastTeachersEase(Self, Build.Abilities.Rituals, false, Verbosity.Details);
-            
+
             //Cast Pesuasion
             var ancestorSeeking = new AncestorSeeking(Log, Roller);
             ancestorSeeking.Roll(Self, target, false, true);
@@ -167,7 +167,7 @@ namespace RollerEngine.Character.Party
             {
                 Log.Log(Verbosity.Details, ActivityChannel.Boost, ">== Carnyx started, now actions from Spiridon");
                 //TODO: -1 Gnosis to activate
-                
+
                 CastCaernChanneling(Build.Abilities.Performance);
                 Party.Nameless.CastTeachersEase(Self, Build.Abilities.Performance, false, Verbosity.Details, false); //NO RECURSION false
 
@@ -192,7 +192,7 @@ namespace RollerEngine.Character.Party
 
         public override bool HasSpecOnRite(Rite rite)
         {
-            return RitesDictionary.Rites[rite].Group == RiteGroup.Caern;
+            return rite.Info().Group == RiteGroup.Caern;
         }
 
         public override void CreateFetishBase(int fetishLevel, string fetishName)

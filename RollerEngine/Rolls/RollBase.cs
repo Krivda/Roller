@@ -21,7 +21,7 @@ namespace RollerEngine.Rolls
         public string AdditionalInfo { get; protected set; }
 
         public string Name { get; private set; }
-        public List<string> DicePool { get; private set; }
+        public List<string> DicePool { get; protected set; }
         public bool RemoveSuccessesOn1 { get; private set; }
         public bool CanBotch { get; private set; }
         public List<string> Conditions { get; private set; }
@@ -80,10 +80,10 @@ namespace RollerEngine.Rolls
             public DCInfo DCInfo;
         }
 
-        public RollBase(string name, IRollLogger log, IRoller roller, List<String> dicePool, bool removeSuccessesOn1, bool canBotch, List<string> conditions) : 
+        public RollBase(string name, IRollLogger log, IRoller roller, List<String> dicePool, bool removeSuccessesOn1, bool canBotch, List<string> conditions) :
             this (name, log, roller, dicePool, removeSuccessesOn1, canBotch, conditions, null, Verbosity.Important)
         {
-            
+
         }
 
         public RollBase(string name, IRollLogger log, IRoller roller,  List<String> dicePool, bool removeSuccessesOn1, bool canBotch, List<string> conditions, string additionalInfo, Verbosity verbosity)
@@ -185,15 +185,14 @@ namespace RollerEngine.Rolls
             {
                 Successes = OnBotch(Successes);
             }
-                
+
 
             return Successes;
          }
 
-
         protected virtual int OnBotch(int successes)
         {
-            
+
             StringBuilder info = new StringBuilder(100);
             string delim = "";
             int face = 1;

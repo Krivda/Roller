@@ -1,3 +1,9 @@
+SELECTED TOKENS:
+  Carnyx of Victory             (fiana, level 4 fetish) //Roll Man+Perf vs. 8 (-2 social) => +1 dice to ALL pools of ALL comrades (work while singing)
+	Unbroken Cord      (children of gaia, level 4 fetish) //shares Ability/Gift with packmate for scene
+  Ultimate Search Engine (glasswalkers, level 4 fetish)
+  Nightshade                  (wendigo, level 4 rite)
+
 todo triaged:
 3. самому себя не учить!
 4. считать талены
@@ -27,14 +33,6 @@ todo max priority:
 36. code: rite speciaziationz, conditions (from sprit), enum
 27. code: queue new rite with delay until it will be learned by teacher; incorporate garou to garou case
 
-SELECT TOKENS:
-	Carnyx of Victory +DicePool fiana, 4                              NEED //Roll Man+Perf vs. 8 (-2 social) => +1 dice to ALL pools of ALL comrades (work while singing-hours)
-	Coforters Archtect (3), children                                  ?? NEED; allows transfer to packmate while sleep (WHY WE NEED IT?)
-	Unbroken Cord (4), children                                       NEED; also need Caern of Gnosis that on open caern will allow to have Gnois>=perma; (+consider Bonding Rite or tagalong)
-                                                                          shares Ability/Gift with packmate for scene
-    Ultimate Search Engine (4)
-
-
 30. Build
 31. Distrube buffs Nameless (secondary Rituals goal (B.R+Chann+supp Anc.)) //should be param of the week
 33. Gnosis/Willpower replenish
@@ -50,9 +48,11 @@ SELECT TOKENS:
 48. CastCreateTalens - Spiridon; Yoki; Lynn; RiteOfBindingRoll
 39. create talens for arc 7
 40. counters: summon, rosemary, cacao - continue all rolls
+41. more rite to learn for Nameless
 
-!!! rites from our tribebooks !!!
-//vigor of the departed etc.
+!!! renewing talen usages
+!!! - automatic success
+!!! rites in OpenedCaern.cs
 
 // Drv: Keltur,Alisa
 // Lead: Keltur, Urfin, Alisa
@@ -66,7 +66,7 @@ SELECT TOKENS:
  * Kinfolk1 => Kinfolk2 Bureacracy 4
  * Kinfolk 1 => Hypnotism 4 {all?}
  * [UC: Keltur] Herbalism 4 -> (Lynn)
- * 
+ *
  * Medicine to Urfin/Lynn
  * Kinfolk2 => Dodge 5 (Krivda first)
  * Krivda, [Kinfolk 2] => Leadership 5

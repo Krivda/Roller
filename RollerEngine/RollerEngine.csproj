@@ -85,6 +85,7 @@
     <Compile Include="Character\Party\NamelessBuff.cs" />
     <Compile Include="Character\ProgressSummary.cs" />
     <Compile Include="Rolls\Rites\CreateFetish.cs" />
+    <Compile Include="Rolls\Rites\OpenedCaern.cs" />
     <Compile Include="Rolls\Skills\CraftFetishBase.cs" />
     <Compile Include="Rolls\Skills\PesuadeSpiritEnterFetish.cs" />
     <Compile Include="WeekPlan\CreationActivity.cs" />

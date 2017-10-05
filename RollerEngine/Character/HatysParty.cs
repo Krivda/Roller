@@ -543,7 +543,7 @@ namespace RollerEngine.Character
                     case Activity.QueueRiteLearning:
                     {
                         QueueRiteLearning weeklyActivity = (QueueRiteLearning)planItem;
-                        RiteInfo riteInfo = RitesDictionary.Rites[weeklyActivity.Rite];
+                        RiteInfo riteInfo = weeklyActivity.Rite.Info();
                         string keyRitePool = Build.DynamicTraits.GetKey(Build.DynamicTraits.RitePool, riteInfo.Name);
                         string keyRiteLearned =
                             Build.DynamicTraits.GetKey(Build.DynamicTraits.RiteLearned, riteInfo.Name);
@@ -586,7 +586,7 @@ namespace RollerEngine.Character
                         _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} teachs {1} for Rite {2}",
                             weeklyActivity.Actor.CharacterName,
                             weeklyActivity.Student.Self.Name,
-                            RitesDictionary.Rites[weeklyActivity.Rite].Name));
+                            weeklyActivity.Rite.Info().Name));
                         break;
                     }
 
@@ -677,8 +677,7 @@ namespace RollerEngine.Character
                 {
                     if (riteProgress.Value.Item2 == Build.RiteAlreadyLearned)
                     {
-                        //todo: create method RitesDictionary.GetByName()
-                        var rite = RitesDictionary.Rites.Values.First(ri => ri.Name.Equals(riteProgress.Key));
+                        var rite = RiteInfo.ByName(riteProgress.Key);
                         //learned rite this week
                         _party[progressSummaryKvp.Key].Self.Rites[rite.Rite] = weekNo;
                     }
