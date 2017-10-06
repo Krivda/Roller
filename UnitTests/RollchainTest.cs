@@ -58,7 +58,7 @@ namespace UnitTests
             int minSpiridon = 1000000;
             int maxNameless = 0;
             int maxSpiridon = 0;
-            
+
             var res = HatysParty.LoadFromGoogle(devNullLogger, devNullRoller);
             //var res = HatysParty.LoadFromGoogle(rollLogger, roller);
 
@@ -75,17 +75,17 @@ namespace UnitTests
                 {
                     res.StartScene(1);
                     res.Nameless.WeeklyPreBoost(NamelessBuff.MaxBoostInstruct());
-                    
+
                     /*
                     res.Spiridon.WeeklyPreBoost(Build.Abilities.Occult); //it is important to Spiridon to be second due to -1 dc of Teacher's Ease of Nameless
                     res.Nameless.WeeklyBoostSkill(Build.Abilities.Instruction);
                     res.Spiridon.WeeklyBoostSkill(SpiridonBonus);
-                    */    
-                    
+                    */
+
                     res.Spiridon.WeeklyPreBoost(Build.Abilities .Empathy); //it is important to Spiridon to be second due to -1 dc of Teacher's Ease of Nameless
                     res.Spiridon.WeeklyBoostSkill(SpiridonBonus);
                     res.Nameless.WeeklyBoostSkill(NamelessBuff.MaxBoostInstruct());
-                   
+
 
                     //Logger.Info("Started");
 
@@ -137,13 +137,13 @@ namespace UnitTests
 
             Logger.Info("Nameless: {0} ({1}-{2})", sumNameless / (count*1.0), minNameless, maxNameless);
             Logger.Info("Spiridon: {0} ({1}-{2})", sumSpiridon / (count*1.0), minSpiridon, maxSpiridon);
-            
+
             Logger.Info("Botched:");
             Logger.Info(sbErr);
 
             OfflineDiceRoller.LogStats(rollLogger);
         }
-        
+
         [Test]
         public void Multiweek()
         {
@@ -160,7 +160,7 @@ namespace UnitTests
             for (int i = 1; i < 20; i++)
             {
                 res.DoWeek(i);
-            }            
+            }
 
             res.LogTotalProgress();
         }

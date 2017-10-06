@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using RollerEngine.Character;
 using RollerEngine.Logger;
@@ -10,15 +11,16 @@ using RolzOrgEnchancer.UI;
 
 namespace RolzOrgEnchancer
 {
+
     public enum Color
     {
-        Gray = 0, //Verbosity.Debug
-        Black = 1, //Verbosity.Details
-        Blue = 2, //Verbosity.Normal
-        Orange = 3, //Verbosity.Important
-        Pink = 4, //Verbosity.Critical
-        Teal = 5, //Verbosity.Warning
-        Red = 6, //Verbosity.Error
+        Gray = 0,   //Verbosity.Debug
+        Black = 1,  //Verbosity.Details
+        Orange = 2, //Verbosity.Normal
+        Blue = 3,   //Verbosity.Important
+        Pink = 4,   //Verbosity.Critical
+        Teal = 5,   //Verbosity.Warning
+        Red = 6,    //Verbosity.Error
 
         Green,  //UI command
         Purple, //UI session
@@ -35,7 +37,7 @@ namespace RolzOrgEnchancer
 
     }
 
-    internal class RoomBootImpl : IRollLogger, IRoller
+    internal class RoomBootImpl : ILogWrapper<object>, IRoller
     {
         public int Week { get; set; }
         private static uint _idRoll = 100;
@@ -50,14 +52,28 @@ namespace RolzOrgEnchancer
 
             var input = new RollInput(diceCount, dc, specialization, negateBotch, ignoreFailures);
             var item = RoomBot.MakeRoll((uint)diceCount, (uint)dc, _idRoll++);
-            var output = new RollOutput(item, input);   
+            var output = new RollOutput(item, input);
             return new RollData(output.Result, output.RawDices);
         }
 
-        //RollerEngine.Logger.IRollLogger
-        public void Log(Verbosity verbosity, ActivityChannel channel, string record)
+        public object CreateChannelLogger(ActivityChannel channel)
         {
-            if (verbosity > Verbosity.Details) Program.Log(string.Format("RoomBootImpl: {0}: {1}", verbosity, record));
+            if (channel != ActivityChannel.Main) return null;
+            return new object();
+        }
+
+        public void AppendInternalLog(object logger, Verbosity verbosity, string record)
+        {
+            if (logger != null) Log(verbosity, record);
+        }
+
+        public string GetInternalLog(object logger)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Log(Verbosity verbosity, string record)
+        {
             Color color;
             switch (verbosity)
             {
@@ -67,14 +83,17 @@ namespace RolzOrgEnchancer
                 case Verbosity.Details:
                     color = Color.Black;
                     break;
-                case Verbosity.Important:
-                    color = Color.Teal;
+                case Verbosity.Normal:
+                    color = Color.Orange;
                     break;
-                case Verbosity.Critical:
+                case Verbosity.Important:
                     color = Color.Blue;
                     break;
-                case Verbosity.Warning:
+                case Verbosity.Critical:
                     color = Color.Pink;
+                    break;
+                case Verbosity.Warning:
+                    color = Color.Teal;
                     break;
                 case Verbosity.Error:
                     color = Color.Red;
@@ -98,10 +117,10 @@ namespace RolzOrgEnchancer
     private static ConcurrentQueue<string> _messageQueue;
 
     public static Parser Parser = new Parser(DefaultRoomName);
-    private const string DefaultRoomName = "Hatys%20Test7";
+    private const string DefaultRoomName = "Hatys%20Test8";
 
-        private static void Worker()
-        {
+      private static void Worker()
+      {
           while (!_browser.RoomEntered()) Thread.Sleep(100);
           Program.Log("Worker: Inside room");
 
@@ -118,22 +137,28 @@ namespace RolzOrgEnchancer
           //InitializeKrivda(IRoomBot)
           //EmulateKrivda()
 
-          var interfaces = new RoomBootImpl();
-          var res = HatysParty.LoadFromGoogle(interfaces, interfaces);
+          var myInterface = new RoomBootImpl();
+          var logger = new BaseLogger<ILogWrapper<object>, object>(Verbosity.Details, new List<ActivityChannel>(), myInterface);
+          logger.TreatSpecialVerbosityAs(Verbosity.Normal);
+
+          var res = HatysParty.LoadFromGoogle(logger, myInterface);
 
           uint action;
           for (;;)
-            while (_actionQueue.TryDequeue(out action))
-            {
-              Thread.Sleep(100);
-              Program.Log("Worker: Deque action #" + action); //TODO Format
-                res.DoWeek(1);
-                res.DoWeek(2);
-              MakeMessage(Color.Red, "=== END OF ACTION ===");
-            }
-        }
+              while (_actionQueue.TryDequeue(out action))
+              {
+                  Thread.Sleep(100);
+                  Program.Log("Worker: Deque action #" + action); //TODO Format
+                  for (int i = 1; i < 20; i++)
+                  {
+                      res.DoWeek(i);
+                  }
+                  res.LogTotalProgress();
+                  MakeMessage(Color.Red, "=== END OF ACTION ===");
+              }
+      }
 
-        private static readonly char[] LineSeparators = { '\n', '\r' };
+      private static readonly char[] LineSeparators = { '\n', '\r' };
         public static void MakeMessage(Color color, string message)
         {
           /*
@@ -215,7 +240,7 @@ namespace RolzOrgEnchancer
             Thread.Sleep(300);
         }
 
-        private static readonly string[] ColorPrefix = { "", "red:", "green:", "blue:", "gray:", "maroon:", "olive:", "orange:", "purple:", "teal:", "pink:" };
+        private static readonly string[] ColorPrefix = { "gray:", "", "orange:", "blue:", "pink:", "teal:", "red:", "green:", "purple:", "maroon:", "olive:" };
         private static void QueueColorMessage(Color color, string message)
         {
             QueueMessage(ColorPrefix[(int) color] + message);

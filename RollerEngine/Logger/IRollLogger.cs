@@ -16,6 +16,7 @@ namespace RollerEngine.Logger
 
     public enum Verbosity
     {
+        Special         = 7,
         Error           = 6,
         Warning         = 5,
         Critical        = 4,

@@ -12,6 +12,7 @@ namespace RollerEngine.Logger
         private readonly List<ActivityChannel> _disabledChannels;
 
         public Verbosity MinVerbosity { get; set; }
+        public Verbosity SpecialVerbosityAlias { get; private set; }
         public int Week { get; set; }
 
         //use LoggerFactory class, all TImpl must have private constructor
@@ -22,10 +23,17 @@ namespace RollerEngine.Logger
             MinVerbosity = minVerbosity;
             _disabledChannels = disabledChannels;
             Week = -1;
+            TreatSpecialVerbosityAs(Verbosity.Debug);
+        }
+
+        public void TreatSpecialVerbosityAs(Verbosity verbosity)
+        {
+            SpecialVerbosityAlias = verbosity;
         }
 
         public void Log(Verbosity verbosity, ActivityChannel channel, string record)
         {
+            if (verbosity == Verbosity.Special) verbosity = SpecialVerbosityAlias;
             if (verbosity < MinVerbosity) return;
             if (_disabledChannels.Contains(channel)) return;
             var msg = record;

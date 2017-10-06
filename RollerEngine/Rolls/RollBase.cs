@@ -140,7 +140,7 @@ namespace RollerEngine.Rolls
             RollResult = Roller.Roll(FullRollInfo.DicePoolInfo.Dices, FullRollInfo.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill, Name);
             Successes = RollResult.Successes;
 
-            Log.Log(Verbosity.Debug, ActivityChannel.Main, string.Format("...and got {0} successes.", Successes));
+            Log.Log(Verbosity.Special, ActivityChannel.Main, string.Format("...and got {0} successes.", Successes));
 
             //remove used modifiers
             foreach (var traitValueInfo in FullRollInfo.DicePoolInfo.Traits)
@@ -205,7 +205,9 @@ namespace RollerEngine.Rolls
 
             info.AppendFormat(" vs DC {0}", FullRollInfo.DCInfo.AdjustedDC);
 
-            throw new BotchException(string.Format("{0} roll botched on {1} successes. ({2})", Name, successes, info));
+            //TODO HACK; HACK; HACK
+            //throw new BotchException(string.Format("{0} roll botched on {1} successes. ({2})", Name, successes, info));
+            return 0;
         }
 
         public RollInfo GetRollInfo(Build actor, List<Build> targets)
