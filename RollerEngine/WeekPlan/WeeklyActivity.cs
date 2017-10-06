@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using RollerEngine.Character.Party;
 
 namespace RollerEngine.WeekPlan
@@ -22,13 +24,12 @@ namespace RollerEngine.WeekPlan
         //due to Mind Partition you can make extended activities in background
 
         //none activities
-        //QueueAbility, //TODO: (AI) later when will be able to find tacher add ability to learning queue (with priority)
         QueueRiteLearning, //None; add rite to learning queue (with priority)
 
         //creation activities:
-        CreateTalens,     //Single; Delay; components from modules, mini umbral storm prevents talen creation more than twice per week;
-        CreateFetish,     //Single; Delay; components from modules, mini umbral storm prevents creation for 1/2/3 weeks (1-2/3-4/5-6 fetish level);
-        CreateFetishBase, //Extended; components from modules
+        CreateTalens,     //Single; Delay; item is required (mini umbral storm prevents talen creation more one per week)
+        CreateFetish,     //Single; Delay; item is required (mini umbral storm prevents creation for 1/2/3 weeks (1-2/3-4/5-6 fetish level);
+        CreateItem,       //Extended; components from modules
         CreateDevice,     //Extended; components from modules
 
         //teaching activities (halving duration due to Cacao):
@@ -49,7 +50,9 @@ namespace RollerEngine.WeekPlan
         public Activity Activity { get; private set; }
         public ActivityType Type { get; private set; }
         public ActivityKind Kind { get; private set; }
-        public int Delay;                                       //block for next this activity
+        public int Delay { get; private set; }             //block for several weeks this activity
+
+        protected static Dictionary<Activity, int> Delays = new Dictionary<Activity, int>();
 
         protected WeeklyActivity(HatysPartyMember actor, Activity activity, ActivityType type, ActivityKind kind, int delay)
         {
@@ -58,6 +61,11 @@ namespace RollerEngine.WeekPlan
             Type = type;
             Kind = kind;
             Delay = delay;
+        }
+
+        public virtual void Execute()
+        {
+            throw new NotImplementedException("WeeklyActivity.Execute should be overriden");
         }
     }
 }

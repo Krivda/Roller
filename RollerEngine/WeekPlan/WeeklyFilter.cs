@@ -16,9 +16,9 @@ namespace RollerEngine.WeekPlan
             return ByActivity<QueueRiteLearning>(plan, Activity.QueueRiteLearning);
         }
 
-        public static List<CreateTalens> ByCreateTalens(List<WeeklyActivity> plan)
+        public static List<CreateTalensActivity> ByCreateTalens(List<WeeklyActivity> plan)
         {
-            return ByActivity<CreateTalens>(plan, Activity.CreateTalens);
+            return ByActivity<CreateTalensActivity>(plan, Activity.CreateTalens);
         }
 
         public static List<CreateFetishActivity> ByCreateFetish(List<WeeklyActivity> plan)
@@ -26,14 +26,14 @@ namespace RollerEngine.WeekPlan
             return ByActivity<CreateFetishActivity>(plan, Activity.CreateFetish);
         }
 
-        public static List<CreateFetishBase> ByCreateFetishBase(List<WeeklyActivity> plan)
+        public static List<CreateItemActivity> ByCreateFetishItem(List<WeeklyActivity> plan)
         {
-            return ByActivity<CreateFetishBase>(plan, Activity.CreateFetishBase);
+            return ByActivity<CreateItemActivity>(plan, Activity.CreateItem);
         }
 
-        public static List<CreateDevice> ByCreateDevice(List<WeeklyActivity> plan)
+        public static List<CreateDeviceActivity> ByCreateDevice(List<WeeklyActivity> plan)
         {
-            return ByActivity<CreateDevice>(plan, Activity.CreateDevice);
+            return ByActivity<CreateDeviceActivity>(plan, Activity.CreateDevice);
         }
 
         public static List<TeachAbility> ByTeachAbility(List<WeeklyActivity> plan)

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
+using RollerEngine.WodSystem;
+using RollerEngine.WodSystem.WTA;
 
 namespace RollerEngine.Rolls.Rites
 {

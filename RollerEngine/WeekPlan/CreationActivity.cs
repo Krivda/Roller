@@ -10,36 +10,36 @@ namespace RollerEngine.WeekPlan
         }
     }
 
-    public class CreateDevice : CreationActivity
+    public class CreateDeviceActivity : CreationActivity
     {
         public string DeviceName { get; private set; }
 
-        public CreateDevice(HatysPartyMember actor, string deviceName)
+        public CreateDeviceActivity(HatysPartyMember actor, string deviceName)
             : base(actor, Activity.CreateDevice, ActivityType.Extended, 0)
         {
             DeviceName = deviceName;
         }
     }
 
-    public class CreateFetishBase : CreationActivity
+    public class CreateItemActivity : CreationActivity
     {
         public string FetishName { get; private set; }
         public int Level { get; private set; }
 
-        public CreateFetishBase(HatysPartyMember actor, int fetishLevel, string fetishName)
-            : base(actor, Activity.CreateFetishBase, ActivityType.Single, 0)
+        public CreateItemActivity(HatysPartyMember actor, int fetishLevel, string fetishName)
+            : base(actor, Activity.CreateItem, ActivityType.Single, 0)
         {
             FetishName = fetishName;
             Level = fetishLevel;
         }
     }
 
-    public class CreateTalens : CreationActivity
+    public class CreateTalensActivity : CreationActivity
     {
         public string TalenName { get; private set; }
         public string SpiritType { get; private set; }
 
-        public CreateTalens(HatysPartyMember actor, string talenName, string spiritType) :
+        public CreateTalensActivity(HatysPartyMember actor, string talenName, string spiritType) :
             base(actor, Activity.CreateTalens, ActivityType.Single, 0 /*0.5*/)
         {
             TalenName = talenName;

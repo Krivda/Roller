@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace RollerEngine.Rolls.Rites
+namespace RollerEngine.WodSystem.WTA
 {
     public enum RiteGroup
     {
@@ -98,10 +98,10 @@ namespace RollerEngine.Rolls.Rites
         AncestorVeneration,     //Minor, 0              //todo CODED; NOROLL
 
         //Misc
-        FeastForSpirits,        //Mystic, 2 //Fianna        //AUTOMATIC SUCCESS
-        Heritage,               //Mystic, 1 //Get of Fenris //roleplay; manual
-        HonorableOath,          //Accord, 1 //Silverfangs   //roleplay; manual
-        AncestorSeeking         //Mystic, 1 //Keltur        //todo CODED
+        FeastForSpirits,        //Mystic, 2 //Fianna                    //AUTOMATIC SUCCESS
+        Heritage,               //Mystic, 1 //Get of Fenris             //roleplay; manual
+        HonorableOath,          //Accord, 1 //Silverfangs               //roleplay; manual
+        AncestorSeeking         //Mystic, 1 //Spiridon's research       //todo CODED
     }
 
     public static class RiteExtensions
@@ -115,11 +115,6 @@ namespace RollerEngine.Rolls.Rites
         {
             if (riteInfo.Level == 0) return 5;
             return 10 * riteInfo.Level;
-        }
-
-        public static int SuccessesRequiredToLearn(this Rite rite)
-        {
-            return rite.Info().SuccessesRequiredToLearn();
         }
     }
 
@@ -141,7 +136,7 @@ namespace RollerEngine.Rolls.Rites
 
         private void Init(Rite rite)
         {
-            Rite = Rite;
+            Rite = rite;
         }
 
         public static RiteInfo ByName(string riteName)
@@ -234,9 +229,9 @@ namespace RollerEngine.Rolls.Rites
                     {Rite.AncestorVeneration, new RiteInfo("Of Ancestor Veneration", RiteGroup.Minor, 0, new List<string>())},
 
                     {Rite.FeastForSpirits, new RiteInfo("Feast For the Spirits", RiteGroup.Mystic, 2, new List<string>())}, //Fianna
-                    {Rite.Heritage, new RiteInfo("Of Heritage", RiteGroup.Mystic, 1, new List<string>())}, //Get of Fenris
-                    {Rite.HonorableOath, new RiteInfo("Of Honorable Oath", RiteGroup.Accord, 1, new List<string>())}, //Sliverfangs
-                    {Rite.AncestorSeeking, new RiteInfo("Of Ancestor Seeking", RiteGroup.Mystic, 1, new List<string>())} //Keltur
+                    {Rite.Heritage, new RiteInfo("Of Heritage", RiteGroup.Mystic, 1, new List<string>())},                  //Get of Fenris
+                    {Rite.HonorableOath, new RiteInfo("Of Honorable Oath", RiteGroup.Accord, 1, new List<string>())},       //Sliverfangs
+                    {Rite.AncestorSeeking, new RiteInfo("Of Ancestor Seeking", RiteGroup.Mystic, 1, new List<string>())}    //Spiridon's research
                 };
 
                 foreach (var rite in Rites)

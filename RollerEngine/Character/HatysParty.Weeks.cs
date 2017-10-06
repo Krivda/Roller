@@ -3,6 +3,8 @@ using RollerEngine.Character.Common;
 using RollerEngine.Character.Party;
 using RollerEngine.Rolls.Rites;
 using RollerEngine.WeekPlan;
+using RollerEngine.WodSystem;
+using RollerEngine.WodSystem.WTA;
 
 namespace RollerEngine.Character
 {
@@ -32,7 +34,7 @@ namespace RollerEngine.Character
                     plan.Add(new TeachAbility(Kurt, Yoki, Build.Abilities.Demolitions));
                     plan.Add(new TeachAbility(Kinfolk1, Kurt, Build.Abilities.Firearms));
                     //talens
-                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
+                    plan.Add(new CreateTalensActivity(Yoki, "Cacao", "Plant"));
                     break;
 
                 //15 Feb (no teaching week)
@@ -42,8 +44,8 @@ namespace RollerEngine.Character
                     //Kinfolks learn nothing special
 
                     //Spiridon,Yoki: create Talens
-                    plan.Add(new CreateTalens(Spiridon, "Cacao", "Plant"));
-                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
+                    plan.Add(new CreateTalensActivity(Spiridon, "Cacao", "Plant"));
+                    plan.Add(new CreateTalensActivity(Yoki, "Cacao", "Plant"));
 
                     //Nameless teach Spiridon Ancestor Veneration
                     plan.Add(new TeachRiteToGarou(Nameless, Spiridon, Rite.AncestorVeneration, 1));
@@ -137,11 +139,11 @@ namespace RollerEngine.Character
                     buffPlan.Nameless = NamelessBuff.MaxBoostSecondaryTrait(Build.Abilities.Rituals);
 
                     //Spiridon,Yoki: create Talens
-                    plan.Add(new CreateTalens(Spiridon, "Cacao", "Plant"));
-                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
+                    plan.Add(new CreateTalensActivity(Spiridon, "Cacao", "Plant"));
+                    plan.Add(new CreateTalensActivity(Yoki, "Cacao", "Plant"));
 
                     //Spiridon: create fetish base for Carnyx
-                    plan.Add(new CreateFetishBase(Spiridon, 4, "Carnyx of Victory"));
+                    plan.Add(new CreateItemActivity(Spiridon, 4, "Carnyx of Victory"));
                     break;
 
                 //8 Mar (teaching week, Lynn appearance)
@@ -177,7 +179,7 @@ namespace RollerEngine.Character
 
                     plan.Add(new CreateFetishActivity(Spiridon, 4, "Carnyx of Victory", "War"));
                     //Yoki: create Talens
-                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
+                    plan.Add(new CreateTalensActivity(Yoki, "Cacao", "Plant"));
 
                     //Spiridon teach Lynn Ancestor Veneration
                     plan.Add(new TeachRiteToGarou(Spiridon, Lynn, Rite.AncestorVeneration, 1));
@@ -203,9 +205,9 @@ namespace RollerEngine.Character
                     //todo: very dirty hack
                     buffPlan.Nameless = NamelessBuff.MaxBoostSecondaryTrait(Build.Abilities.VisageOfFenris);
 
-                    plan.Add(new CreateFetishBase(Spiridon, 4, "Carnyx of Victory"));
+                    plan.Add(new CreateItemActivity(Spiridon, 4, "Carnyx of Victory"));
                     //Yoki: create Talens
-                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
+                    plan.Add(new CreateTalensActivity(Yoki, "Cacao", "Plant"));
 
                     //Lynn teach Yoki Ancestor Veneration
                     plan.Add(new TeachRiteToGarou(Lynn, Yoki, Rite.AncestorVeneration, 1));
@@ -231,7 +233,7 @@ namespace RollerEngine.Character
 
                     plan.Add(new CreateFetishActivity(Spiridon, 4, "Carnyx of Victory", "War"));
                     //Yoki: create Talens
-                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
+                    plan.Add(new CreateTalensActivity(Yoki, "Cacao", "Plant"));
 
                     //Lynn teach Kurt Ancestor Veneration
                     plan.Add(new TeachRiteToGarou(Lynn, Kurt, Rite.AncestorVeneration, 1));
@@ -257,9 +259,9 @@ namespace RollerEngine.Character
                 case 12:
                     buffPlan.Nameless = NamelessBuff.MaxBoostSecondaryTrait(Build.Abilities.Linguistics);
 
-                    plan.Add(new CreateFetishBase(Spiridon, 4, "Unbroken Cord"));
+                    plan.Add(new CreateItemActivity(Spiridon, 4, "Unbroken Cord"));
                     //Yoki: create Talens
-                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
+                    plan.Add(new CreateTalensActivity(Yoki, "Cacao", "Plant"));
                     break;
 
                 //3 May (teaching week)
@@ -283,7 +285,7 @@ namespace RollerEngine.Character
 
                     plan.Add(new CreateFetishActivity(Spiridon, 4, "Unbroken Cord", "Unity"));
                     //Yoki: create Talens
-                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
+                    plan.Add(new CreateTalensActivity(Yoki, "Cacao", "Plant"));
                     break;
 
                 //17 May (teaching week)
@@ -304,10 +306,10 @@ namespace RollerEngine.Character
                 case 16:
                     buffPlan.Nameless = NamelessBuff.MaxBoostCarnyx();
 
-                    plan.Add(new CreateFetishBase(Spiridon, 3, "Ultimate Search Engine"));
+                    plan.Add(new CreateItemActivity(Spiridon, 3, "Ultimate Search Engine"));
                     plan.Add(new CreateFetishActivity(Spiridon, 3, "Ultimate Search Engine", "Cockroach"));
                     //Yoki: create Talens
-                    plan.Add(new CreateTalens(Yoki, "Cacao", "Plant"));
+                    plan.Add(new CreateTalensActivity(Yoki, "Cacao", "Plant"));
                     break;
 
                 //31 May (teaching week, last event of 6th arc)

@@ -8,6 +8,8 @@ using RollerEngine.Rolls.Backgrounds;
 using RollerEngine.Rolls.Gifts;
 using RollerEngine.Rolls.Rites;
 using RollerEngine.Rolls.Skills;
+using RollerEngine.WodSystem;
+using RollerEngine.WodSystem.WTA;
 
 namespace RollerEngine.Character.Party
 {

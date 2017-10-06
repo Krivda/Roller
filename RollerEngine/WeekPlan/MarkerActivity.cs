@@ -1,5 +1,8 @@
+using RollerEngine.Character.Common;
 using RollerEngine.Character.Party;
 using RollerEngine.Rolls.Rites;
+using RollerEngine.WodSystem;
+using RollerEngine.WodSystem.WTA;
 
 namespace RollerEngine.WeekPlan
 {
@@ -19,6 +22,25 @@ namespace RollerEngine.WeekPlan
             : base(actor, Activity.QueueRiteLearning)
         {
             Rite = rite;
+        }
+
+        public override void Execute()
+        {
+            var riteInfo = Rite.Info();
+            var keyRitePool = Build.DynamicTraits.GetKey(Build.DynamicTraits.RitePool, riteInfo.Name);
+            var keyRiteLearned = Build.DynamicTraits.GetKey(Build.DynamicTraits.RiteLearned, riteInfo.Name);
+
+            //create dynamic trait if it was absent
+            if (!Actor.Self.Traits.ContainsKey(keyRitePool))
+            {
+                Actor.Self.Traits.Add(keyRitePool, riteInfo.SuccessesRequiredToLearn());
+            }
+
+            //create dynamic trait if it was absent
+            if (!Actor.Self.Traits.ContainsKey(keyRiteLearned))
+            {
+                Actor.Self.Traits.Add(keyRiteLearned, 0);
+            }
         }
     }
 }

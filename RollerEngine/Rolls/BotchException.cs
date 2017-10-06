@@ -6,7 +6,6 @@ namespace RollerEngine.Rolls
     {
         public BotchException(string message) : base(message)
         {
-            
         }
     }
 }

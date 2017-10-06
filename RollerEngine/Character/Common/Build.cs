@@ -5,6 +5,8 @@ using System.Linq;
 using RollerEngine.Modifiers;
 using RollerEngine.Rolls.Rites;
 using RollerEngine.Rolls.Skills;
+using RollerEngine.WodSystem;
+using RollerEngine.WodSystem.WTA;
 
 namespace RollerEngine.Character.Common
 {

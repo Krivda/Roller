@@ -1,6 +1,9 @@
+using System;
 using RollerEngine.Character.Common;
 using RollerEngine.Character.Party;
 using RollerEngine.Rolls.Rites;
+using RollerEngine.WodSystem;
+using RollerEngine.WodSystem.WTA;
 
 namespace RollerEngine.WeekPlan
 {
@@ -23,16 +26,31 @@ namespace RollerEngine.WeekPlan
         {
             Ability = ability;
         }
+
+        public override void Execute()
+        {
+            Actor.Instruct(Student.Self, Ability, false);
+        }
     }
 
     public class TeachGiftToGarou : TeachingActivity
     {
         public string Gift { get; private set; }
+        public int Level { get; private set; }
 
-        public TeachGiftToGarou(HatysPartyMember actor, IStudent student, string gift)
+        public TeachGiftToGarou(HatysPartyMember actor, IStudent student, string gift, int level)
             : base(actor, student, Activity.TeachGiftToGarou, 0 /*-4 or -2*/)
         {
+            //TODO need GIFT Dictionary same as for Rites
+            //TODO need FETISH Dictionary same as for Rites
             Gift = gift;
+            Level = Level;
+        }
+
+        public override void Execute()
+        {
+            throw new NotImplementedException("TeachGiftToGarou.Execute not implemented");
+            //Actor.Instruct(Student.Self, Gift, Level, false);
         }
     }
 

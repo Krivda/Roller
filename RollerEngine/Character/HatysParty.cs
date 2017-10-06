@@ -8,6 +8,8 @@ using RollerEngine.Logger;
 using RollerEngine.Modifiers;
 using RollerEngine.Rolls.Rites;
 using RollerEngine.WeekPlan;
+using RollerEngine.WodSystem;
+using RollerEngine.WodSystem.WTA;
 
 namespace RollerEngine.Character
 {
@@ -542,30 +544,13 @@ namespace RollerEngine.Character
                 {
                     case Activity.QueueRiteLearning:
                     {
-                        QueueRiteLearning weeklyActivity = (QueueRiteLearning)planItem;
-                        RiteInfo riteInfo = weeklyActivity.Rite.Info();
-                        string keyRitePool = Build.DynamicTraits.GetKey(Build.DynamicTraits.RitePool, riteInfo.Name);
-                        string keyRiteLearned =
-                            Build.DynamicTraits.GetKey(Build.DynamicTraits.RiteLearned, riteInfo.Name);
-
-                        //create dynamic trait if it was absent
-                        if (!planItem.Actor.Self.Traits.ContainsKey(keyRitePool))
-                        {
-                            planItem.Actor.Self.Traits.Add(keyRitePool, (int)(10.0 * riteInfo.Level));
-                        }
-
-                        //create dynamic trait if it was absent
-                        if (!planItem.Actor.Self.Traits.ContainsKey(keyRiteLearned))
-                        {
-                            planItem.Actor.Self.Traits.Add(keyRiteLearned, 0);
-                        }
+                        planItem.Execute();
                         break;
                     }
 
                     case Activity.TeachAbility:
                     {
-                        TeachAbility weeklyActivity = (TeachAbility) planItem;
-                        planItem.Actor.Instruct(weeklyActivity.Student.Self, weeklyActivity.Ability, false);
+                        planItem.Execute();
                         break;
                     }
 
@@ -592,7 +577,7 @@ namespace RollerEngine.Character
 
                     case Activity.CreateDevice:
                     {
-                        CreateDevice weeklyActivity = (CreateDevice) planItem;
+                        CreateDeviceActivity weeklyActivity = (CreateDeviceActivity) planItem;
                         //planItem.Actor.Craft(weeklyActivity.Student.Self, weeklyActivity.FetishName);
                         _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} crafts device {1}",
                             weeklyActivity.Actor.CharacterName,
@@ -607,8 +592,8 @@ namespace RollerEngine.Character
             foreach (var actor in _party)
             {
                 List<WeeklyActivity> characterActivities = WeeklyFilter.ByActor(plan, actor.Key);
-                List<CreateTalens> createTalens = WeeklyFilter.ByCreateTalens(characterActivities); //talens are single
-                List<CreateFetishBase> createFetishBase = WeeklyFilter.ByCreateFetishBase(characterActivities); //fetishe Bases are single
+                List<CreateTalensActivity> createTalens = WeeklyFilter.ByCreateTalens(characterActivities); //talens are single
+                List<CreateItemActivity> createFetishBase = WeeklyFilter.ByCreateFetishItem(characterActivities); //fetishe Bases are single
                 List<CreateFetishActivity> createFetish = WeeklyFilter.ByCreateFetish(characterActivities); //fetishes are single
                 List<LearnAbility> learnAbility = WeeklyFilter.ByLearnAbility(characterActivities);
                 List<LearnRiteFromGarou> learnRite = WeeklyFilter.ByLearnRiteFromGarou(characterActivities);
@@ -616,7 +601,7 @@ namespace RollerEngine.Character
 
                 foreach (var planItem in createFetishBase)
                 {
-                    CreateFetishBase weeklyActivity = (CreateFetishBase)planItem;
+                    CreateItemActivity weeklyActivity = (CreateItemActivity)planItem;
                     planItem.Actor.CreateFetishBase(weeklyActivity.Level, weeklyActivity.FetishName);
                     break;
                 }
@@ -704,7 +689,7 @@ namespace RollerEngine.Character
             //1) Learning is extended activity; while learning you cannot do anything else! But it is partial action (due to cacao)
             //2) LearnRiteFromGarou / TeachRiteToGarou correspondence
             //3) Teaching is single activity; but TeachRiteToGarou spend partial action and must be synced
-            //4) CreateDevice is an extended action; while Fetish/Talen/Base are single
+            //4) CreateDeviceActivity is an extended action; while Fetish/Talen/Base are single
 
             foreach (var hatysPartyMemberKvp in _party)
             {
@@ -717,12 +702,12 @@ namespace RollerEngine.Character
                 //var learningActivitires = WeeklyFilter.ByLearning(characterActivities);               //always extended and partial
 
                 var creationActivities = WeeklyFilter.ByCreation(characterActivities);
-                var creationExtended = WeeklyFilter.ByType(creationActivities, ActivityType.Extended);  //creation full extended (CreateDevice)
-                var creationSingle = WeeklyFilter.ByType(creationActivities, ActivityType.Single);      //creation single, -1 partial (CreateTalens, CreateFetish, CreateFetishBase)
+                var creationExtended = WeeklyFilter.ByType(creationActivities, ActivityType.Extended);  //creation full extended (CreateDeviceActivity)
+                var creationSingle = WeeklyFilter.ByType(creationActivities, ActivityType.Single);      //creation single, -1 partial (CreateTalensActivity, CreateFetish, CreateItemActivity)
 
                 var creationTalens = WeeklyFilter.ByCreateTalens(characterActivities);
                 var creationFetish = WeeklyFilter.ByCreateFetish(characterActivities);
-                var creationFetishBase = WeeklyFilter.ByCreateFetishBase(characterActivities);
+                var creationFetishBase = WeeklyFilter.ByCreateFetishItem(characterActivities);
 
                 //check creation single actions!
                 if (creationTalens.Count + creationFetish.Count > 1)

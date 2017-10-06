@@ -3,6 +3,8 @@ using RollerEngine.Logger;
 using RollerEngine.Roller;
 using RollerEngine.Rolls.Gifts;
 using RollerEngine.Rolls.Rites;
+using RollerEngine.WodSystem;
+using RollerEngine.WodSystem.WTA;
 
 namespace RollerEngine.Character.Party
 {

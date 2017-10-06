@@ -1,6 +1,8 @@
 ﻿using RollerEngine.Character.Common;
 using RollerEngine.Character.Party;
 using RollerEngine.Rolls.Rites;
+using RollerEngine.WodSystem;
+using RollerEngine.WodSystem.WTA;
 
 namespace RollerEngine.WeekPlan
 {

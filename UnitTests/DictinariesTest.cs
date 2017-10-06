@@ -4,6 +4,8 @@ using NLog;
 using NUnit.Framework;
 using RollerEngine.Logger;
 using RollerEngine.Rolls.Rites;
+using RollerEngine.WodSystem;
+using RollerEngine.WodSystem.WTA;
 
 namespace UnitTests
 {

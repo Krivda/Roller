@@ -119,7 +119,9 @@
     <Compile Include="Rolls\Gifts\TeachersEase.cs" />
     <Compile Include="Rolls\Gifts\VizageOfFenris.cs" />
     <Compile Include="Rolls\Rites\AncestorSeeking.cs" />
-    <Compile Include="Rolls\Rites\RiteInfo.cs" />
+    <Compile Include="WodSystem\WTA\GiftInfo.cs" />
+    <Compile Include="WodSystem\Misc.cs" />
+    <Compile Include="WodSystem\WTA\RiteInfo.cs" />
     <Compile Include="Rolls\Rites\RiteRoll.cs" />
     <Compile Include="Rolls\Rites\SacredFire.cs" />
     <Compile Include="Rolls\Fetish\UsingFetishRoll.cs" />
