@@ -11,6 +11,5 @@
         bool RoomEntered();
 
         void SendMessage(string message);
-
     }
 }

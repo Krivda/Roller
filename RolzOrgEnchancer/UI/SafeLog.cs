@@ -32,6 +32,5 @@ namespace RolzOrgEnchancer.UI
             string logMessage;
             while (_logQueue.TryDequeue(out logMessage)) _updater.AddToLog(logMessage);
         }
-
     }
 }

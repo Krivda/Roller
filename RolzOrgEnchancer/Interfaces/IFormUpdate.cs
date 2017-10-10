@@ -11,6 +11,5 @@
         void UpdateRoomLog(string roomLog);
 
         void UpdateActionQueueDepth(int depth);
-
     }
 }

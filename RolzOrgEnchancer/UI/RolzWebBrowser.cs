@@ -105,8 +105,8 @@ namespace RolzOrgEnchancer.UI
         }
         #endregion
 
-        private const string InframePrefix = "https://rolz.org/wiki/inframe";
-        private const string RoomPrefix = "https://rolz.org/dr?room=";
+        private const string INFRAME_PREFIX = "https://rolz.org/wiki/inframe";
+        private const string ROOM_PREFIX = "https://rolz.org/dr?room=";
         private readonly Uri _inframeEntered = new Uri("https://rolz.org/wiki/inframe?w=help&n=index", UriKind.Absolute);
         private Uri _room;
         private volatile bool _roomEntered;
@@ -136,8 +136,8 @@ namespace RolzOrgEnchancer.UI
                 if (completedUrl.Equals(_inframeEntered))
                 {
                     Program.Log(string.Format("Browser: on DocumentCompleted: Room Entered - InFrame ({0})", completedUrl));
+                    _roomEntered = true;
                 }
-                _roomEntered = true;
                 return;
             }
 
@@ -158,7 +158,7 @@ namespace RolzOrgEnchancer.UI
             if (e.TargetFrameName != "") return;
 
             var url = e.Url.ToString();
-            if (url.StartsWith(InframePrefix))
+            if (url.StartsWith(INFRAME_PREFIX))
             {
                 Program.Log(string.Format("Browser: on prefix Navigating: url= {0}", url));
                 return;
@@ -199,7 +199,7 @@ namespace RolzOrgEnchancer.UI
         #region IRolzOrg interface
         public void JoinRoom(string roomName)
         {
-            _room = new Uri(RoomPrefix + roomName, UriKind.Absolute);
+            _room = new Uri(ROOM_PREFIX + roomName, UriKind.Absolute);
             _roomEntered = false;
             Url = _room;
         }

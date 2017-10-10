@@ -11,18 +11,19 @@ namespace RolzOrgEnchancer.RoomLog
     //
     internal class Parser
     {
-        private const string RoomLogPrefix = "https://rolz.org/api/roomlog?room=";
+        const int MAX_ROOM_LOG_ITEMS = 25;
+        private const string ROOM_LOG_PREFIX = "https://rolz.org/api/roomlog?room=";
         private readonly Uri _roomLog;
         private long _sessionTime;
 
-        public static string RollIdToComment(uint rollId)
+        public static string RollIdToComment(int rollId)
         {
           return "roll_id=" + rollId;
         }
 
         public Parser(string roomName)
         {
-            _roomLog = new Uri(RoomLogPrefix + roomName, UriKind.Absolute);
+            _roomLog = new Uri(ROOM_LOG_PREFIX + roomName, UriKind.Absolute);
         }
 
         public void SetSessionTime(long time)
@@ -50,11 +51,12 @@ namespace RolzOrgEnchancer.RoomLog
                 var x = GetRoomLog().items;
                 if (x == null) return null;
                 return x.LastOrDefault(m => m != null &&
+                                            m.time >= _sessionTime &&
                                             m.type != null &&
                                             m.type.Equals(type) &&
                                             (text == null || m.text != null && m.text == text) &&
-                                            (comment == null || m.comment != null && m.comment == comment) &&
-                                            m.time >= _sessionTime);
+                                            (comment == null || m.comment != null && m.comment == comment)
+                                            );
             }
             catch (InvalidOperationException)
             {
@@ -67,18 +69,23 @@ namespace RolzOrgEnchancer.RoomLog
             return MatchMessageInternal("txtmsg", message, null);
         }
 
-        public Item MatchRoll(uint rollId)
+        public Item MatchRoll(int rollId)
         {
             return MatchMessageInternal("dicemsg", null, RollIdToComment(rollId));
         }
 
         public string GetSessionRoomLogParsed()
-        {
+        {            
             var res = "";
             if (_sessionTime == 0) return res;
             try
             {
-                var items = GetRoomLog().items.Where(m => m.time >= _sessionTime);
+                var items = GetRoomLog().items;
+                if (items.Count > MAX_ROOM_LOG_ITEMS)
+                {
+                    items = items.SkipWhile((val, index) => index < items.Count - MAX_ROOM_LOG_ITEMS).ToList();                    
+                }
+                items = items.Where(m => m.time >= _sessionTime).ToList();
                 foreach(var item in items)
                 {
                     if (item.type == null) continue;

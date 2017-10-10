@@ -28,28 +28,78 @@ namespace RolzOrgEnchancer
         Olive   //free
     }
 
-    public static class VerbosityHelper
+    public static class Helper
     {
         public static Color Verbosity2Color(Verbosity verbosity)
         {
-            return (Color)verbosity;
+            switch (verbosity)
+            {
+                case Verbosity.Debug:
+                    return Color.Gray;
+                case Verbosity.Details:
+                    return Color.Black;
+                case Verbosity.Normal:
+                    return Color.Orange;
+                case Verbosity.Important:
+                    return Color.Blue;
+                case Verbosity.Critical:
+                    return Color.Pink;
+                case Verbosity.Warning:
+                    return Color.Teal;
+                case Verbosity.Error:
+                    return Color.Red;
+                default:
+                    throw new Exception("Unknown verbosity");
+            }
+        }
+
+        public static string Color2Prefix(Color color)
+        {
+            switch (color)
+            {
+                case Color.Black:
+                    return "";
+                case Color.Gray:
+                    return "gray:";
+                case Color.Orange:
+                    return "orange:";
+                case Color.Blue:
+                    return "blue:";
+                case Color.Pink:
+                    return "pink:";
+                case Color.Teal:
+                    return "teal:";
+                case Color.Red:
+                    return "red:";
+                case Color.Green:
+                    return "green:";
+                case Color.Purple:
+                    return "purple:";
+                case Color.Maroon:
+                    return "maroon:";
+                case Color.Olive:
+                    return "olive:";
+                default:
+                    throw new Exception("Unknown color");
+            }
         }
 
     }
 
     internal class RoomBootImpl : BaseLogger, IRoller
     {
-        private static uint _idRoll = 100; //TODO move to IRoller
+        private const int DICE_FACET = 10;
+        private static int _idRoll = 100;
 
         public RoomBootImpl(Verbosity minVerbosity) : base(minVerbosity)
         {
         }
 
-        public List<int> Roll(int diceCount, int DC)
+        public List<int> Roll(int diceCount, int dc)
         {
-            var item = RoomBot.MakeRoll((uint) diceCount, (uint) DC, _idRoll++);
-            var rawResult = new List<int>(10);
-            rawResult.AddRange(new int[10]);
+            var item = RoomBot.MakeRoll(diceCount, dc, _idRoll++);
+            var rawResult = new List<int>(DICE_FACET);
+            rawResult.AddRange(new int[DICE_FACET]);
 
             if (!item.details.StartsWith("( (")) throw new Exception("Invalid details 1");
             var index = item.details.IndexOf('→', 0);
@@ -63,8 +113,8 @@ namespace RolzOrgEnchancer
             {
                 int i;
                 if (!int.TryParse(r, out i)) throw new Exception("Not a number dice value");
-                if (i < 1 || i > 10) throw new Exception("Invalid dice value");
-                rawResult[i-1]++;
+                if (i < 1 || i > DICE_FACET) throw new Exception("Invalid dice value");
+                rawResult[i - 1]++;
             }
 
             return rawResult;
@@ -72,172 +122,141 @@ namespace RolzOrgEnchancer
 
         public override void Log(Verbosity verbosity, string record)
         {
-            Color color;
-            switch (verbosity)
-            {
-                case Verbosity.Debug:
-                    color = Color.Gray;
-                    break;
-                case Verbosity.Details:
-                    color = Color.Black;
-                    break;
-                case Verbosity.Normal:
-                    color = Color.Orange;
-                    break;
-                case Verbosity.Important:
-                    color = Color.Blue;
-                    break;
-                case Verbosity.Critical:
-                    color = Color.Pink;
-                    break;
-                case Verbosity.Warning:
-                    color = Color.Teal;
-                    break;
-                case Verbosity.Error:
-                    color = Color.Red;
-                    break;
-                default:
-                    color = Color.Green;
-                    break;
-            }
-            RoomBot.MakeMessage(color, ApplyFormat(record));
+            RoomBot.MakeMessage(Helper.Verbosity2Color(verbosity), ApplyFormat(record));
         }
     }
 
-  internal static class RoomBot
-  {
-    private static Thread _thread;
-    private static IRolzOrg _browser;
-    private static IFormUpdate _updater;
-    private static int _ticks;
-    private static ConcurrentQueue<uint> _actionQueue;
-    private static ConcurrentQueue<string> _messageQueue;
+    internal static class RoomBot
+    {
+        private static Thread _thread;
+        private static IRolzOrg _browser;
+        private static IFormUpdate _updater;
+        private static int _ticks;
+        private static ConcurrentQueue<int> _actionQueue;
+        private static ConcurrentQueue<string> _messageQueue;
 
-    public static Parser Parser = new Parser(DefaultRoomName);
-    private const string DefaultRoomName = "Hatys%20Test8";
+        public static Parser Parser = new Parser(DEFAULT_ROOM_NAME);
+        private const string DEFAULT_ROOM_NAME = "Hatys%20Test8";
 
-      private static void Worker()
-      {
-          while (!_browser.RoomEntered()) Thread.Sleep(100);
-          Program.Log("Worker: Inside room");
+        private static void Worker()
+        {
+            while (!_browser.RoomEntered()) Thread.Sleep(100);
+            Program.Log("Worker: Inside room");
 
-          //Establish session
-          var sessId = new Random(unchecked((int) DateTime.Now.Ticks));
-          var connectionMessage = "establishing session #" + sessId.Next() + "..."; //TODO Format
-          var item = MakeSingleMessage(Color.Purple, connectionMessage);
-          Program.Log("Worker: session was established");
-          Parser.SetSessionTime(item.time);
+            //Establish session
+            var sessId = new Random((int) DateTime.Now.Ticks);
+            var connectionMessage = string.Format("establishing session #{0} ...", sessId.Next());
+            var item = MakeSingleMessage(Color.Purple, connectionMessage);
+            Program.Log("Worker: session was established");
+            Parser.SetSessionTime(item.time);
 
-          MakeCommand("/opt autoexpand=on");
-          MakeCommand("/nick HatysBot");
+            MakeCommand("/opt autoexpand=on");
+            MakeCommand("/nick HatysBot");
 
-          //InitializeKrivda(IRoomBot)
-          //EmulateKrivda()
+            var myInterface = new RoomBootImpl(Verbosity.Critical);
+            var res = HatysParty.LoadFromGoogle(myInterface, myInterface);
+            MakeMessage(Color.Purple, "*** PARTY LOADED ***");
 
-          var myInterface = new RoomBootImpl(Verbosity.Critical);
-          var res = HatysParty.LoadFromGoogle(myInterface, myInterface);
+            for (;;)
+            {
+                Thread.Sleep(100);
+                int action;
+                while (_actionQueue.TryDequeue(out action))
+                {
+                    Thread.Sleep(100);
+                    Program.Log(string.Format("Worker: Deque action #{0}", action));
+                    //TODO switch on actions!
+                    for (var i = 1; i < 2; i++)
+                    {
+                        res.DoWeek(i);
+                    }
+                    res.LogTotalProgress();
+                    MakeMessage(Color.Purple, "*** END OF ACTION ***");
+                }
+            }
+            // ReSharper disable once FunctionNeverReturns
+        }
 
-          uint action;
-          for (;;)
-              while (_actionQueue.TryDequeue(out action))
-              {
-                  Thread.Sleep(100);
-                  Program.Log("Worker: Deque action #" + action); //TODO Format
-                  for (int i = 1; i < 20; i++)
-                  {
-                      res.DoWeek(i);
-                  }
-                  res.LogTotalProgress();
-                  MakeMessage(Color.Red, "=== END OF ACTION ===");
-              }
-      }
-
-      private static readonly char[] LineSeparators = { '\n', '\r' };
+        private static readonly char[] LineSeparators = {'\n', '\r'};
         public static void MakeMessage(Color color, string message)
         {
-          /*
-           * The Dice Room chat works like any other chat room.
-           * It features special commands that start with a / (slash),
-           * and it facilitates dice rolls using the prefix # (number sign), or - (minus),
-           * or inline codes within [ ] (square brackets).
-           */
+            /*
+             * The Dice Room chat works like any other chat room.
+             * It features special commands that start with a / (slash),
+             * and it facilitates dice rolls using the prefix # (number sign), or - (minus),
+             * or inline codes within [ ] (square brackets).
+             */
 
-          //first stage: replace [] with {} due to inline code
-          message = message.Replace('[', '{');
-          message = message.Replace(']', '}');
-          //second stage: replace ' with ` due to jscript
-          message = message.Replace('\'', '`');
-          //third stage: split string to lines
-          var lines = message.Split(LineSeparators, StringSplitOptions.RemoveEmptyEntries);
-          foreach (var el in lines)
-          {
-              var line = el;
-              //fourth stage: if starts with === replace = from string
-              if (line.StartsWith("===")) line = line.Replace("=", "");
-              //fifth stage: remove starting spaces and special characters for commands and rolls
-              line = line.TrimStart(' ', '/', '#', '-');
-              //last stage: remove ending white chars
-              line = line.TrimEnd();
-              if (line != el) Program.Log("Bot: replaced '" + el + "' with '" + line + "'"); //TODO Format
-              if (line != "") MakeSingleMessage(color, line);
-          }
+            //first stage: replace [] with {} due to inline code
+            message = message.Replace('[', '{');
+            message = message.Replace(']', '}');
+            //second stage: replace ' with ` due to jscript
+            message = message.Replace('\'', '`');
+            //third stage: split string to lines
+            var lines = message.Split(LineSeparators, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var item in lines)
+            {
+                var line = item;
+                //fourth stage: if starts with === replace = from string
+                if (line.StartsWith("===")) line = line.Replace("=", "");
+                //fifth stage: remove starting spaces and special characters for commands and rolls
+                line = line.TrimStart(' ', '/', '#', '-');
+                //last stage: remove ending white chars
+                line = line.TrimEnd();
+                if (line != item) Program.Log(string.Format("Bot: replaced '{0}'  with '{1}'", item, line));
+                if (line != "") MakeSingleMessage(color, line);
+            }
         }
 
         private static Item MakeSingleMessage(Color color, string message)
         {
-            var attempt = 0;
-            for (; ; )
+            for (var attempt = 0;;attempt++)
             {
                 //repeat message each 5 secs
                 if (0 == attempt % 50)
                 {
                     QueueColorMessage(color, message);
                 }
+                Thread.Sleep(100);
 
                 var item = Parser.MatchMessage(message);
                 if (null != item)
                 {
-                  Thread.Sleep(100);
-                  return item;
+                    return item;
                 }
-                attempt++;
-                Thread.Sleep(100);
             }
         }
 
-        public static Item MakeRoll(uint diceCount, uint dc, uint rollId)
+        public static Item MakeRoll(int diceCount, int dc, int rollId)
         {
-            var rollmsg = "#" + diceCount + "d10f" + dc + " #" + Parser.RollIdToComment(rollId); //TODO Format
-            var attempt = 0;
-            for (; ; )
+            var rollmsg = string.Format("#{0}d10f{1} #{2}", diceCount, dc, Parser.RollIdToComment(rollId));
+
+            for (var attempt = 0; ; attempt++)
             {
                 //repeat message each 5 secs
                 if (0 == attempt % 50)
                 {
                     QueueMessage(rollmsg);
                 }
+                Thread.Sleep(100);
 
                 var item = Parser.MatchRoll(rollId);
                 if (null != item)
                 {
-                    Thread.Sleep(100);
                     return item;
                 }
-                attempt++;
-                Thread.Sleep(100);
             }
         }
 
         private static void MakeCommand(string command)
         {
             QueueMessage(command);
-            Thread.Sleep(300);
+            Thread.Sleep(500);
         }
 
-        private static readonly string[] ColorPrefix = { "gray:", "", "orange:", "blue:", "pink:", "teal:", "red:", "green:", "purple:", "maroon:", "olive:" };
         private static void QueueColorMessage(Color color, string message)
         {
-            QueueMessage(ColorPrefix[(int) color] + message);
+            QueueMessage(Helper.Color2Prefix(color) + message);
         }
 
         private static void QueueMessage(string message)
@@ -257,9 +276,9 @@ namespace RolzOrgEnchancer
             }
         }
 
-        public static void OnGuiAction(uint action)
+        public static void OnGuiAction(int action)
         {
-            Program.Log("Bot: added to queue action=" + action); //TODO Format
+            Program.Log("Bot: added to queue action=" + action);
             _actionQueue.Enqueue(action);
         }
 
@@ -268,11 +287,10 @@ namespace RolzOrgEnchancer
             _thread = new Thread(Worker) {IsBackground = true};
             _browser = browser;
             _updater = updater;
-            _actionQueue = new ConcurrentQueue<uint>();
+            _actionQueue = new ConcurrentQueue<int>();
             _messageQueue = new ConcurrentQueue<string>();
-            _browser.JoinRoom(DefaultRoomName);
+            _browser.JoinRoom(DEFAULT_ROOM_NAME);
             _thread.Start();
         }
-
     }
 }

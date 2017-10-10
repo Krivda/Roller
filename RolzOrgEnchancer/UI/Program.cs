@@ -23,6 +23,5 @@ namespace RolzOrgEnchancer.UI
         {
             SafeLog.LogOrEnqueue(logMessage);
         }
-
     }
 }

@@ -66,6 +66,5 @@ namespace RolzOrgEnchancer.UI
             RoomBot.OnGuiStarted(webBrowser1, this);
         }
         #endregion
-
     }
 }
