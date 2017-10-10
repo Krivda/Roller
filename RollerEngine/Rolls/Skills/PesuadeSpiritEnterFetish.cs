@@ -10,7 +10,7 @@ namespace RollerEngine.Rolls.Skills
     {
         private const string SKILL_NAME = "Persuade spirit to enter fetish";
 
-        public PesuadeSpiritEnterFetish(IRollLogger log, RollAnalyzer roller, string attribute, string ability, List<string> additionalConditions) : base(
+        public PesuadeSpiritEnterFetish(IRollLogger log, IRollAnalyzer roller, string attribute, string ability, List<string> additionalConditions) : base(
             SKILL_NAME,
             log,
             roller,

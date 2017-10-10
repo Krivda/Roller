@@ -9,7 +9,7 @@ namespace RollerEngine.Rolls.Backgrounds
     public class Ancestors : BackgroundRoll
     {
 
-        public Ancestors(IRollLogger log, RollAnalyzer roller, Verbosity verbosity)
+        public Ancestors(IRollLogger log, IRollAnalyzer roller, Verbosity verbosity)
             : base(Build.Backgrounds.Ancestors, log, roller, new List<string>() {Build.Conditions.AncestorSpirits},
                 null, verbosity)
         {

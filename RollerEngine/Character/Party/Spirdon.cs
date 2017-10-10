@@ -22,7 +22,7 @@ namespace RollerEngine.Character.Party
             }
         }
 
-        public Spirdon(Build build, IRollLogger log, RollAnalyzer roller, HatysParty party) : base("Спиридон", build, log, roller, party)
+        public Spirdon(Build build, IRollLogger log, IRollAnalyzer roller, HatysParty party) : base("Спиридон", build, log, roller, party)
         {
         }
 

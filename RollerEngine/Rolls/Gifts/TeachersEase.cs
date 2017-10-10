@@ -11,7 +11,7 @@ namespace RollerEngine.Rolls.Gifts
     {
         private const string GIFT_NAME = "Teacher's Ease";
 
-        public TeachersEase(IRollLogger log, RollAnalyzer roller, Verbosity verbosity) :
+        public TeachersEase(IRollLogger log, IRollAnalyzer roller, Verbosity verbosity) :
             base(GIFT_NAME, log, roller, new List<string>() { Build.Atributes.Manipulation, Build.Abilities.Instruction}, new List<string>(){Build.Conditions.Social}, null, verbosity)
         {
         }

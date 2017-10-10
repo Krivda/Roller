@@ -38,7 +38,7 @@ namespace RollerEngine.Character.Party
 
         public NamelessBuff BoostPlan { get; set; }
 
-        public Nameless(Build build, IRollLogger log, RollAnalyzer roller, HatysParty party) : base("Безымянный", build, log, roller, party)
+        public Nameless(Build build, IRollLogger log, IRollAnalyzer roller, HatysParty party) : base("Безымянный", build, log, roller, party)
         {
         }
 

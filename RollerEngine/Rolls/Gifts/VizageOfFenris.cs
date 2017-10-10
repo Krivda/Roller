@@ -10,7 +10,7 @@ namespace RollerEngine.Rolls.Gifts
     {
         public const string GIFT_NAME = "Visage of Fenfis";
 
-        public VizageOfFenris(IRollLogger log, RollAnalyzer roller)
+        public VizageOfFenris(IRollLogger log, IRollAnalyzer roller)
             : base(GIFT_NAME, log, roller, new List<string>() { Build.Atributes.Charisma, Build.Abilities.Intimidation }, new List<string>() {Build.Conditions.Social}, null, Verbosity.Details)
         {
         }

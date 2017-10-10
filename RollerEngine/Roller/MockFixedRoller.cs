@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using RollerEngine.Logger;
+﻿using System.Collections.Generic;
 
 namespace RollerEngine.Roller
 {
-    public class MockFixedRoller : IRoller
+    public class MockFixedRoller : IRollAnalyzer
     {
         private readonly List<int> _rollResults;
         private int _rollIndex;
         public int Successes { get; set; }
 
-        //TODO FIX ME
-        public MockFixedRoller(IRollLogger rollLogger, List<int> rollResults)
+        public MockFixedRoller(List<int> rollResults)
         {
             _rollResults = rollResults;
             _rollIndex = 0;
@@ -26,19 +23,13 @@ namespace RollerEngine.Roller
             }
         }
 
-        public RollData Roll(int diceCount, int DC, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill,
-            string description)
+        public RollData Roll(int diceCount, int DC, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill)
         {
             int result = Successes;
             _rollIndex++;
             NextResult();
 
             return new RollData(result, new List<int>());
-        }
-
-        public List<int> Roll(int diceCount, int DC)
-        {
-            return _rollResults;
         }
     }
 }

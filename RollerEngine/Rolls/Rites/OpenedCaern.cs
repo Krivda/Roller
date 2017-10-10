@@ -19,7 +19,7 @@ namespace RollerEngine.Rolls.Rites
             number of successes needed equals the character’s Willpower.
             The first one to garner the necessary number of successes wins.
          */
-        public OpenedCaern(IRollLogger log, RollAnalyzer roller) :
+        public OpenedCaern(IRollLogger log, IRollAnalyzer roller) :
             base(Rite.OpenedCaern, log, roller,
                 null, //default
                 new List<string>() { Build.Conditions.SpiritRite }, null, Verbosity.Critical)
@@ -35,7 +35,7 @@ namespace RollerEngine.Rolls.Rites
 
     public class Binding : RiteRoll
     {
-        public Binding(IRollLogger log, RollAnalyzer roller) :
+        public Binding(IRollLogger log, IRollAnalyzer roller) :
             base(Rite.Binding, log, roller,
             null, //default
             new List<string>(), null, Verbosity.Critical)
@@ -45,7 +45,7 @@ namespace RollerEngine.Rolls.Rites
 
     public class SpiritAwakening : RiteRoll
     {
-        public SpiritAwakening(IRollLogger log, RollAnalyzer roller) :
+        public SpiritAwakening(IRollLogger log, IRollAnalyzer roller) :
             base(Rite.SpiritAwakening, log, roller,
                 null, //default
                 new List<string>(), null, Verbosity.Critical)
@@ -55,7 +55,7 @@ namespace RollerEngine.Rolls.Rites
 
     public class Summoning : RiteRoll
     {
-        public Summoning(IRollLogger log, RollAnalyzer roller) :
+        public Summoning(IRollLogger log, IRollAnalyzer roller) :
             base(Rite.Summoning, log, roller,
                 null, //default
                 new List<string>(), null, Verbosity.Critical)
@@ -65,7 +65,7 @@ namespace RollerEngine.Rolls.Rites
 
     public class CrashSpace : RiteRoll
     {
-        public CrashSpace(IRollLogger log, RollAnalyzer roller) :
+        public CrashSpace(IRollLogger log, IRollAnalyzer roller) :
             base(Rite.CrashSpace, log, roller,
                 null, //default
                 new List<string>(), null, Verbosity.Critical)
@@ -75,7 +75,7 @@ namespace RollerEngine.Rolls.Rites
 
     public class Knowing : RiteRoll
     {
-        public Knowing(IRollLogger log, RollAnalyzer roller) :
+        public Knowing(IRollLogger log, IRollAnalyzer roller) :
             base(Rite.Knowing, log, roller,
                 null, //default
                 new List<string>(), null, Verbosity.Critical)

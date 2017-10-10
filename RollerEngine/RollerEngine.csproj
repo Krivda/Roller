@@ -84,6 +84,7 @@
     <Compile Include="Character\Party\Lynn.cs" />
     <Compile Include="Character\Party\NamelessBuff.cs" />
     <Compile Include="Character\ProgressSummary.cs" />
+    <Compile Include="Roller\IRollAnalyzer.cs" />
     <Compile Include="Roller\RandomRoller.cs" />
     <Compile Include="Rolls\Rites\CreateFetish.cs" />
     <Compile Include="Rolls\Rites\OpenedCaern.cs" />

@@ -11,7 +11,7 @@ namespace RollerEngine.Rolls.Fetish
         public const string FetishName = "Carnyx of Victory";
         public CarnyxOfVictory(
             IRollLogger log,
-            RollAnalyzer roller,
+            IRollAnalyzer roller,
             Verbosity verbosity) :
             base(
                 FetishName,

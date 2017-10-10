@@ -19,7 +19,7 @@ namespace RollerEngine.Rolls.Gifts
          * uncompleted tasks fail.
          */
 
-        public MindPartition(IRollLogger log, RollAnalyzer roller)
+        public MindPartition(IRollLogger log, IRollAnalyzer roller)
             : base(GiftName, log, roller,
                 new List<string>() { Build.RollableTraits.Gnosis },
                 new List<string>() { Build.Conditions.RollableTrait },

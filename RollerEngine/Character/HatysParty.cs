@@ -32,7 +32,7 @@ namespace RollerEngine.Character
         private readonly Dictionary<string, HatysPartyMember> _party;
 
         private readonly IRollLogger _log;
-        private readonly RollAnalyzer _roller;
+        private readonly IRollAnalyzer _roller;
         public Nameless Nameless { get; private set; }
         public Spirdon Spiridon { get; private set; }
         public Yoki Yoki { get; private set; }
@@ -45,7 +45,7 @@ namespace RollerEngine.Character
         public Dictionary<string, Dictionary<string, int>> WeekStartingTraits { get; set; }
         public Dictionary<string, Dictionary<string, int>> RunStartTraits { get; set; }
 
-        public HatysParty(Dictionary<string, Build> party, IRollLogger log, RollAnalyzer roller)
+        public HatysParty(Dictionary<string, Build> party, IRollLogger log, IRollAnalyzer roller)
         {
             _partyBuilds = party;
             _party  = new Dictionary<string, HatysPartyMember>();

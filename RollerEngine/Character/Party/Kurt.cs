@@ -7,7 +7,7 @@ namespace RollerEngine.Character.Party
     public class Kurt : HatysPartyMember
     {
 
-        public Kurt(Build build, IRollLogger log, RollAnalyzer roller, HatysParty party) : base("Курт", build, log, roller, party)
+        public Kurt(Build build, IRollLogger log, IRollAnalyzer roller, HatysParty party) : base("Курт", build, log, roller, party)
         {
         }
     }

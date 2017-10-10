@@ -18,7 +18,7 @@ namespace RollerEngine.Rolls
         //private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         protected readonly IRollLogger Log;
-        protected readonly RollAnalyzer Roller;
+        protected readonly IRollAnalyzer Roller;
         public string AdditionalInfo { get; protected set; }
 
         public string Name { get; private set; }
@@ -81,14 +81,14 @@ namespace RollerEngine.Rolls
             public DCInfo DCInfo;
         }
 
-        public RollBase(string name, IRollLogger log, RollAnalyzer roller, List<String> dicePool, bool removeSuccessesOn1,
+        public RollBase(string name, IRollLogger log, IRollAnalyzer roller, List<String> dicePool, bool removeSuccessesOn1,
             bool canBotch, List<string> conditions) :
             this(name, log, roller, dicePool, removeSuccessesOn1, canBotch, conditions, null, Verbosity.Important)
         {
 
         }
 
-        public RollBase(string name, IRollLogger log, RollAnalyzer roller, List<String> dicePool, bool removeSuccessesOn1,
+        public RollBase(string name, IRollLogger log, IRollAnalyzer roller, List<String> dicePool, bool removeSuccessesOn1,
             bool canBotch, List<string> conditions, string additionalInfo, Verbosity verbosity)
         {
             Log = log;
@@ -505,7 +505,7 @@ namespace RollerEngine.Rolls
 
     public class BasicRoll : RollBase
     {
-        public BasicRoll(string name, IRollLogger log, RollAnalyzer roller, List<string> dicePool, bool removeSuccessesOn1,
+        public BasicRoll(string name, IRollLogger log, IRollAnalyzer roller, List<string> dicePool, bool removeSuccessesOn1,
             bool canBotch, List<string> conditions) : base(name, log, roller, dicePool, removeSuccessesOn1, canBotch,
             conditions)
         {

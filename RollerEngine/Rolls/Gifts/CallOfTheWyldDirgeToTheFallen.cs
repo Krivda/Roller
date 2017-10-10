@@ -24,7 +24,7 @@ namespace RollerEngine.Rolls.Gifts
         private const string GIFT_NAME = "Call to Wyld";
         private const string GIFT_NAME_FULL = "Call to Wyld (Dirge to the Fallen)";
 
-        public CallOfTheWyldDirgeToTheFallen(IRollLogger log, RollAnalyzer roller) : 
+        public CallOfTheWyldDirgeToTheFallen(IRollLogger log, IRollAnalyzer roller) : 
             base(GIFT_NAME_FULL, log, roller, 
             new List<string>() { Build.Atributes.Stamina, Build.Abilities.Empathy},
             new List<string>() {Build.Conditions.Memory}, null, Verbosity.Details)

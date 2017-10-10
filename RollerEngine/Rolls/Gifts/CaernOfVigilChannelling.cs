@@ -10,7 +10,7 @@ namespace RollerEngine.Rolls.Gifts
     {
         public const string PowerName = "Caern of Vigil (Chanelling)";
 
-        public CaernOfVigilChannelling(IRollLogger log, RollAnalyzer roller)
+        public CaernOfVigilChannelling(IRollLogger log, IRollAnalyzer roller)
             : base(PowerName, log, roller,
                 new List<string>() {Build.Atributes.Perception, Build.Abilities.PrimalUrge},
                 new List<string>(), "", Verbosity.Details)

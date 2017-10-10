@@ -14,7 +14,7 @@ namespace RollerEngine.Rolls.Skills
 
         private const string SKILL_NAME = "Rite (learn)";
 
-        public RitualsLearn(IRollLogger log, RollAnalyzer roller) : base(
+        public RitualsLearn(IRollLogger log, IRollAnalyzer roller) : base(
             SKILL_NAME,
             log,
             roller,

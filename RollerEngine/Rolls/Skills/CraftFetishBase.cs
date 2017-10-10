@@ -12,7 +12,7 @@ namespace RollerEngine.Rolls.Skills
 
         private int _dc;
 
-        public CraftFetishBase(IRollLogger log, RollAnalyzer roller) : base(
+        public CraftFetishBase(IRollLogger log, IRollAnalyzer roller) : base(
             SKILL_NAME,
             log,
             roller,

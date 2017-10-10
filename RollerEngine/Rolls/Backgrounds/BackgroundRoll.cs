@@ -8,7 +8,7 @@ namespace RollerEngine.Rolls.Backgrounds
 {
     public class BackgroundRoll : RollBase
     {
-        public BackgroundRoll(string name, IRollLogger log, RollAnalyzer roller, List<string> conditions,
+        public BackgroundRoll(string name, IRollLogger log, IRollAnalyzer roller, List<string> conditions,
             string addtionalInfo, Verbosity verbosity)
             : base(name, log, roller, new List<string>() {name}, true, true, conditions, addtionalInfo, verbosity)
         {

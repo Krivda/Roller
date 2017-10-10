@@ -10,7 +10,7 @@ namespace RollerEngine.Rolls.Gifts
     {
         public const string GIFT_NAME = "Persuasion";
 
-        public Persuasion(IRollLogger log, RollAnalyzer roller) 
+        public Persuasion(IRollLogger log, IRollAnalyzer roller) 
             : base(GIFT_NAME, log, roller, new List<string>(){Build.Atributes.Charisma, Build.Abilities.Subterfuge}, new List<string>() {Build.Conditions.Social}, null, Verbosity.Details)
         {
         }

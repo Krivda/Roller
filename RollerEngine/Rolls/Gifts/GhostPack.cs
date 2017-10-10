@@ -10,7 +10,7 @@ namespace RollerEngine.Rolls.Gifts
     {
         public const string GIFT_NAME = "Ghost Pack";
 
-        public GhostPack(IRollLogger log, RollAnalyzer roller) : 
+        public GhostPack(IRollLogger log, IRollAnalyzer roller) : 
             base(GIFT_NAME, log, roller, new List<string>() { Build.Atributes.Charisma, Build.Abilities.Occult }, 
                 new List<string>() {Build.Conditions.Social, Build.Conditions.AncestorSpirits, Build.Conditions.SpiritHeritage, Build.Conditions.GaianSpiritsSocial}, 
                 null, Verbosity.Details)

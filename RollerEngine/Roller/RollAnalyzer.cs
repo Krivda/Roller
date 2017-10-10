@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using RollerEngine.Logger;
 
 namespace RollerEngine.Roller
 {
-    public class RollAnalyzer
+    public class RollAnalyzer : IRollAnalyzer
     {
         private readonly IRoller _roller;
         private static int _diceFace = 10;
@@ -25,10 +24,15 @@ namespace RollerEngine.Roller
             }
         }
 
+        /// <inheritdoc />
+        static RollAnalyzer()
+        {
+            _diceFaceStat.AddRange(new int[10]);
+        }
+
         public RollAnalyzer(IRoller roller)
         {
             _roller = roller;
-            _diceFaceStat.AddRange(new int[10]);
         }
 
         public RollData Roll(int diceCount, int DC, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill)

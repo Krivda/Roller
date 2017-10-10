@@ -11,7 +11,7 @@ namespace RollerEngine.Character.Party
     public class Yoki : HatysPartyMember
     {
 
-        public Yoki(Build build, IRollLogger log, RollAnalyzer roller, HatysParty party) : base("Йоки", build, log, roller, party)
+        public Yoki(Build build, IRollLogger log, IRollAnalyzer roller, HatysParty party) : base("Йоки", build, log, roller, party)
         {
             //todo: check for arc 7
             WeeklyPartialActions = 4;

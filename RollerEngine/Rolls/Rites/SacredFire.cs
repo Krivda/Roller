@@ -13,7 +13,7 @@ namespace RollerEngine.Rolls.Rites
     {
         private readonly int _gnosisSpent = 1;
 
-        public SacredFire(IRollLogger log, RollAnalyzer roller, int additionalGnosisSpent) :
+        public SacredFire(IRollLogger log, IRollAnalyzer roller, int additionalGnosisSpent) :
             base(Rite.SacredFire, log, roller,
                 null, //default
                 new List<string>() {Build.Conditions.MysticRite}, null, Verbosity.Details)

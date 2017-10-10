@@ -10,11 +10,11 @@ namespace RollerEngine.Character.Common
         public string CharacterName { get; protected set; }
         public Build Self { get; private set; }
         public IRollLogger Log { get; set; }
-        public RollAnalyzer Roller { get; set; }
+        public IRollAnalyzer Roller { get; set; }
         public int WeeklyPartialActions { get; set; }
         public int WeeklyActions { get; set; }
 
-        public Character(string name, Build build, IRollLogger log, RollAnalyzer roller)
+        public Character(string name, Build build, IRollLogger log, IRollAnalyzer roller)
         {
             Self = build;
             Self.Name = name;

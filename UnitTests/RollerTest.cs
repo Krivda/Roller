@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using RollerEngine.Roller;
@@ -25,67 +27,66 @@ namespace UnitTests
         public void RollerTestSimple()
         {
 
-            var meth = GetMethod(typeof(RollAnalyzer), "GetRollSuccesses");
+            var meth = GetMethod(typeof(RollAnalyzer), "GetRollStats");
             bool hasSpec = false;
             bool hasWill = false;
             bool remove1 = false;
             int DC = 6;
-            
 
-            int[] roll = new int[10];
+            var roll = new List<int>();
 
-            roll[0] = 0;
-            roll[1] = 1;
-            roll[2] = 0;
-            roll[3] = 2;
-            roll[4] = 4;
-            roll[5] = 0;
-            roll[6] = 0;
-            roll[7] = 0;
-            roll[8] = 0;
-            roll[9] = 0;
+            roll.Add(0);
+            roll.Add(1);
+            roll.Add(0);
+            roll.Add(2);
+            roll.Add(4);
+            roll.Add(0);
+            roll.Add(0);
+            roll.Add(0);
+            roll.Add(0);
+            roll.Add(0);
 
-            //private static int GetRollSuccesses(int[] roll, int DC, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill)
-            int res = (int)meth.Invoke(null, new Object[]{ roll, DC, remove1, hasSpec, hasWill } );
+            //private static int GetRollSuccesses(List<int> rawResult, int diceCount, int DC, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill)
+            int res = ((RollData)meth.Invoke(null, new Object[]{ roll, roll.Sum(), DC, remove1, hasSpec, hasWill } )).Successes;
 
             Assert.AreEqual(0, res, "бросок без успехов");
 
             roll[5] = 1; //6
-            res = (int)meth.Invoke(null, new Object[] { roll, DC, remove1, hasSpec, hasWill });
+            res = ((RollData)meth.Invoke(null, new Object[] { roll, roll.Sum(), DC, remove1, hasSpec, hasWill })).Successes;
             Assert.AreEqual(1, res, "бросок 1 успех");
 
 
             roll[6] = 1; //7
-            res = (int)meth.Invoke(null, new Object[] { roll, DC, remove1, hasSpec, hasWill });
+            res = ((RollData)meth.Invoke(null, new Object[] { roll, roll.Sum(), DC, remove1, hasSpec, hasWill })).Successes;
             Assert.AreEqual(2, res, "2 succ");
 
             DC = 7;
-            res = (int)meth.Invoke(null, new Object[] { roll, DC, remove1, hasSpec, hasWill });
+            res = ((RollData)meth.Invoke(null, new Object[] { roll, roll.Sum(), DC, remove1, hasSpec, hasWill })).Successes;
             Assert.AreEqual(1, res, "1 succ vs 7");
 
             roll[0] = 1; //1
             DC = 7;
-            res = (int)meth.Invoke(null, new Object[] { roll, DC, remove1, hasSpec, hasWill });
+            res = ((RollData)meth.Invoke(null, new Object[] { roll, roll.Sum(), DC, remove1, hasSpec, hasWill })).Successes;
             Assert.AreEqual(1, res, "1 succ vs 7 w/o substract 1");
 
             remove1 = true;
-            res = (int)meth.Invoke(null, new Object[] { roll, DC, remove1, hasSpec, hasWill });
+            res = ((RollData)meth.Invoke(null, new Object[] { roll, roll.Sum(), DC, remove1, hasSpec, hasWill })).Successes;
             Assert.AreEqual(0, res, "0 succ vs 7 with substract 1");
 
             roll[9] = 1; //10
-            res = (int)meth.Invoke(null, new Object[] { roll, DC, remove1, hasSpec, hasWill });
+            res = ((RollData)meth.Invoke(null, new Object[] { roll, roll.Sum(), DC, remove1, hasSpec, hasWill })).Successes;
             Assert.AreEqual(1, res, "1 succ vs 7 wo spec wuth sub");
 
             hasSpec = true;
-            res = (int)meth.Invoke(null, new Object[] { roll, DC, remove1, hasSpec, hasWill });
+            res = ((RollData)meth.Invoke(null, new Object[] { roll, roll.Sum(), DC, remove1, hasSpec, hasWill })).Successes;
             Assert.AreEqual(2, res, "2 succ vs 7 with spec");
 
             roll[0] = 2; //10
-            res = (int)meth.Invoke(null, new Object[] { roll, DC, remove1, hasSpec, hasWill });
+            res = ((RollData)meth.Invoke(null, new Object[] { roll, roll.Sum(), DC, remove1, hasSpec, hasWill })).Successes;
             Assert.AreEqual(1, res, "1 succ vs 7 with spec");
 
             roll[9] = 2; //10
-            res = (int)meth.Invoke(null, new Object[] { roll, DC, remove1, hasSpec, hasWill });
+            res = ((RollData)meth.Invoke(null, new Object[] { roll, roll.Sum(), DC, remove1, hasSpec, hasWill })).Successes;
             Assert.AreEqual(3, res, "3 succ vs 7 with spec");
         }
     }

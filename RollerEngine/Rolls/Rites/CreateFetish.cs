@@ -12,7 +12,7 @@ namespace RollerEngine.Rolls.Rites
     {
         private int _dc;
 
-        public CreateFetishRite(IRollLogger log, RollAnalyzer roller, List<string> additionalConditions) :
+        public CreateFetishRite(IRollLogger log, IRollAnalyzer roller, List<string> additionalConditions) :
             base(Rite.Fetish, log, roller,
                 new List<string>() {Build.Atributes.Wits, Build.Abilities.Rituals},
                 new List<string>() {Build.Conditions.MysticRite}, null, Verbosity.Details)

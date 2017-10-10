@@ -15,7 +15,7 @@ namespace RollerEngine.Character
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static bool _expPoolStarted;
 
-        public static HatysParty LoadParty(IRollLogger log, RollAnalyzer roller)
+        public static HatysParty LoadParty(IRollLogger log, IRollAnalyzer roller)
         {
             var partyChars = LoadFromGoogle(log);
             return new HatysParty(partyChars, log, roller);

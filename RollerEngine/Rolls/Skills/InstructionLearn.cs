@@ -12,7 +12,7 @@ namespace RollerEngine.Rolls.Skills
     {
         private const string SKILL_NAME = "Instruction (learn)";
 
-        public InstructionLearn(IRollLogger log, RollAnalyzer roller, string ability) : base(
+        public InstructionLearn(IRollLogger log, IRollAnalyzer roller, string ability) : base(
             SKILL_NAME,
             log,
             roller,

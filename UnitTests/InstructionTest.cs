@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using RollerEngine.Character.Common;
 
 namespace UnitTests
@@ -8,7 +9,7 @@ namespace UnitTests
     using RollerEngine.Roller;
     using RollerEngine.Rolls.Skills;
 
-    /*
+    
     class InstructionTest
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -16,7 +17,7 @@ namespace UnitTests
         [Test]
         public void TestInstructionTeach()
         {
-            var roller = new RollAnalyzer(new RandomRoller());
+            var roller = new MockFixedRoller(new List<int>());
             IRollLogger logger = CompositeLogger.InitLogging(Verbosity.Debug, null, null, null);
 
             Build teacher = new Build("Teacher");
@@ -31,14 +32,14 @@ namespace UnitTests
             string xpConsumedOcuult =
                 Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpirienceLearned, Build.Abilities.Occult);
 
-            var rollTeach = new InstructionTeach(rollLogger, roller);
+            var rollTeach = new InstructionTeach(logger, roller);
             roller.Successes = 5;
             rollTeach.Roll(teacher, student, Build.Abilities.Occult, false, false);
 
             Assert.AreEqual(5, student.Traits[xpPoolOccult], "Student should get 5 XP on occult");
 
             roller.Successes = 4;
-            var rollLearn = new InstructionLearn(rollLogger, roller, Build.Abilities.Occult);
+            var rollLearn = new InstructionLearn(logger, roller, Build.Abilities.Occult);
 
             //student should learn 1 occult and have 2 more XP
             rollLearn.Roll(student, Build.Abilities.Occult, false, false);
@@ -159,5 +160,4 @@ namespace UnitTests
                 "Student should have 0 XP learned towards a point in Occult.");
         }
     }
-    */
 }
