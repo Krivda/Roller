@@ -11,7 +11,7 @@ namespace RollerEngine.Rolls.Fetish
         public const string FetishName = "Carnyx of Victory";
         public CarnyxOfVictory(
             IRollLogger log,
-            IRoller roller,
+            RollAnalyzer roller,
             Verbosity verbosity) :
             base(
                 FetishName,
@@ -43,7 +43,7 @@ namespace RollerEngine.Rolls.Fetish
             int result = base.Roll(actor, targets, hasSpec, hasWill);
             if (result <= 0)
             {
-                Log.Log(Verbosity.Important, ActivityChannel.Boost,
+                Log.Log(Verbosity.Important,
                     string.Format("Party didn't get bonus from {0} fetish.", Name));
                 return result;
             }
@@ -63,7 +63,7 @@ namespace RollerEngine.Rolls.Fetish
                             bonus
                         ));
 
-                    Log.Log(Verbosity, ActivityChannel.Boost, string.Format("{0} obtained {1} dice to his next roll from {2} fetish power .", target.Name, result, Name));
+                    Log.Log(Verbosity, string.Format("{0} obtained {1} dice to his next roll from {2} fetish power .", target.Name, result, Name));
                 }
             }
 

@@ -11,7 +11,7 @@ namespace RollerEngine.Rolls.Gifts
     {
         private const string GIFT_NAME = "Teacher's Ease";
 
-        public TeachersEase(IRollLogger log, IRoller roller, Verbosity verbosity) :
+        public TeachersEase(IRollLogger log, RollAnalyzer roller, Verbosity verbosity) :
             base(GIFT_NAME, log, roller, new List<string>() { Build.Atributes.Manipulation, Build.Abilities.Instruction}, new List<string>(){Build.Conditions.Social}, null, verbosity)
         {
         }
@@ -40,11 +40,11 @@ namespace RollerEngine.Rolls.Gifts
                         TraitModifier.BonusTypeKind.AdditionalDice
                     ));
 
-                Log.Log(Verbosity, ActivityChannel.Intermediate, string.Format("{0} obtained bonus {1} dice on {2} rolls from {3} gift.", target.Name, result, ability, Name));
+                Log.Log(Verbosity, string.Format("{0} obtained bonus {1} dice on {2} rolls from {3} gift.", target.Name, result, ability, Name));
             }
             else
             {
-                Log.Log(Verbosity, ActivityChannel.Intermediate, string.Format("{0} didn't get bonus from {1} gift.", target.Name, Name));
+                Log.Log(Verbosity, string.Format("{0} didn't get bonus from {1} gift.", target.Name, Name));
             }
 
             return result;

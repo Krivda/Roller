@@ -13,11 +13,12 @@ namespace RollerEngine.Rolls
         private const int BASE_DC = 6;
         private const int MIN_DC = 3;
         private const int MAX_MULTI_ADJUST = 3;
+
         private const int MAX_SINGLE_ADJUST = 5;
         //private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         protected readonly IRollLogger Log;
-        protected readonly IRoller Roller;
+        protected readonly RollAnalyzer Roller;
         public string AdditionalInfo { get; protected set; }
 
         public string Name { get; private set; }
@@ -80,13 +81,15 @@ namespace RollerEngine.Rolls
             public DCInfo DCInfo;
         }
 
-        public RollBase(string name, IRollLogger log, IRoller roller, List<String> dicePool, bool removeSuccessesOn1, bool canBotch, List<string> conditions) :
-            this (name, log, roller, dicePool, removeSuccessesOn1, canBotch, conditions, null, Verbosity.Important)
+        public RollBase(string name, IRollLogger log, RollAnalyzer roller, List<String> dicePool, bool removeSuccessesOn1,
+            bool canBotch, List<string> conditions) :
+            this(name, log, roller, dicePool, removeSuccessesOn1, canBotch, conditions, null, Verbosity.Important)
         {
 
         }
 
-        public RollBase(string name, IRollLogger log, IRoller roller,  List<String> dicePool, bool removeSuccessesOn1, bool canBotch, List<string> conditions, string additionalInfo, Verbosity verbosity)
+        public RollBase(string name, IRollLogger log, RollAnalyzer roller, List<String> dicePool, bool removeSuccessesOn1,
+            bool canBotch, List<string> conditions, string additionalInfo, Verbosity verbosity)
         {
             Log = log;
             Roller = roller;
@@ -130,17 +133,16 @@ namespace RollerEngine.Rolls
 
             logMessageBefore.Append(".");
 
-            Log.Log(Verbosity, ActivityChannel.Main, logMessageBefore.ToString());
+            Log.Log(Verbosity,  logMessageBefore.ToString());
 
             FullRollInfo = GetRollInfo(actor, targets);
 
             string logMessage = GetLogForRoll(actor, targets, FullRollInfo, hasSpec, hasWill);
-            Log.Log(Verbosity, ActivityChannel.Main, string.Format(logMessage));
+            Log.Log(Verbosity,  string.Format(logMessage));
 
-            RollResult = Roller.Roll(FullRollInfo.DicePoolInfo.Dices, FullRollInfo.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill, Name);
+            RollResult = Roller.Roll(FullRollInfo.DicePoolInfo.Dices, FullRollInfo.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill);
             Successes = RollResult.Successes;
-
-            Log.Log(Verbosity.Special, ActivityChannel.Main, string.Format("...and got {0} successes.", Successes));
+            LogRollOutcome(RollResult, Name);
 
             //remove used modifiers
             foreach (var traitValueInfo in FullRollInfo.DicePoolInfo.Traits)
@@ -188,23 +190,26 @@ namespace RollerEngine.Rolls
 
 
             return Successes;
-         }
+        }
 
-        protected virtual int OnBotch(int successes)
+        protected void LogRollOutcome(RollData rollData, string description)
         {
-
-            StringBuilder info = new StringBuilder(100);
-            string delim = "";
+            StringBuilder bld = new StringBuilder(100);
+            String delim = "";
             int face = 1;
-            foreach (var dice in RollResult.DiceResult)
+            foreach (var dice in rollData.DiceResult)
             {
-                info.Append(string.Format("{0}{1}:{2}", delim, face, dice));
+                bld.Append(string.Format("{0}{1}:{2}", delim, face, dice));
                 face++;
                 delim = ", ";
             }
 
-            info.AppendFormat(" vs DC {0}", FullRollInfo.DCInfo.AdjustedDC);
+            Log.Log(Verbosity,
+                string.Format("{0} roll was [{1}] and gave {2} successes.", description, bld, rollData.Successes));
+        }
 
+        protected virtual int OnBotch(int successes)
+        {
             //TODO HACK; HACK; HACK
             //throw new BotchException(string.Format("{0} roll botched on {1} successes. ({2})", Name, successes, info));
             return 0;
@@ -238,7 +243,8 @@ namespace RollerEngine.Rolls
             return dicePool;
         }
 
-        protected virtual TraitValueInfo GetModifiedTrait(Build actor, List<Build> targets, string traitName, List<string> conditions)
+        protected virtual TraitValueInfo GetModifiedTrait(Build actor, List<Build> targets, string traitName,
+            List<string> conditions)
         {
             var appliedMods = new List<Tuple<int, TraitModifier>>();
 
@@ -256,7 +262,8 @@ namespace RollerEngine.Rolls
             {
                 if (!modifier.ConditionsMet(this))
                 {
-                    Log.Log(Verbosity.Important, ActivityChannel.Main, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
+                    Log.Log(Verbosity.Important, 
+                        string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {
@@ -272,14 +279,22 @@ namespace RollerEngine.Rolls
                     {
                         triatValue += modValueLimitedValue;
                         modValue = modValueLimitedValue;
-                        Log.Log(Verbosity.Important, ActivityChannel.Main, string.Format("Modifer {0} is overcapped. Value set to {1}.", modifier.Name, modValueLimitedValue));
+                        Log.Log(Verbosity.Important, 
+                            string.Format("Modifer {0} is overcapped. Value set to {1}.", modifier.Name,
+                                modValueLimitedValue));
                     }
 
                     appliedMods.Add(new Tuple<int, TraitModifier>(modValue, modifier));
                 }
             }
 
-            return new TraitValueInfo() {TraitName = traitName, BaseValue = baseValue, ModifiedValue = triatValue, Modifires = appliedMods};
+            return new TraitValueInfo()
+            {
+                TraitName = traitName,
+                BaseValue = baseValue,
+                ModifiedValue = triatValue,
+                Modifires = appliedMods
+            };
         }
 
         protected virtual BonusValueInfo GetBonusDices(Build actor, List<Build> targets, List<string> conditions)
@@ -293,7 +308,8 @@ namespace RollerEngine.Rolls
             {
                 if (!modifier.ConditionsMet(this))
                 {
-                    Log.Log(Verbosity.Debug, ActivityChannel.Main, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
+                    Log.Log(Verbosity.Debug, 
+                        string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {
@@ -303,7 +319,7 @@ namespace RollerEngine.Rolls
                 }
             }
 
-            return new BonusValueInfo() {Value = value, Modifires = appliedMods };
+            return new BonusValueInfo() {Value = value, Modifires = appliedMods};
         }
 
         private DCInfo GetDCInfo(Build actor, List<Build> targets)
@@ -315,7 +331,7 @@ namespace RollerEngine.Rolls
 
             foreach (var trait in DicePool)
             {
-                var traitInfo = GetTraitDCInfo(actor,targets, trait, Conditions);
+                var traitInfo = GetTraitDCInfo(actor, targets, trait, Conditions);
                 dcInfo.Traits.Add(trait, traitInfo);
                 dcAdjust += traitInfo.ModifiedValue;
             }
@@ -327,7 +343,8 @@ namespace RollerEngine.Rolls
             //hadle limited value
             if (dcAdjust > MAX_MULTI_ADJUST)
             {
-                Log.Log(Verbosity.Debug, ActivityChannel.Main, string.Format("DC cannot be adjusted more than -3, adjusted as {0}.", MAX_MULTI_ADJUST));
+                Log.Log(Verbosity.Debug, 
+                    string.Format("DC cannot be adjusted more than -3, adjusted as {0}.", MAX_MULTI_ADJUST));
                 dcAdjust = MAX_MULTI_ADJUST;
             }
 
@@ -336,7 +353,8 @@ namespace RollerEngine.Rolls
             //hadle limited value
             if (adjectedDC < MIN_DC)
             {
-                Log.Log(Verbosity.Debug, ActivityChannel.Main, string.Format("DC was lesser then min, adjusted to {0}.", MIN_DC));
+                Log.Log(Verbosity.Debug, 
+                    string.Format("DC was lesser then min, adjusted to {0}.", MIN_DC));
                 dcInfo.AdjustedDC = MIN_DC;
             }
             else
@@ -352,7 +370,8 @@ namespace RollerEngine.Rolls
             return BASE_DC;
         }
 
-        protected virtual TraitDCInfo GetTraitDCInfo(Build actor, List<Build> targets, string traitName, List<string> conditions)
+        protected virtual TraitDCInfo GetTraitDCInfo(Build actor, List<Build> targets, string traitName,
+            List<string> conditions)
         {
             var appliedMods = new List<Tuple<int, DCModifer>>();
 
@@ -368,7 +387,8 @@ namespace RollerEngine.Rolls
             {
                 if (!modifier.ConditionsMet(this))
                 {
-                    Log.Log(Verbosity.Debug, ActivityChannel.Main, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
+                    Log.Log(Verbosity.Debug, 
+                        string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {
@@ -379,7 +399,7 @@ namespace RollerEngine.Rolls
                 }
             }
 
-            return new TraitDCInfo() { TraitName = traitName, ModifiedValue = adjustedValue, Modifires = appliedMods };
+            return new TraitDCInfo() {TraitName = traitName, ModifiedValue = adjustedValue, Modifires = appliedMods};
         }
 
         protected virtual BonusDCInfo GetBonusDC(Build actor, List<Build> targets, List<string> conditions)
@@ -394,7 +414,8 @@ namespace RollerEngine.Rolls
             {
                 if (!modifier.ConditionsMet(this))
                 {
-                    Log.Log(Verbosity.Debug, ActivityChannel.Main, string.Format("Modifier {0} conditions aren't met.", modifier.Name));
+                    Log.Log(Verbosity.Debug, 
+                        string.Format("Modifier {0} conditions aren't met.", modifier.Name));
                 }
                 else
                 {
@@ -404,10 +425,11 @@ namespace RollerEngine.Rolls
                 }
             }
 
-            return new BonusDCInfo() { Value = value, Modifires = appliedMods };
+            return new BonusDCInfo() {Value = value, Modifires = appliedMods};
         }
 
-        protected virtual string GetLogForRoll(Build actor, List<Build> targets, RollInfo info, bool hasSpec, bool hasWill)
+        protected virtual string GetLogForRoll(Build actor, List<Build> targets, RollInfo info, bool hasSpec,
+            bool hasWill)
         {
             StringBuilder logMessage = new StringBuilder(500);
 
@@ -483,7 +505,9 @@ namespace RollerEngine.Rolls
 
     public class BasicRoll : RollBase
     {
-        public BasicRoll(string name, IRollLogger log, IRoller roller, List<string> dicePool, bool removeSuccessesOn1, bool canBotch, List<string> conditions) : base(name, log, roller, dicePool, removeSuccessesOn1, canBotch, conditions)
+        public BasicRoll(string name, IRollLogger log, RollAnalyzer roller, List<string> dicePool, bool removeSuccessesOn1,
+            bool canBotch, List<string> conditions) : base(name, log, roller, dicePool, removeSuccessesOn1, canBotch,
+            conditions)
         {
         }
 

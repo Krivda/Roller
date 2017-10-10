@@ -32,7 +32,7 @@ namespace RollerEngine.Character
         private readonly Dictionary<string, HatysPartyMember> _party;
 
         private readonly IRollLogger _log;
-        private readonly IRoller _roller;
+        private readonly RollAnalyzer _roller;
         public Nameless Nameless { get; private set; }
         public Spirdon Spiridon { get; private set; }
         public Yoki Yoki { get; private set; }
@@ -45,7 +45,7 @@ namespace RollerEngine.Character
         public Dictionary<string, Dictionary<string, int>> WeekStartingTraits { get; set; }
         public Dictionary<string, Dictionary<string, int>> RunStartTraits { get; set; }
 
-        public HatysParty(Dictionary<string, Build> party, IRollLogger log, IRoller roller)
+        public HatysParty(Dictionary<string, Build> party, IRollLogger log, RollAnalyzer roller)
         {
             _partyBuilds = party;
             _party  = new Dictionary<string, HatysPartyMember>();
@@ -97,8 +97,9 @@ namespace RollerEngine.Character
             }
         }
 
-        public static HatysParty LoadFromGoogle(IRollLogger log, IRoller roller)
+        public static HatysParty LoadFromGoogle(IRollLogger log, IRoller rollInterface)
         {
+            var roller = new RollAnalyzer(rollInterface);
             var party = HatysPartyLoader.LoadFromGoogle(log);
             AddPermanentModifiers(party, log);
             return new HatysParty(party, log, roller);
@@ -292,7 +293,7 @@ namespace RollerEngine.Character
                         charAbilityProgress.Value[
                             Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpiriencePool, trait)];
 
-                    _log.Log(Verbosity.Critical, ActivityChannel.Main,
+                    _log.Log(Verbosity.Critical,
                         string.Format(
                             "{0} has progressed in learning ability {1}:trait value {2}->{3}, XP learned {4}->{5}, XP pool {6}->{7}",
                             characterName, trait, traitDiff.Item1, traitDiff.Item2, traitLearnedDiff.Item1,
@@ -305,12 +306,12 @@ namespace RollerEngine.Character
                     if (riteProgressKvp.Value.Item2 == Build.RiteAlreadyLearned)
                     {
                         //learned rite!
-                        _log.Log(Verbosity.Critical, ActivityChannel.Main,
+                        _log.Log(Verbosity.Critical, 
                             string.Format("{0} has learned rite {1}.", characterName, riteName));
                     }
                     else
                     {
-                        _log.Log(Verbosity.Critical, ActivityChannel.Main,
+                        _log.Log(Verbosity.Critical, 
                             string.Format("{0} has progressed in learning rite {1}: {2}->{3} of {4}.", characterName,
                                 riteName,
                                 riteProgressKvp.Value.Item1, riteProgressKvp.Value.Item2, riteProgressKvp.Value.Item3));
@@ -330,7 +331,7 @@ namespace RollerEngine.Character
                         direction = "lost";
                     }
 
-                    _log.Log(Verbosity.Critical, ActivityChannel.Main,
+                    _log.Log(Verbosity.Critical, 
                         string.Format("{0} has {1} item {2}. Item count: {3}->{4}", characterName, direction,
                             itemKvp.Key, itemKvp.Value.Item1, itemKvp.Value.Item2));
                 }
@@ -340,11 +341,11 @@ namespace RollerEngine.Character
         public void LogTotalProgress()
         {
             var progress = GetProgress(RunStartTraits);
-            _log.Log(Verbosity.Warning, ActivityChannel.Main, "");
-            _log.Log(Verbosity.Warning, ActivityChannel.Main, "");
-            _log.Log(Verbosity.Warning, ActivityChannel.Main, "===== >>>> This run results:");
+            _log.Log(Verbosity.Warning,  "");
+            _log.Log(Verbosity.Warning,  "");
+            _log.Log(Verbosity.Warning,  "===== >>>> This run results:");
             LogProgress(progress);
-            _log.Log(Verbosity.Warning, ActivityChannel.Main, "<<<< =====");
+            _log.Log(Verbosity.Warning,  "<<<< =====");
         }
 
         public void StartScene(int weekNo)
@@ -518,7 +519,7 @@ namespace RollerEngine.Character
             Nameless.BoostPlan = wp.BuffPlan.Nameless;
 
             _log.Week = weekNo;
-            _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("<==== Week {0} starts", weekNo));
+            _log.Log(Verbosity.Critical,  string.Format("<==== Week {0} starts", weekNo));
 
             StartScene(weekNo);
 
@@ -558,7 +559,7 @@ namespace RollerEngine.Character
                     {
                         TeachGiftToGarou weeklyActivity = (TeachGiftToGarou) planItem;
                         //planItem.Actor.Instruct(weeklyActivity.Student.Self, weeklyActivity.Gift, false);
-                        _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} teachs {1} for gift {2}",
+                        _log.Log(Verbosity.Critical,  string.Format("{0} teachs {1} for gift {2}",
                             weeklyActivity.Actor.CharacterName,
                             weeklyActivity.Student.Self.Name,
                             weeklyActivity.Gift));
@@ -568,7 +569,7 @@ namespace RollerEngine.Character
                     case Activity.TeachRiteToGarou:
                     {
                         TeachRiteToGarou weeklyActivity = (TeachRiteToGarou)planItem;
-                        _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} teachs {1} for Rite {2}",
+                        _log.Log(Verbosity.Critical,  string.Format("{0} teachs {1} for Rite {2}",
                             weeklyActivity.Actor.CharacterName,
                             weeklyActivity.Student.Self.Name,
                             weeklyActivity.Rite.Info().Name));
@@ -579,7 +580,7 @@ namespace RollerEngine.Character
                     {
                         CreateDeviceActivity weeklyActivity = (CreateDeviceActivity) planItem;
                         //planItem.Actor.Craft(weeklyActivity.Student.Self, weeklyActivity.FetishName);
-                        _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} crafts device {1}",
+                        _log.Log(Verbosity.Critical,  string.Format("{0} crafts device {1}",
                             weeklyActivity.Actor.CharacterName,
                             weeklyActivity.DeviceName));
                             break;
@@ -614,8 +615,8 @@ namespace RollerEngine.Character
 
                 foreach (var planItem in createTalens)
                 {
-                    _log.Log(Verbosity.Critical, ActivityChannel.Main, "");
-                    _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("{0} creating talens {1}",
+                    _log.Log(Verbosity.Critical,  "");
+                    _log.Log(Verbosity.Critical,  string.Format("{0} creating talens {1}",
                         planItem.Actor.CharacterName,
                         planItem.TalenName));
                 }
@@ -647,7 +648,7 @@ namespace RollerEngine.Character
 
                 if (actor.Value.WeeklyPartialActions != 0)
                 {
-                    _log.Log(Verbosity.Error, ActivityChannel.Main, string.Format(
+                    _log.Log(Verbosity.Error,  string.Format(
                         "{0} has {1} unused partial actions!", actor.Key, actor.Value.WeeklyPartialActions));
                 }
             }
@@ -669,13 +670,13 @@ namespace RollerEngine.Character
                 }
             }
 
-            _log.Log(Verbosity.Critical, ActivityChannel.Main, "");
-            _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("=>> Week {0} results:", weekNo));
+            _log.Log(Verbosity.Critical,  "");
+            _log.Log(Verbosity.Critical,  string.Format("=>> Week {0} results:", weekNo));
             LogProgress(progress);
 
 
 
-            _log.Log(Verbosity.Critical, ActivityChannel.Main, string.Format("<==== Week {0} ends", weekNo));
+            _log.Log(Verbosity.Critical,  string.Format("<==== Week {0} ends", weekNo));
         }
 
         private void CheckFullAndCalcPartialActions(int weekNo, List<WeeklyActivity> plan)
@@ -810,7 +811,7 @@ namespace RollerEngine.Character
                     throw new Exception(string.Format("Not enough partial weekly actions! ({0})", hatysPartyMemberKvp.Key));
                 }
 
-                _log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} has {1} full (spent {2}) and {3} partial (spent {4}) actions. MP bonus = {5}.",
+                _log.Log(Verbosity.Critical, string.Format("{0} has {1} full (spent {2}) and {3} partial (spent {4}) actions. MP bonus = {5}.",
                     hatysPartyMemberKvp.Key,
                     initialWeeklyActions,
                     spentWeeklyActions,

@@ -23,7 +23,7 @@ namespace RollerEngine.Character.Party
         public int BoneRhythmsUsagesLeft { get; set; }
         public bool HasOpenedCaern { get; set; }
 
-        public HatysPartyMember(string name, Build build, IRollLogger log, IRoller roller, HatysParty party) : base(
+        public HatysPartyMember(string name, Build build, IRollLogger log, RollAnalyzer roller, HatysParty party) : base(
             name, build, log, roller)
         {
             Party = party;

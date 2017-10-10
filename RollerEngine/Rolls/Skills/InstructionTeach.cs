@@ -10,7 +10,7 @@ namespace RollerEngine.Rolls.Skills
     {
         private const string SKILL_NAME = "Instruction (teach)";
 
-        public InstructionTeach(IRollLogger log, IRoller roller) : base(
+        public InstructionTeach(IRollLogger log, RollAnalyzer roller) : base(
             SKILL_NAME,
             log,
             roller,
@@ -39,8 +39,8 @@ namespace RollerEngine.Rolls.Skills
 
             if (maxTeachValue <= targetTraitValue)
             {
-                Log.Log(Verbosity.Warning, ActivityChannel.TeachLearn, "");
-                Log.Log(Verbosity.Warning, ActivityChannel.TeachLearn, string.Format("{0} doesn't have more skill in {1} ability ({2}vs{3}) or Instruct {4}  to teach {5}!", actor.Name, ability, actorTraitValue, targetTraitValue, actorInstructAbility, target.Name));
+                Log.Log(Verbosity.Warning, "");
+                Log.Log(Verbosity.Warning, string.Format("{0} doesn't have more skill in {1} ability ({2}vs{3}) or Instruct {4}  to teach {5}!", actor.Name, ability, actorTraitValue, targetTraitValue, actorInstructAbility, target.Name));
                 return 0;
             }
 
@@ -96,12 +96,12 @@ namespace RollerEngine.Rolls.Skills
                     truncate = string.Format(" (truncated to new {0}XP)", newXp);
                 }
 
-                Log.Log(Verbosity.Warning, ActivityChannel.TeachLearn, string.Format("{0} obtain {1}XP{2}. With old {3}XP he has {4}XP in XP pool for learning {5} from {6}'s {7}.",
+                Log.Log(Verbosity.Warning, string.Format("{0} obtain {1}XP{2}. With old {3}XP he has {4}XP in XP pool for learning {5} from {6}'s {7}.",
                     target.Name, result, truncate, currentXpInPool, target.Traits[traitKeyXpPool], ability, actor.Name, Name));
             }
             else
             {
-                Log.Log(Verbosity.Critical, ActivityChannel.TeachLearn, string.Format("{0} didn't get bonus XP from {1}.", target.Name, Name));
+                Log.Log(Verbosity.Critical, string.Format("{0} didn't get bonus XP from {1}.", target.Name, Name));
             }
 
             return result;

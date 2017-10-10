@@ -24,7 +24,7 @@ namespace RollerEngine.Rolls.Gifts
         private const string GIFT_NAME = "Call to Wyld";
         private const string GIFT_NAME_FULL = "Call to Wyld (Dirge to the Fallen)";
 
-        public CallOfTheWyldDirgeToTheFallen(IRollLogger log, IRoller roller) : 
+        public CallOfTheWyldDirgeToTheFallen(IRollLogger log, RollAnalyzer roller) : 
             base(GIFT_NAME_FULL, log, roller, 
             new List<string>() { Build.Atributes.Stamina, Build.Abilities.Empathy},
             new List<string>() {Build.Conditions.Memory}, null, Verbosity.Details)
@@ -49,12 +49,12 @@ namespace RollerEngine.Rolls.Gifts
                             TraitModifier.BonusTypeKind.AdditionalDice
                         ));
 
-                    Log.Log(Verbosity, ActivityChannel.Intermediate, string.Format("{0} obtained bonus {1} dices to {2} (Ancestors Spririts related rolls) for next roll from {3} gift performed by {4}.", target.Name, skill, successes / 2, Name, actor.Name));
+                    Log.Log(Verbosity, string.Format("{0} obtained bonus {1} dices to {2} (Ancestors Spririts related rolls) for next roll from {3} gift performed by {4}.", target.Name, skill, successes / 2, Name, actor.Name));
                 }
             }
             else
             {
-                Log.Log(Verbosity, ActivityChannel.Intermediate, string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
+                Log.Log(Verbosity, string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
             }
 
             return successes/2;

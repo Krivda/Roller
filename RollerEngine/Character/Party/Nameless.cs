@@ -38,14 +38,14 @@ namespace RollerEngine.Character.Party
 
         public NamelessBuff BoostPlan { get; set; }
 
-        public Nameless(Build build, IRollLogger log, IRoller roller, HatysParty party) : base("Безымянный", build, log, roller, party)
+        public Nameless(Build build, IRollLogger log, RollAnalyzer roller, HatysParty party) : base("Безымянный", build, log, roller, party)
         {
         }
 
         public void WeeklyPreBoost(NamelessBuff buffPlan)
         {
-            Log.Log(Verbosity.Details, ActivityChannel.Boost, "=== === === === ===");
-            Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyPreBoost for {1}", Self.Name, buffPlan.PreBuff.Trait));
+            Log.Log(Verbosity.Details, "=== === === === ===");
+            Log.Log(Verbosity.Details, string.Format("{0} WeeklyPreBoost for {1}", Self.Name, buffPlan.PreBuff.Trait));
 
             Party.Spiridon.__ActivateCarnyx(Self, "fast pre-boost", true);
             //-1 dc social rolls
@@ -80,8 +80,8 @@ namespace RollerEngine.Character.Party
 
         public void WeeklyBoostSkill(NamelessBuff buff)
         {
-            Log.Log(Verbosity.Details, ActivityChannel.Boost, "=== === === === ===");
-            Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, buff.MainBuff.Trait));
+            Log.Log(Verbosity.Details, "=== === === === ===");
+            Log.Log(Verbosity.Details, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, buff.MainBuff.Trait));
 
             //Buff occult from Spiridon
             Party.Spiridon.WeeklyMidBoostOccult(Self);
@@ -115,7 +115,7 @@ namespace RollerEngine.Character.Party
 
         public static void ApplyChannellingGift(Build build, IRollLogger log, int value)
         {
-            log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} Channels {1} Rage to boost his next Action (+{1} Dice on next roll)", build.Name, value));
+            log.Log(Verbosity.Details, string.Format("{0} Channels {1} Rage to boost his next Action (+{1} Dice on next roll)", build.Name, value));
 
             build.BonusDicePoolModifiers.Add(
                 new BonusModifier(

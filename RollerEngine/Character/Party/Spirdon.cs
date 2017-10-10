@@ -22,7 +22,7 @@ namespace RollerEngine.Character.Party
             }
         }
 
-        public Spirdon(Build build, IRollLogger log, IRoller roller, HatysParty party) : base("Спиридон", build, log, roller, party)
+        public Spirdon(Build build, IRollLogger log, RollAnalyzer roller, HatysParty party) : base("Спиридон", build, log, roller, party)
         {
         }
 
@@ -77,8 +77,8 @@ namespace RollerEngine.Character.Party
 
         public void WeeklyPreBoost(string suppTrait)
         {
-            Log.Log(Verbosity.Details, ActivityChannel.Boost, "=== === === === ===");
-            Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyPreBoost on {1}", Self.Name, suppTrait));
+            Log.Log(Verbosity.Details, "=== === === === ===");
+            Log.Log(Verbosity.Details, string.Format("{0} WeeklyPreBoost on {1}", Self.Name, suppTrait));
 
             //-1 dc social rolls
             CastVisageOfFenris();
@@ -94,8 +94,8 @@ namespace RollerEngine.Character.Party
 
         public void WeeklyMidBoostOccult(Build target)
         {
-            Log.Log(Verbosity.Details, ActivityChannel.Boost, "=== === === === ===");
-            Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyMidBoostOccult for {1}", Self.Name, target.Name));
+            Log.Log(Verbosity.Details, "=== === === === ===");
+            Log.Log(Verbosity.Details, string.Format("{0} WeeklyMidBoostOccult for {1}", Self.Name, target.Name));
 
             //for my next Ancestor Seeking
             CastSacredFire(new List<Build>() { Self });
@@ -107,8 +107,8 @@ namespace RollerEngine.Character.Party
 
         public void WeeklyBoostSkill(string mainTrait)
         {
-            Log.Log(Verbosity.Details, ActivityChannel.Boost, "=== === === === ===");
-            Log.Log(Verbosity.Details, ActivityChannel.Boost, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, mainTrait));
+            Log.Log(Verbosity.Details, "=== === === === ===");
+            Log.Log(Verbosity.Details, string.Format("{0} WeeklyBoostSkill on {1}", Self.Name, mainTrait));
 
             //Buff occult from Spiridon
             Party.Spiridon.WeeklyMidBoostOccult(Self);
@@ -167,7 +167,7 @@ namespace RollerEngine.Character.Party
         {
             if (HasCarnyx)
             {
-                Log.Log(Verbosity.Details, ActivityChannel.Boost, ">== Carnyx started, now actions from Spiridon");
+                Log.Log(Verbosity.Details, ">== Carnyx started, now actions from Spiridon");
                 //TODO: -1 Gnosis to activate
 
                 CastCaernChanneling(Build.Abilities.Performance);
@@ -188,7 +188,7 @@ namespace RollerEngine.Character.Party
             if (HasCarnyx)
             {
                 CarnyxOfVictory.RemoveFromBuild(Party.Builds.FindAll(build => !build.Name.Equals(CharacterName)));
-                Log.Log(Verbosity.Details, ActivityChannel.Boost, "<== Carnyx ended, Spiridon can act again");
+                Log.Log(Verbosity.Details, "<== Carnyx ended, Spiridon can act again");
             }
         }
 

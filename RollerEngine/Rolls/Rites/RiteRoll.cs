@@ -13,7 +13,7 @@ namespace RollerEngine.Rolls.Rites
     {
         public Rite Rite { get; private set; }
 
-        public RiteRoll(Rite rite, IRollLogger log, IRoller roller, List<string> dicePool, List<string> conditions, string addtionalInfo, Verbosity verbosity) :
+        public RiteRoll(Rite rite, IRollLogger log, RollAnalyzer roller, List<string> dicePool, List<string> conditions, string addtionalInfo, Verbosity verbosity) :
             base(rite.Info().Name, log, roller, dicePool, true, true, conditions, addtionalInfo, verbosity)
         {
             Rite = rite;

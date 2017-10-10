@@ -12,7 +12,7 @@ namespace RollerEngine.Rolls.Skills
 
         private int _dc;
 
-        public CraftFetishBase(IRollLogger log, IRoller roller) : base(
+        public CraftFetishBase(IRollLogger log, RollAnalyzer roller) : base(
             SKILL_NAME,
             log,
             roller,
@@ -30,17 +30,17 @@ namespace RollerEngine.Rolls.Skills
 
             int result = base.Roll(actor, new List<Build>(), hasSpec, hasWill);
 
-            Log.Log(Verbosity.Critical, ActivityChannel.Creation, "");
+            Log.Log(Verbosity.Critical, "");
             if (result >= successesRequires)
             {
                 actor.AddFetishBase(fetishName);
 
-                Log.Log(Verbosity.Critical, ActivityChannel.Creation, string.Format("{0} has got {1} successes (of required {2}) on {3}. Now he has an exellent base for {4}!",
+                Log.Log(Verbosity.Critical, string.Format("{0} has got {1} successes (of required {2}) on {3}. Now he has an exellent base for {4}!",
                     actor.Name, result, successesRequires, SKILL_NAME, fetishName));
             }
             else
             {
-                Log.Log(Verbosity.Critical, ActivityChannel.Creation, string.Format("{0} has got {1} successes (of required {2}) on {3}. Thats not enough to create a decent base for {4}!",
+                Log.Log(Verbosity.Critical, string.Format("{0} has got {1} successes (of required {2}) on {3}. Thats not enough to create a decent base for {4}!",
                     actor.Name, result, successesRequires, SKILL_NAME, fetishName));
             }
 

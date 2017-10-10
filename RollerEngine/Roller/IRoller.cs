@@ -4,8 +4,7 @@ namespace RollerEngine.Roller
 {
     public interface IRoller
     {        
-        RollData Roll(int diceCount, int DC, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill, string description);
-
+        List<int> Roll(int diceCount, int DC);
     }
 
     public class RollData

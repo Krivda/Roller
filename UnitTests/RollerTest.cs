@@ -25,7 +25,7 @@ namespace UnitTests
         public void RollerTestSimple()
         {
 
-            var meth = GetMethod(typeof(OfflineDiceRoller), "GetRollSuccesses");
+            var meth = GetMethod(typeof(RollAnalyzer), "GetRollSuccesses");
             bool hasSpec = false;
             bool hasWill = false;
             bool remove1 = false;

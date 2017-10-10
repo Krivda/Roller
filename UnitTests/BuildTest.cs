@@ -15,8 +15,8 @@ namespace UnitTests
         [Test]
         public void RollSimpleTest()
         {
-            var roller = new OfflineDiceRoller(LoggerFactory.CreateStringBufferLogger());
-            IRollLogger logger = LoggerFactory.CreateStringBufferLogger();
+            var roller = new RollAnalyzer(new RandomRoller());
+            IRollLogger logger = CompositeLogger.InitLogging(Verbosity.Debug, null, null, null);
 
             Build build = new Build("Artze");
             int dex = 4;
@@ -51,8 +51,8 @@ namespace UnitTests
         [Test(Description = "Trait modifiers")]
         public void RollTestTraitMods()
         {
-            var roller = new OfflineDiceRoller(LoggerFactory.CreateStringBufferLogger());
-            IRollLogger logger = LoggerFactory.CreateStringBufferLogger();
+            var roller = new RollAnalyzer(new RandomRoller());
+            IRollLogger logger = CompositeLogger.InitLogging(Verbosity.Debug, null, null, null);
 
             Build build = new Build("Artze");
             int dex = 3;
@@ -120,8 +120,8 @@ namespace UnitTests
         [Test(Description = "Test conditions")]
         public void RollTestConditionsMods()
         {
-            var roller = new OfflineDiceRoller(LoggerFactory.CreateStringBufferLogger());
-            IRollLogger logger = LoggerFactory.CreateStringBufferLogger();
+            var roller = new RollAnalyzer(new RandomRoller());
+            IRollLogger logger = CompositeLogger.InitLogging(Verbosity.Debug, null, null, null);
 
             Build build = new Build("Artze");
             int dex = 3;

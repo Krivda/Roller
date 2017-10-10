@@ -9,7 +9,7 @@ namespace RollerEngine.Rolls.Backgrounds
     public class Ancestors : BackgroundRoll
     {
 
-        public Ancestors(IRollLogger log, IRoller roller, Verbosity verbosity)
+        public Ancestors(IRollLogger log, RollAnalyzer roller, Verbosity verbosity)
             : base(Build.Backgrounds.Ancestors, log, roller, new List<string>() {Build.Conditions.AncestorSpirits},
                 null, verbosity)
         {
@@ -22,14 +22,14 @@ namespace RollerEngine.Rolls.Backgrounds
             if (actor.AncestorsUsesLeft == -1)
             {
                 //Ancestors won't answer this call
-                Log.Log(Verbosity.Warning, ActivityChannel.Boost, string.Format("{0} won't answer {1}'s call this week due to botch!", Name, actor.Name));
+                Log.Log(Verbosity.Warning, string.Format("{0} won't answer {1}'s call this week due to botch!", Name, actor.Name));
                 return 0;
             }
 
             if (actor.AncestorsUsesLeft == 0)
             {
                 //Ancestors can't be called
-                Log.Log(Verbosity.Warning, ActivityChannel.Boost, string.Format("{0} won't answer {1}'s call this week due to attempts!", Name, actor.Name));
+                Log.Log(Verbosity.Warning, string.Format("{0} won't answer {1}'s call this week due to attempts!", Name, actor.Name));
                 return 0;
             }
 
@@ -42,7 +42,7 @@ namespace RollerEngine.Rolls.Backgrounds
                 {
                     if (actor.HasAncestorVeneration)
                     {
-                        Log.Log(Verbosity.Warning, ActivityChannel.Boost,
+                        Log.Log(Verbosity.Warning,
                             string.Format(
                                 "{0} botched {1} roll, but he has Ancestor Veneration and will reroll one dice.",
                                 actor.Name, Name));
@@ -50,12 +50,13 @@ namespace RollerEngine.Rolls.Backgrounds
                         Successes = Successes + 1; //remove one failure due to reroll '1'
 
                         int dc = FullRollInfo.DCInfo.AdjustedDC;
-                        var rolldata = Roller.Roll(1, dc, true, false, false, "Reroll 1 Ansestor Dice");
+                        var rolldata = Roller.Roll(1, dc, true, false, false);
+                        LogRollOutcome(rolldata , "Reroll 1 Ansestor Dice");
                         Successes += rolldata.Successes; //this can be -1 for '1'; 0 if <dc ; +1 if >= dc
 
                         if (Successes >= 0)
                         {
-                            Log.Log(Verbosity.Warning, ActivityChannel.Boost,
+                            Log.Log(Verbosity.Warning,
                                 string.Format("{0} recovered from botch and got {1} succeses.", actor.Name, Successes));
                         }
                     }
@@ -75,13 +76,13 @@ namespace RollerEngine.Rolls.Backgrounds
                     )
                 );
 
-                Log.Log(Verbosity, ActivityChannel.Boost,
+                Log.Log(Verbosity,
                     string.Format("{0} obtained bonus {1} dies on {2} for a scene from {3} Background.", actor.Name,
                         Successes, targetTrait, Name));
             }
             else if (Successes == 0)
             {
-                Log.Log(Verbosity, ActivityChannel.Boost, string.Format("{0} didn't get bonus from Ancestors!", actor.Name));
+                Log.Log(Verbosity, string.Format("{0} didn't get bonus from Ancestors!", actor.Name));
             }
             else
             {
@@ -90,7 +91,7 @@ namespace RollerEngine.Rolls.Backgrounds
                 //cancel any uses of Ancestors this week
                 actor.AncestorsUsesLeft = -1;
 
-                Log.Log(Verbosity.Warning, ActivityChannel.Boost,
+                Log.Log(Verbosity.Warning,
                     string.Format("{0} bothced {1} Anscestors won't answer him for a week.", actor.Name, Name));
             }
 

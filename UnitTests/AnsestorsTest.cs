@@ -9,6 +9,7 @@ using RollerEngine.Rolls.Backgrounds;
 
 namespace UnitTests
 {
+/*
     class AnsestorsTest
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -16,10 +17,10 @@ namespace UnitTests
         [Test]
         public void AnscestorsTest()
         {
-            var logger = LoggerFactory.CreateNLogLogger(Logger);
-            var roller = new MockFixedRoller(LoggerFactory.CreateNLogLogger(Logger));
+            var roller = new RollAnalyzer(new MockFixedRoller());
+            IRollLogger logger = CompositeLogger.InitLogging(Verbosity.Debug, null, null, null);
 
-            logger.Log(Verbosity.Debug, ActivityChannel.Main, "<== Ancestors Test");
+            logger.Log(Verbosity.Debug,  "<== Ancestors Test");
 
             Build user = new Build("Teacher");
             user.Traits[Build.Backgrounds.Ancestors] = 3;
@@ -62,5 +63,5 @@ namespace UnitTests
             Assert.AreEqual(50, user.AncestorsUsesLeft, "botch should have 50 further attempts");
         }
     }
-
+*/
 }

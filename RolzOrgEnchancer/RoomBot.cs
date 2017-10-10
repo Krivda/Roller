@@ -37,42 +37,40 @@ namespace RolzOrgEnchancer
 
     }
 
-    internal class RoomBootImpl : ILogWrapper<object>, IRoller
+    internal class RoomBootImpl : BaseLogger, IRoller
     {
-        public int Week { get; set; }
-        private static uint _idRoll = 100;
-        //RollerEngine.Roller.IRoller
-        public RollData Roll(int diceCount, int dc, bool removeSuccessOnOnes, bool hasSpecialization, bool hasWill, string description)
+        private static uint _idRoll = 100; //TODO move to IRoller
+
+        public RoomBootImpl(Verbosity minVerbosity) : base(minVerbosity)
         {
-            RoomBot.MakeMessage(Color.Orange, description);
-
-            var specialization = hasSpecialization ? Specialization.UsingSpecialization : Specialization.False;
-            var negateBotch = hasWill ? NegateBotch.UsingWillpower : NegateBotch.False;
-            var ignoreFailures = removeSuccessOnOnes ? IgnoreFailures.IgnoreFailures : IgnoreFailures.False;
-
-            var input = new RollInput(diceCount, dc, specialization, negateBotch, ignoreFailures);
-            var item = RoomBot.MakeRoll((uint)diceCount, (uint)dc, _idRoll++);
-            var output = new RollOutput(item, input);
-            return new RollData(output.Result, output.RawDices);
         }
 
-        public object CreateChannelLogger(ActivityChannel channel)
+        public List<int> Roll(int diceCount, int DC)
         {
-            if (channel != ActivityChannel.Main) return null;
-            return new object();
+            var item = RoomBot.MakeRoll((uint) diceCount, (uint) DC, _idRoll++);
+            var rawResult = new List<int>(10);
+            rawResult.AddRange(new int[10]);
+
+            if (!item.details.StartsWith("( (")) throw new Exception("Invalid details 1");
+            var index = item.details.IndexOf('→', 0);
+            if (index == -1) throw new Exception("Invalid details 2");
+            var res = item.details.Substring(0, index);
+            res = res.Substring(3);
+            var res2 = res.Split(new[] {',', ' '}, StringSplitOptions.RemoveEmptyEntries);
+            if (res2.Length != diceCount) throw new Exception("Invalid dice count");
+
+            foreach (var r in res2)
+            {
+                int i;
+                if (!int.TryParse(r, out i)) throw new Exception("Not a number dice value");
+                if (i < 1 || i > 10) throw new Exception("Invalid dice value");
+                rawResult[i-1]++;
+            }
+
+            return rawResult;
         }
 
-        public void AppendInternalLog(object logger, Verbosity verbosity, string record)
-        {
-            if (logger != null) Log(verbosity, record);
-        }
-
-        public string GetInternalLog(object logger)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Log(Verbosity verbosity, string record)
+        public override void Log(Verbosity verbosity, string record)
         {
             Color color;
             switch (verbosity)
@@ -102,9 +100,8 @@ namespace RolzOrgEnchancer
                     color = Color.Green;
                     break;
             }
-            RoomBot.MakeMessage(color, record);
+            RoomBot.MakeMessage(color, ApplyFormat(record));
         }
-
     }
 
   internal static class RoomBot
@@ -137,11 +134,8 @@ namespace RolzOrgEnchancer
           //InitializeKrivda(IRoomBot)
           //EmulateKrivda()
 
-          var myInterface = new RoomBootImpl();
-          var logger = new BaseLogger<ILogWrapper<object>, object>(Verbosity.Details, new List<ActivityChannel>(), myInterface);
-          logger.TreatSpecialVerbosityAs(Verbosity.Normal);
-
-          var res = HatysParty.LoadFromGoogle(logger, myInterface);
+          var myInterface = new RoomBootImpl(Verbosity.Critical);
+          var res = HatysParty.LoadFromGoogle(myInterface, myInterface);
 
           uint action;
           for (;;)

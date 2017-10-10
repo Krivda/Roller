@@ -10,7 +10,7 @@ namespace RollerEngine.Rolls.Gifts
     {
         public const string PowerName = "Caern of Vigil (Chanelling)";
 
-        public CaernOfVigilChannelling(IRollLogger log, IRoller roller)
+        public CaernOfVigilChannelling(IRollLogger log, RollAnalyzer roller)
             : base(PowerName, log, roller,
                 new List<string>() {Build.Atributes.Perception, Build.Abilities.PrimalUrge},
                 new List<string>(), "", Verbosity.Details)
@@ -37,11 +37,11 @@ namespace RollerEngine.Rolls.Gifts
                     )
                 );
 
-                Log.Log(Verbosity, ActivityChannel.Intermediate, string.Format("{0} obtained bonus {1} to ability {2} for a scence from {3}.", actor.Name, successes, targetTrait, Name));
+                Log.Log(Verbosity, string.Format("{0} obtained bonus {1} to ability {2} for a scence from {3}.", actor.Name, successes, targetTrait, Name));
             }
             else
             {
-                Log.Log(Verbosity, ActivityChannel.Intermediate, string.Format("{0} didn't get bonus from {1}.", actor.Name, Name));
+                Log.Log(Verbosity, string.Format("{0} didn't get bonus from {1}.", actor.Name, Name));
             }
 
             return successes;

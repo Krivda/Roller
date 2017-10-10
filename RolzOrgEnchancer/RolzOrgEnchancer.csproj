@@ -52,7 +52,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DicePoolRoll.cs" />
     <Compile Include="RoomLog\Parser.cs" />
     <Compile Include="UI\SafeLog.cs" />
     <Compile Include="UI\Form1.cs">

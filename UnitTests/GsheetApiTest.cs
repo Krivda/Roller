@@ -21,7 +21,8 @@ namespace UnitTests
         [Test]
         public void TestPartyLoad()
         {
-            var res = HatysPartyLoader.LoadFromGoogle(LoggerFactory.CreateStringBufferLogger());
+            IRollLogger logger = CompositeLogger.InitLogging(Verbosity.Debug, null, null, null);
+            var res = HatysPartyLoader.LoadFromGoogle(logger);
 
             Assert.AreEqual(8, res.Count, "should load 8 characters");
 

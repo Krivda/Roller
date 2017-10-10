@@ -10,7 +10,7 @@ namespace RollerEngine.Rolls.Rites
 {
     class AncestorSeeking : RiteRoll
     {
-        public AncestorSeeking(IRollLogger log, IRoller roller) :
+        public AncestorSeeking(IRollLogger log, RollAnalyzer roller) :
             base(Rite.AncestorSeeking, log, roller,
             new List<string>() {Build.Atributes.Wits, Build.Abilities.Rituals },
             new List<string>() {Build.Conditions.MysticRite}, null, Verbosity.Details)
@@ -46,12 +46,12 @@ namespace RollerEngine.Rolls.Rites
                             TraitModifier.BonusTypeKind.AdditionalDice
                         ));
 
-                    Log.Log(Verbosity, ActivityChannel.Intermediate,
+                    Log.Log(Verbosity,
                     string.Format("{0} obtained bonus {1} dice on social rolls from {2} rite to Occult, Enigmas, Investigation for next Ancestor spirit related rolls.", target.Name, result/2, Name));
                 }
                 else
                 {
-                    Log.Log(Verbosity, ActivityChannel.Intermediate,
+                    Log.Log(Verbosity,
                     string.Format("{0} didn't get bonus from {1} rite.", target.Name, Name));
                 }
 

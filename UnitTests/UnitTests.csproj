@@ -56,16 +56,11 @@
     <Compile Include="DictinariesTest.cs" />
     <Compile Include="GsheetApiTest.cs" />
     <Compile Include="InstructionTest.cs" />
-    <Compile Include="LoggersTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RollchainTest.cs" />
     <Compile Include="RollerTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

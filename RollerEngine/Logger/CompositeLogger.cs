@@ -1,109 +1,77 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace RollerEngine.Logger
 {
-    public sealed class CompositeLogger : IBaseLogger
+    public sealed class CompositeLogger : BaseLogger
     {
-        private int _week;
         private Verbosity _minVerbosity;
-        public IBaseLogger[] Loggers { get; private set; }
+        private int _week;
 
-        public int Week
-        {
-            get { return _week; }
-            set
-            {
-                _week = value;
-                foreach (var logger in Loggers)
-                {
-                    logger.Week = _week;
-                }
-            }
-        }
-
-        public Verbosity MinVerbosity
+        public override Verbosity MinVerbosity
         {
             get { return _minVerbosity; }
             set
             {
                 _minVerbosity = value;
-                foreach (var logger in Loggers)
-                {
-                    logger.MinVerbosity = _minVerbosity;
-                }
+                Loggers.ForEach(logger => logger.MinVerbosity = value);
             }
         }
 
-        //use LoggerFactory class
-        private CompositeLogger(Verbosity minVerbosity, List<ActivityChannel> disabledChannels, params IBaseLogger[] loggers)
+        public override int Week
         {
-            Loggers = loggers;
-            MinVerbosity = minVerbosity;
-            DisableActivityChannels(disabledChannels);
-            Week = -1;
+            get { return _week; }
+            set
+            {
+                _week = value;
+                Loggers.ForEach(logger => logger.Week = value);
+            }
         }
 
-        public void Log(Verbosity verbosity, ActivityChannel channel, string record)
+        public List<IRollLogger> Loggers { get; private set; }
+
+        private CompositeLogger() : base(Verbosity.Debug)
+        {
+            Loggers = new List<IRollLogger>();
+        }
+       
+        public override void Log(Verbosity verbosity, string record)
         {
             foreach (var logger in Loggers)
             {
-                logger.Log(verbosity, channel, record);
+                logger.Log(verbosity, record);
             }
         }
 
-        public void EnableActivityChannels(List<ActivityChannel> channels)
+        public void AddLogger(IRollLogger logger)
         {
-            foreach (var logger in Loggers)
+            Loggers.Add(logger);
+        }
+
+        public static CompositeLogger InitLogging(Verbosity? consoleVerbosity, Verbosity? fileVerbosity, Verbosity? stringBuilderVerbosity, IRollLogger webLogger)
+        {
+            CompositeLogger logger = new CompositeLogger();
+
+            if (stringBuilderVerbosity != null)
             {
-                logger.EnableActivityChannels(channels);
+                logger.AddLogger(new StringBufferLogger(stringBuilderVerbosity.Value));
             }
-        }
 
-        public void DisableActivityChannels(List<ActivityChannel> channels)
-        {
-            foreach (var logger in Loggers)
+            if (consoleVerbosity != null)
             {
-                logger.DisableActivityChannels(channels);
+                logger.AddLogger(new NLogConsoleLogger(consoleVerbosity.Value));
             }
-        }
 
-        public string GetMainLog()
-        {
-            return Loggers.Aggregate("", (current, logger) => current + logger.GetChannelLog(ActivityChannel.Main));
-        }
-
-        public string GetChannelLog(ActivityChannel channel)
-        {
-            return Loggers.Aggregate("", (current, logger) => current + logger.GetChannelLog(channel));
-        }
-
-        public static class InnerLoggerFactory
-        {
-            public static CompositeLogger CreateCompositeLogger(Verbosity minVerbosity, List<ActivityChannel> disabledChannels, params IBaseLogger[] loggers)
+            if (fileVerbosity != null)
             {
-                return new CompositeLogger(minVerbosity, disabledChannels, loggers);
+                logger.AddLogger(new NLogFileLogger(fileVerbosity.Value));
             }
 
-        }
+            if (webLogger != null)
+            {
+                logger.AddLogger(webLogger);
+            }
 
-    }
-
-    public static partial class LoggerFactory
-    {
-        public static CompositeLogger CreateCompositeLogger(Verbosity minVerbosity, List<ActivityChannel> disabledChannels, params IBaseLogger[] loggers)
-        {
-            return CompositeLogger.InnerLoggerFactory.CreateCompositeLogger(minVerbosity, disabledChannels, loggers);
-        }
-
-        public static CompositeLogger CreateCompositeLogger(Verbosity minVerbosity, params IBaseLogger[] loggers)
-        {
-            return CreateCompositeLogger(minVerbosity, new List<ActivityChannel>());
-        }
-
-        public static CompositeLogger CreateCompositeLogger(params IBaseLogger[] loggers)
-        {
-            return CreateCompositeLogger(Verbosity.Debug);
+            return logger;
         }
 
     }

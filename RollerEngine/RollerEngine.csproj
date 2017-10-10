@@ -84,6 +84,7 @@
     <Compile Include="Character\Party\Lynn.cs" />
     <Compile Include="Character\Party\NamelessBuff.cs" />
     <Compile Include="Character\ProgressSummary.cs" />
+    <Compile Include="Roller\RandomRoller.cs" />
     <Compile Include="Rolls\Rites\CreateFetish.cs" />
     <Compile Include="Rolls\Rites\OpenedCaern.cs" />
     <Compile Include="Rolls\Skills\CraftFetishBase.cs" />
@@ -129,7 +130,7 @@
     <Compile Include="Rolls\Skills\InstructionLearn.cs" />
     <Compile Include="Rolls\Skills\RitualsLearn.cs" />
     <Compile Include="SpreadSheets\SpreadsheetService.cs" />
-    <Compile Include="Roller\OfflineDiceRoller.cs" />
+    <Compile Include="Roller\RollAnalyzer.cs" />
     <Compile Include="Roller\IRoller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logger\IRollLogger.cs" />
@@ -139,6 +140,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="NLog.config">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="SpreadSheets\client_secret.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

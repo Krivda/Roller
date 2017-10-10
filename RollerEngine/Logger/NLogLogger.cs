@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
 using NLog;
 
 namespace RollerEngine.Logger
 {
-    public class NLogLogger : ILogWrapper<NLog.Logger>
+    public abstract class NLogLogger : BaseLogger
     {
-        private readonly NLog.Logger _nlog;
+        private readonly NLog.Logger _nLog;
 
         private static LogLevel Verbosity2LogLevel(Verbosity verbosity)
         {
@@ -19,10 +17,10 @@ namespace RollerEngine.Logger
                 case Verbosity.Critical:
                     return LogLevel.Warn;
                 case Verbosity.Important:
-                case Verbosity.Normal:
                     return LogLevel.Info;
-                case Verbosity.Details:
+                case Verbosity.Normal:
                     return LogLevel.Debug;
+                case Verbosity.Details:
                 case Verbosity.Debug:
                     return LogLevel.Trace;
                 default:
@@ -30,51 +28,34 @@ namespace RollerEngine.Logger
             }
         }
 
-        //use LoggerFactory class
-        private NLogLogger(NLog.Logger nlog)
+        protected NLogLogger(string name, Verbosity verbosity) : base(verbosity)
         {
-            _nlog = nlog;
+            _nLog = LogManager.GetLogger(name);
         }
 
-        public NLog.Logger CreateChannelLogger(ActivityChannel channel)
+        public override void Log(Verbosity verbosity, string record)
         {
-            return LogManager.GetLogger(string.Format("Channel_{0}.{1}", Enum.GetName(typeof(ActivityChannel), channel), _nlog.Name));
-        }
-
-        public void AppendInternalLog(NLog.Logger logger, Verbosity verbosity, string record)
-        {
-            logger.Log(Verbosity2LogLevel(verbosity), record);
-        }
-
-        public string GetInternalLog(NLog.Logger logger)
-        {
-            return logger.ToString();
-        }
-
-        public static class InnerLoggerFactory
-        {
-            public static BaseLogger<NLogLogger, NLog.Logger> CreateNLogLogger(Verbosity minVerbosity, List<ActivityChannel> disabledChannels, NLog.Logger nlog)
-            {
-                return new BaseLogger<NLogLogger, NLog.Logger>(minVerbosity, disabledChannels, new NLogLogger(nlog));
-            }
+            _nLog.Log(Verbosity2LogLevel(verbosity), ApplyFormat(record));
         }
     }
 
-    public static partial class LoggerFactory
+    class NLogFileLogger : NLogLogger
     {
-        public static BaseLogger<NLogLogger, NLog.Logger> CreateNLogLogger(Verbosity minVerbosity, List<ActivityChannel> disabledChannels, NLog.Logger nlog)
-        {
-            return NLogLogger.InnerLoggerFactory.CreateNLogLogger(minVerbosity, disabledChannels, nlog);
-        }
+        //should be synced with NLog.config xml
+        private const string FILE_LOGGER_NAME = "FileLog";
 
-        public static BaseLogger<NLogLogger, NLog.Logger> CreateNLogLogger(Verbosity minVerbosity, NLog.Logger nlog)
+        public NLogFileLogger(Verbosity verbosity) : base(FILE_LOGGER_NAME, verbosity)
         {
-            return CreateNLogLogger(minVerbosity, new List<ActivityChannel>(), nlog);
         }
+    }
 
-        public static BaseLogger<NLogLogger, NLog.Logger> CreateNLogLogger(NLog.Logger nlog)
+    class NLogConsoleLogger : NLogLogger
+    {
+        //should be synced with NLog.config xml
+        private const string CONSOLE_LOGGER_NAME = "ConsoleLog";
+
+        public NLogConsoleLogger(Verbosity verbosity) : base(CONSOLE_LOGGER_NAME, verbosity)
         {
-            return CreateNLogLogger(Verbosity.Debug, nlog);
         }
     }
 }

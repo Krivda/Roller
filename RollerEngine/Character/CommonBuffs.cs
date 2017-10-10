@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using NLog.Config;
 using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Modifiers;
@@ -10,7 +9,7 @@ namespace RollerEngine.Character
     {
         public static void ApplyHatysBuff(Build build, IRollLogger log)
         {
-            log.Log(Verbosity.Details, ActivityChannel.Intermediate, string.Format("Hatys totem power obtained by {0}", build.Name));
+            log.Log(Verbosity.Details, string.Format("Hatys totem power obtained by {0}", build.Name));
 
             build.DCModifiers.Add(
                 new DCModifer(
@@ -35,7 +34,7 @@ namespace RollerEngine.Character
         {
             if (!build.BonusDCModifiers.Exists(m => m.Name.Equals("Chiminage")))
             {
-                log.Log(Verbosity.Details, ActivityChannel.Intermediate,
+                log.Log(Verbosity.Details,
                     string.Format("Ancestor spirits chiminage done by {0} (-1 DC on Ancestor Spirits interactions)",
                         build.Name));
 
@@ -54,7 +53,7 @@ namespace RollerEngine.Character
         {
             const string caernOfVigil = "Caern of Vigil";
 
-            log.Log(Verbosity.Details, ActivityChannel.Intermediate, string.Format("{0} power applied on {1} (+4 Ancestors)", caernOfVigil, build.Name));
+            log.Log(Verbosity.Details, string.Format("{0} power applied on {1} (+4 Ancestors)", caernOfVigil, build.Name));
 
             if (!build.TraitModifiers.Exists(m => m.Name.Equals(caernOfVigil)))
             {
@@ -73,7 +72,7 @@ namespace RollerEngine.Character
 
         public static void ApplyBoneRythms(Build build, IRollLogger log)
         {
-            log.Log(Verbosity.Details, ActivityChannel.Intermediate, string.Format("Bone Rythms power applied on {0} (+1 Dice to next roll)", build.Name));
+            log.Log(Verbosity.Details, string.Format("Bone Rythms power applied on {0} (+1 Dice to next roll)", build.Name));
 
             build.BonusDicePoolModifiers.Add(
                 new BonusModifier(
@@ -86,7 +85,7 @@ namespace RollerEngine.Character
 
         public static void ApplySacredRosemary(Build build, IRollLogger log)
         {
-            log.Log(Verbosity.Details, ActivityChannel.Intermediate, string.Format("Rosemary sanctified plant power applied on {0} (-2 Dice on memory&teaching&learning for scene)", build.Name));
+            log.Log(Verbosity.Details, string.Format("Rosemary sanctified plant power applied on {0} (-2 Dice on memory&teaching&learning for scene)", build.Name));
 
             if (!build.CheckBonusExists(null, "Rosemary"))
             {
@@ -111,7 +110,7 @@ namespace RollerEngine.Character
 
         public static void ApplyMedicalBundle(Build build, IRollLogger log)
         {
-            log.Log(Verbosity.Details, ActivityChannel.Intermediate, string.Format("Medical Bundle power applied on {0} (+3 Dice on Stamina rols)", build.Name));
+            log.Log(Verbosity.Details, string.Format("Medical Bundle power applied on {0} (+3 Dice on Stamina rols)", build.Name));
 
             build.TraitModifiers.Add(
                 new TraitModifier(
@@ -136,7 +135,7 @@ namespace RollerEngine.Character
 
         public static void ShiftToCrinos(Build actor, IRollLogger log)
         {
-            log.Log(Verbosity.Details, ActivityChannel.Intermediate, string.Format("{0} shifted to Crinos (+4 Strength, +1 Dex, +3 Stamina)", actor.Name));
+            log.Log(Verbosity.Details, string.Format("{0} shifted to Crinos (+4 Strength, +1 Dex, +3 Stamina)", actor.Name));
 
             actor.TraitModifiers.Add(
                 new TraitModifier(
@@ -174,7 +173,7 @@ namespace RollerEngine.Character
         {
             string name = "Heighten senses";
 
-            log.Log(Verbosity.Details, ActivityChannel.Intermediate, string.Format("{0} applied {1} (-3 DC Peception, +1 dice to Primal Urge)", actor.Name, name));
+            log.Log(Verbosity.Details, string.Format("{0} applied {1} (-3 DC Peception, +1 dice to Primal Urge)", actor.Name, name));
 
             actor.DCModifiers.Add(
                 new DCModifer(

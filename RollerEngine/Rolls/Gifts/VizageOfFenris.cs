@@ -10,7 +10,7 @@ namespace RollerEngine.Rolls.Gifts
     {
         public const string GIFT_NAME = "Visage of Fenfis";
 
-        public VizageOfFenris(IRollLogger log, IRoller roller)
+        public VizageOfFenris(IRollLogger log, RollAnalyzer roller)
             : base(GIFT_NAME, log, roller, new List<string>() { Build.Atributes.Charisma, Build.Abilities.Intimidation }, new List<string>() {Build.Conditions.Social}, null, Verbosity.Details)
         {
         }
@@ -38,7 +38,7 @@ namespace RollerEngine.Rolls.Gifts
                             -1
                         ));
 
-                    Log.Log(Verbosity, ActivityChannel.Intermediate,
+                    Log.Log(Verbosity,
                         string.Format("{0} obtained bonus -1 DC on social rolls from {1} gift.", actor.Name, Name));
                 }
                 else
@@ -58,7 +58,7 @@ namespace RollerEngine.Rolls.Gifts
                             1
                         ));
 
-                    Log.Log(Verbosity.Warning, ActivityChannel.Intermediate, string.Format("{0} bothced {1} gift and now has -1 DC on social rolls.", actor.Name, Name));
+                    Log.Log(Verbosity.Warning, string.Format("{0} bothced {1} gift and now has -1 DC on social rolls.", actor.Name, Name));
                 }
 
                 return result;

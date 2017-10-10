@@ -10,7 +10,7 @@ namespace RollerEngine.Rolls.Skills
     {
         private const string SKILL_NAME = "Persuade spirit to enter fetish";
 
-        public PesuadeSpiritEnterFetish(IRollLogger log, IRoller roller, string attribute, string ability, List<string> additionalConditions) : base(
+        public PesuadeSpiritEnterFetish(IRollLogger log, RollAnalyzer roller, string attribute, string ability, List<string> additionalConditions) : base(
             SKILL_NAME,
             log,
             roller,
@@ -28,12 +28,12 @@ namespace RollerEngine.Rolls.Skills
 
             if (result >= 1)
             {
-                Log.Log(Verbosity.Critical, ActivityChannel.Creation, string.Format("{0} has got {1} successes on {2}. He conviced {3} spirit to enter {4}!",
+                Log.Log(Verbosity.Critical, string.Format("{0} has got {1} successes on {2}. He conviced {3} spirit to enter {4}!",
                     actor.Name, result, SKILL_NAME, spiritType, fetishName));
             }
             else
             {
-                Log.Log(Verbosity.Critical, ActivityChannel.Creation, string.Format("{0} has got {1} successes on {2}. {3} spirit REFUSES to enter {4}!",
+                Log.Log(Verbosity.Critical, string.Format("{0} has got {1} successes on {2}. {3} spirit REFUSES to enter {4}!",
                     actor.Name, result, SKILL_NAME, spiritType, fetishName));
             }
 

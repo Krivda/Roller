@@ -10,7 +10,7 @@ namespace RollerEngine.Rolls.Gifts
     {
         public const string GIFT_NAME = "Ghost Pack";
 
-        public GhostPack(IRollLogger log, IRoller roller) : 
+        public GhostPack(IRollLogger log, RollAnalyzer roller) : 
             base(GIFT_NAME, log, roller, new List<string>() { Build.Atributes.Charisma, Build.Abilities.Occult }, 
                 new List<string>() {Build.Conditions.Social, Build.Conditions.AncestorSpirits, Build.Conditions.SpiritHeritage, Build.Conditions.GaianSpiritsSocial}, 
                 null, Verbosity.Details)
@@ -32,11 +32,11 @@ namespace RollerEngine.Rolls.Gifts
                         successes, TraitModifier.BonusTypeKind.AdditionalDice, -1
                     ));
 
-                Log.Log(Verbosity, ActivityChannel.Boost, string.Format("{0} obtained bonus {1} to Ancestors from {2} gift.", actor.Name, successes, Name));
+                Log.Log(Verbosity, string.Format("{0} obtained bonus {1} to Ancestors from {2} gift.", actor.Name, successes, Name));
             }
             else
             {
-                Log.Log(Verbosity, ActivityChannel.Boost, string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
+                Log.Log(Verbosity, string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
             }
 
             return successes;

@@ -10,7 +10,7 @@ namespace RollerEngine.Rolls.Gifts
     {
         public const string GIFT_NAME = "Persuasion";
 
-        public Persuasion(IRollLogger log, IRoller roller) 
+        public Persuasion(IRollLogger log, RollAnalyzer roller) 
             : base(GIFT_NAME, log, roller, new List<string>(){Build.Atributes.Charisma, Build.Abilities.Subterfuge}, new List<string>() {Build.Conditions.Social}, null, Verbosity.Details)
         {
         }
@@ -38,11 +38,11 @@ namespace RollerEngine.Rolls.Gifts
                             -1
                         ));
 
-                    Log.Log(Verbosity, ActivityChannel.Intermediate, string.Format("{0} obtained bonus -1 DC on social rolls from {1} gift.", actor.Name, Name));
+                    Log.Log(Verbosity, string.Format("{0} obtained bonus -1 DC on social rolls from {1} gift.", actor.Name, Name));
                 }
                 else if (result == 0)
                 {
-                    Log.Log(Verbosity, ActivityChannel.Intermediate,
+                    Log.Log(Verbosity,
                     string.Format("{0} didn't get bonus from {1} gift.", actor.Name, Name));
                 }
                 else
@@ -62,7 +62,7 @@ namespace RollerEngine.Rolls.Gifts
                             1
                         ));
 
-                    Log.Log(Verbosity.Warning, ActivityChannel.Intermediate, string.Format("{0} bothced {1} gift and now has -1 DC on social rolls.", actor.Name, Name));
+                    Log.Log(Verbosity.Warning, string.Format("{0} bothced {1} gift and now has -1 DC on social rolls.", actor.Name, Name));
                 }
 
                 return result;

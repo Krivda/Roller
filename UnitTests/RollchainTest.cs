@@ -16,41 +16,10 @@ namespace UnitTests
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         [Test]
-        public void TestNameLessBuff()
-        {
-            var rollLogger = LoggerFactory.CreateNLogLogger(Logger);
-            Logger.Info("Started");
-            var res = HatysParty.LoadFromGoogle(rollLogger, new OfflineDiceRoller(rollLogger));
-
-            res.Nameless.WeeklyBoostSkill(NamelessBuff.MaxBoostInstruct());
-        }
-
-        [Test]
-        public void TestPartyBuff()
-        {
-            var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Details, Logger);
-            var devNullLogger = LoggerFactory.CreateStringBufferLogger();
-            var roller = new OfflineDiceRoller(rollLogger);
-            var devNullRoller = new OfflineDiceRoller(devNullLogger);
-
-            var currLogger = rollLogger;
-            var currRoller = roller;
-
-            var res = HatysParty.LoadFromGoogle(currLogger, currRoller);
-            res.StartScene(1);
-            //will FAIL
-            res.WeeklyBuff(new HatysBuffPlan());
-        }
-
-
-        [Test]
         public void TestPartyBuffStats()
         {
-            var rollLogger = LoggerFactory.CreateNLogLogger(Logger);
-            var devNullLogger = LoggerFactory.CreateStringBufferLogger();
-            var roller = new OfflineDiceRoller(rollLogger);
-
-            var devNullRoller = new OfflineDiceRoller(devNullLogger);
+            var roller = new RandomRoller();
+            IRollLogger logger = CompositeLogger.InitLogging(null, null, Verbosity.Debug, null);
 
             int sumNameless = 0;
             int sumSpiridon = 0;
@@ -59,8 +28,7 @@ namespace UnitTests
             int maxNameless = 0;
             int maxSpiridon = 0;
 
-            var res = HatysParty.LoadFromGoogle(devNullLogger, devNullRoller);
-            //var res = HatysParty.LoadFromGoogle(rollLogger, roller);
+            var res = HatysParty.LoadFromGoogle(logger, roller);
 
             int count = 10000;
             StringBuilder sbErr = new StringBuilder();
@@ -141,23 +109,19 @@ namespace UnitTests
             Logger.Info("Botched:");
             Logger.Info(sbErr);
 
-            OfflineDiceRoller.LogStats(rollLogger);
+            RollAnalyzer.LogStats(logger);
         }
 
         [Test]
         public void Multiweek()
         {
-            //var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Details, Logger);
-            var rollLogger = LoggerFactory.CreateNLogLogger(Verbosity.Critical, Logger);
+            var roller = new RandomRoller();
+            IRollLogger logger = CompositeLogger.InitLogging(Verbosity.Debug, Verbosity.Debug, null, null);
 
-            var roller = new OfflineDiceRoller(rollLogger);
 
-            var currLogger = rollLogger;
-            var currRoller = roller;
+            var res = HatysParty.LoadFromGoogle(logger, roller);
 
-            var res = HatysParty.LoadFromGoogle(currLogger, currRoller);
-
-            for (int i = 1; i < 20; i++)
+            for (int i = 1; i < 2; i++) //TODO 20
             {
                 res.DoWeek(i);
             }

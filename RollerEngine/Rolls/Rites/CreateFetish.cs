@@ -12,7 +12,7 @@ namespace RollerEngine.Rolls.Rites
     {
         private int _dc;
 
-        public CreateFetishRite(IRollLogger log, IRoller roller, List<string> additionalConditions) :
+        public CreateFetishRite(IRollLogger log, RollAnalyzer roller, List<string> additionalConditions) :
             base(Rite.Fetish, log, roller,
                 new List<string>() {Build.Atributes.Wits, Build.Abilities.Rituals},
                 new List<string>() {Build.Conditions.MysticRite}, null, Verbosity.Details)
@@ -27,19 +27,19 @@ namespace RollerEngine.Rolls.Rites
 
             int result = base.Roll(actor, new List<Build>(), hasSpec, hasWill);
 
-            Log.Log(Verbosity.Critical, ActivityChannel.Creation, "");
+            Log.Log(Verbosity.Critical, "");
             if (result >= 1)
             {
                 actor.RemoveFetishBase(fetishName);
 
                 actor.AddFetish(fetishName);
 
-                Log.Log(Verbosity.Critical, ActivityChannel.Creation, string.Format("{0} has got {1} successes on {2}. Now he has an exellent {3}!",
+                Log.Log(Verbosity.Critical, string.Format("{0} has got {1} successes on {2}. Now he has an exellent {3}!",
                     actor.Name, result, Rite.Info().Name, fetishName));
             }
             else
             {
-                Log.Log(Verbosity.Error, ActivityChannel.Creation, string.Format("{0} has got {1} successes {2}. Fetish {3} should be recrafted!",
+                Log.Log(Verbosity.Error, string.Format("{0} has got {1} successes {2}. Fetish {3} should be recrafted!",
                     actor.Name, result, Rite.Info().Name, fetishName));
             }
 
