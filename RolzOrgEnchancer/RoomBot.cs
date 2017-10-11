@@ -139,6 +139,8 @@ namespace RolzOrgEnchancer
 
     internal static class RoomBot
     {
+        private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         private static Thread _thread;
         private static IRolzOrg _browser;
         private static IFormUpdate _updater;
@@ -227,7 +229,11 @@ namespace RolzOrgEnchancer
                 //repeat message each 5 secs
                 if (0 == attempt % 50)
                 {
-                    QueueColorMessage(color, message);
+                    if (attempt != 0)
+                    {
+                        logger.Warn("Resending message: {0}", message);
+                    }
+                    QueueColorMessage(color, message);                   
                 }
                 Thread.Sleep(100);
 
@@ -248,6 +254,11 @@ namespace RolzOrgEnchancer
                 //repeat message each 5 secs
                 if (0 == attempt % 50)
                 {
+                    if (attempt != 0)
+                    {
+                        logger.Warn("Resending roll: {0}", rollmsg);
+                    }
+
                     QueueMessage(rollmsg);
                 }
                 Thread.Sleep(100);
@@ -284,6 +295,7 @@ namespace RolzOrgEnchancer
             string message;
             if (_messageQueue.TryDequeue(out message))
             {
+                logger.Warn("Send message: {0}", message);
                 _browser.SendMessage(message);
             }
         }
