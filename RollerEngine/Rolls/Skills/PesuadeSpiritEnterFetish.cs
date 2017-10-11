@@ -24,8 +24,8 @@ namespace RollerEngine.Rolls.Skills
         public int Roll(Build actor, string fetishName, string spiritType, bool hasSpec, bool hasWill)
         {
             AdditionalInfo = string.Format("{0} with {1}", fetishName, spiritType);
-            int result = base.Roll(actor, new List<Build>(), hasSpec, hasWill);
-
+            int result = base.Roll(actor, new List<Build>(), hasSpec, hasWill, true);
+            
             if (result >= 1)
             {
                 Log.Log(Verbosity.Critical, string.Format("{0} has got {1} successes on {2}. He conviced {3} spirit to enter {4}!",

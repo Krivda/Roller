@@ -24,7 +24,7 @@ namespace RollerEngine.Rolls.Rites
         {
             AdditionalInfo = fetishName;
             _dc = 4 + fetishLevel;
-
+            
             int result = base.Roll(actor, new List<Build>(), hasSpec, hasWill);
 
             Log.Log(Verbosity.Critical, "");

@@ -8,35 +8,18 @@ todo triaged:
 3. самому себя не учить!
 4. считать талены
 5. stages in log!
-7. сделать птицу, линь
+7. сделать птицу
 12 - understand the unknown CURATOR decision FIRST!
 13. use will, spec -- replace with enums
 14 count/replenish willpower/gnosis
 16. persuasion reroll on fail
-27. check Ancestors usage for all activities including boost
-31. Subclass WeeklyActivity
 
 USUAL
 supp Empathy, main Rituals
 Info: Nameless: 15,2419 (0-33)
 Info: Spiridon: 16,1836 (0-35)
 
-todo max priority:
-15. learn bone rythms, veneration, open caern
-
---28, check nlog.txt is full!
-!!! ultimate plan till next Wed
-32 test 3-4 weeks
-34 MindPartition logic (2 + Gnosis roll * 2 = learning Sessions)
-	botch clears successes
-35. can one learn rite/trait same week? learn and create talens? CURATOR?
-36. code: rite speciaziationz, conditions (from sprit), enum
-27. code: queue new rite with delay until it will be learned by teacher; incorporate garou to garou case
-
-30. Build
-31. Distrube buffs Nameless (secondary Rituals goal (B.R+Chann+supp Anc.)) //should be param of the week
 33. Gnosis/Willpower replenish
-34. csv log
 //TODO we should split traits into Atributes, Abilities, Backgrounds, Rollalbe-10-based, Dynamic
 35. todo resolve Instruction botch!
 36. review botches on all rolls!
@@ -48,11 +31,10 @@ todo max priority:
 48. CastCreateTalens - Spiridon; Yoki; Lynn; RiteOfBindingRoll
 39. create talens for arc 7
 40. counters: summon, rosemary, cacao - continue all rolls
-41. more rite to learn for Nameless
 
 !!! renewing talen usages
-!!! - automatic success
 !!! rites in OpenedCaern.cs
+!!! fix learning rite/ability order !!!
 
 // Drv: Keltur,Alisa
 // Lead: Keltur, Urfin, Alisa

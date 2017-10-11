@@ -51,7 +51,7 @@ namespace RollerEngine.Rolls.Backgrounds
 
                         int dc = FullRollInfo.DCInfo.AdjustedDC;
                         var rolldata = Roller.Roll(1, dc, true, false, false);
-                        LogRollOutcome(rolldata , "Reroll 1 Ansestor Dice");
+                        LogRollOutcome(rolldata , "Reroll 1 Ansestor Dice", false);
                         Successes += rolldata.Successes; //this can be -1 for '1'; 0 if <dc ; +1 if >= dc
 
                         if (Successes >= 0)

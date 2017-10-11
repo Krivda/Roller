@@ -57,5 +57,13 @@ namespace RollerEngine.Logger
         public NLogConsoleLogger(Verbosity verbosity) : base(CONSOLE_LOGGER_NAME, verbosity)
         {
         }
+
+        public override void Log(Verbosity verbosity, string record)
+        {
+            if (verbosity >= MinVerbosity)
+            {
+                base.Log(verbosity, record);
+            }
+        }
     }
 }

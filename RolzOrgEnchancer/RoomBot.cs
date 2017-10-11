@@ -122,7 +122,18 @@ namespace RolzOrgEnchancer
 
         public override void Log(Verbosity verbosity, string record)
         {
-            RoomBot.MakeMessage(Helper.Verbosity2Color(verbosity), ApplyFormat(record));
+            bool printRollAnyway = false;
+            //todo: hack for printing roll header
+            if (record.Contains("is rolling") || record.Contains("roll was ["))
+            {
+                verbosity = Verbosity.Normal;
+                printRollAnyway = true;
+            }
+
+            if (verbosity >= MinVerbosity || printRollAnyway) 
+            {
+                RoomBot.MakeMessage(Helper.Verbosity2Color(verbosity), ApplyFormat(record));
+            }
         }
     }
 
@@ -136,7 +147,7 @@ namespace RolzOrgEnchancer
         private static ConcurrentQueue<string> _messageQueue;
 
         public static Parser Parser = new Parser(DEFAULT_ROOM_NAME);
-        private const string DEFAULT_ROOM_NAME = "Hatys%20Test8";
+        private const string DEFAULT_ROOM_NAME = "Hatys%20Pack%20SpringSummer2017";
 
         private static void Worker()
         {
@@ -153,8 +164,9 @@ namespace RolzOrgEnchancer
             MakeCommand("/opt autoexpand=on");
             MakeCommand("/nick HatysBot");
 
-            var myInterface = new RoomBootImpl(Verbosity.Critical);
-            var res = HatysParty.LoadFromGoogle(myInterface, myInterface);
+            var myInterface = new RoomBootImpl(Verbosity.Critical); //we'll provide log
+            IRollLogger logger = CompositeLogger.InitLogging(Verbosity.Debug, Verbosity.Debug, null, myInterface);
+            var res = HatysParty.LoadFromGoogle(logger, myInterface);
             MakeMessage(Color.Purple, "*** PARTY LOADED ***");
 
             for (;;)
@@ -166,7 +178,7 @@ namespace RolzOrgEnchancer
                     Thread.Sleep(100);
                     Program.Log(string.Format("Worker: Deque action #{0}", action));
                     //TODO switch on actions!
-                    for (var i = 1; i < 2; i++)
+                    for (var i = 1; i < 20; i++)
                     {
                         res.DoWeek(i);
                     }

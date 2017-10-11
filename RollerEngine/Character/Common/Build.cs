@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using RollerEngine.Modifiers;
-using RollerEngine.Rolls.Rites;
 using RollerEngine.Rolls.Skills;
-using RollerEngine.WodSystem;
 using RollerEngine.WodSystem.WTA;
 
 namespace RollerEngine.Character.Common
@@ -170,6 +167,9 @@ namespace RollerEngine.Character.Common
                                                                      //active from week
         public Dictionary<Rite, int> Rites = new Dictionary<Rite, int>();
 
+        public Dictionary<string, int> Counters = new Dictionary<string, int>();
+
+
         public List<TraitModifier> TraitModifiers = new List<TraitModifier>();
         public List<DCModifer> DCModifiers = new List<DCModifer>();
         public List<BonusModifier> BonusDicePoolModifiers = new List<BonusModifier>();
@@ -209,7 +209,7 @@ namespace RollerEngine.Character.Common
             AddTraits(typeof(Atributes));
             AddTraits(typeof(Backgrounds));
             AddTraits(typeof(RollableTraits));
-            _counters.InitCounters();
+            InitCounters();
         }
 
         protected void AddTraits(Type clazz)

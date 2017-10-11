@@ -72,7 +72,7 @@ namespace RollerEngine.Character.Party
             Party.Nameless.CastTeachersEase(Self, Build.Abilities.Rituals, true, Verbosity.Details);
 
             var sacredFire = new SacredFire(Log, Roller, 0);
-            sacredFire.Roll(Self, targets,  false, true);
+            sacredFire.Roll(Self, targets,  false, false);
         }
 
         public void WeeklyPreBoost(string suppTrait)
@@ -146,7 +146,7 @@ namespace RollerEngine.Character.Party
 
             //Cast Pesuasion
             var ancestorSeeking = new AncestorSeeking(Log, Roller);
-            ancestorSeeking.Roll(Self, target, false, true);
+            ancestorSeeking.Roll(Self, target, false, false);
         }
 
         public int CastMindPartition()
@@ -179,6 +179,17 @@ namespace RollerEngine.Character.Party
                 }
 
                 var carnyx = new CarnyxOfVictory(Log, Roller, Verbosity.Details);
+
+                if (withWill)
+                {
+                    int modifiedTrait = Self.GetModifiedTrait(Build.Abilities.Performance);
+
+                    if (modifiedTrait > 5)
+                    {
+                        withWill = false;
+                    }
+                }
+
                 carnyx.Roll(Self, targets, purpose, false, withWill);
             }
         }

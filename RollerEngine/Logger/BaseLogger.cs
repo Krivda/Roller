@@ -29,7 +29,7 @@
             var msg = record;
             if (Week != -1)
             {
-                msg = string.Format("W{0}: {1}", Week, record);
+                msg = string.Format("W{0}: {1}", Week, record).TrimEnd();
             }
             return msg;
         }

@@ -116,12 +116,12 @@ namespace UnitTests
         public void Multiweek()
         {
             var roller = new RandomRoller();
-            IRollLogger logger = CompositeLogger.InitLogging(Verbosity.Debug, Verbosity.Debug, null, null);
+            IRollLogger logger = CompositeLogger.InitLogging(Verbosity.Error, Verbosity.Debug, null, null);
 
 
             var res = HatysParty.LoadFromGoogle(logger, roller);
 
-            for (int i = 1; i < 2; i++) //TODO 20
+            for (int i = 1; i < 20; i++) //TODO 20
             {
                 res.DoWeek(i);
             }

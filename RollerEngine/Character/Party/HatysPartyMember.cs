@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Roller;
 using RollerEngine.Rolls.Backgrounds;
 using RollerEngine.Rolls.Gifts;
-using RollerEngine.Rolls.Rites;
 using RollerEngine.Rolls.Skills;
-using RollerEngine.WodSystem;
 using RollerEngine.WodSystem.WTA;
 
 namespace RollerEngine.Character.Party
@@ -127,13 +124,25 @@ namespace RollerEngine.Character.Party
             //TODO: THIS IS WRONG!! NEED TO DEBUG
             xpPoolTraits.Sort((tuple, tuple1) => tuple.Item2.CompareTo(tuple1.Item2));
 
+            //TODO: very dirty hack! (Again)
+            if (Self.Name.Equals(Party.Nameless.CharacterName))
+            {
+                var x = xpPoolTraits.Find(rpt => rpt.Item1.Equals(
+                            Build.DynamicTraits.GetKey(Build.DynamicTraits.ExpiriencePool, Build.Abilities.Survival)));
+                if (x != null)
+                {
+                    xpPoolTraits.Remove(x);
+                    xpPoolTraits.Insert(0, x);
+                }
+            }
+
             int spentAttempts = 0;
 
             foreach (var xpPoolTrait in xpPoolTraits)
             {
                 string traitKeyXpPool = xpPoolTrait.Item1;
                 string trait = Build.DynamicTraits.GetBaseTrait(traitKeyXpPool, Build.DynamicTraits.ExpiriencePool);
-                bool hasWill = Self.Traits[trait] < 4;
+                bool hasWill = Self.Traits[trait] < 4; //todo: WILL
 
                 while (WeeklyPartialActions > 0)
                 {

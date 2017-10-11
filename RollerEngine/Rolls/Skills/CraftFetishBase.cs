@@ -27,8 +27,8 @@ namespace RollerEngine.Rolls.Skills
             int successesRequires = 1;
             _dc = 3 + fetishLevel;
             AdditionalInfo = fetishName;
-
-            int result = base.Roll(actor, new List<Build>(), hasSpec, hasWill);
+            
+            int result = base.Roll(actor, new List<Build>(), hasSpec, hasWill, true);
 
             Log.Log(Verbosity.Critical, "");
             if (result >= successesRequires)

@@ -102,13 +102,17 @@ namespace RollerEngine.Rolls
             Conditions = conditions;
         }
 
-        protected virtual int Roll(Build actor, List<Build> targets, bool hasSpec, bool hasWill)
+        protected int Roll(Build actor, List<Build> targets, bool hasSpec, bool hasWill)
+        {
+            return Roll(actor, targets, hasSpec, hasWill, false);
+        }
+
+        protected virtual int Roll(Build actor, List<Build> targets, bool hasSpec, bool hasWill, bool autoSuccess)
         {
             Successes = 0;
             FullRollInfo = null;
 
             StringBuilder logMessageBefore = new StringBuilder(500);
-            logMessageBefore.AppendLine();
 
             StringBuilder targetsStr = new StringBuilder(100);
             string delim = "";
@@ -133,6 +137,7 @@ namespace RollerEngine.Rolls
 
             logMessageBefore.Append(".");
 
+            Log.Log(Verbosity, "");
             Log.Log(Verbosity,  logMessageBefore.ToString());
 
             FullRollInfo = GetRollInfo(actor, targets);
@@ -140,9 +145,34 @@ namespace RollerEngine.Rolls
             string logMessage = GetLogForRoll(actor, targets, FullRollInfo, hasSpec, hasWill);
             Log.Log(Verbosity,  string.Format(logMessage));
 
-            RollResult = Roller.Roll(FullRollInfo.DicePoolInfo.Dices, FullRollInfo.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill);
+            bool needRoll = true;
+            if (autoSuccess && FullRollInfo.DCInfo.AdjustedDC < 10)
+            {
+                if (FullRollInfo.DicePoolInfo.Dices >= FullRollInfo.DCInfo.AdjustedDC)
+                {
+                    needRoll = false;
+                }
+            }
+
+            if (needRoll)
+            {
+                RollResult = Roller.Roll(FullRollInfo.DicePoolInfo.Dices, FullRollInfo.DCInfo.AdjustedDC, RemoveSuccessesOn1, hasSpec, hasWill);
+            }
+            else
+            {
+                var rawList = new List<int>();
+                rawList.AddRange(new int[10]);
+                rawList[9 - 1] = 1; //I've rolled 9
+                RollResult = new RollData(1, rawList);
+            }
+
+            if (needRoll && hasWill)
+            {
+                actor.SpendWillPower(1);
+            }
+
             Successes = RollResult.Successes;
-            LogRollOutcome(RollResult, Name);
+            LogRollOutcome(RollResult, Name, !needRoll);
 
             //remove used modifiers
             foreach (var traitValueInfo in FullRollInfo.DicePoolInfo.Traits)
@@ -192,20 +222,28 @@ namespace RollerEngine.Rolls
             return Successes;
         }
 
-        protected void LogRollOutcome(RollData rollData, string description)
+        protected void LogRollOutcome(RollData rollData, string description, bool autoSuccessed)
         {
-            StringBuilder bld = new StringBuilder(100);
-            String delim = "";
-            int face = 1;
-            foreach (var dice in rollData.DiceResult)
+            if (!autoSuccessed)
             {
-                bld.Append(string.Format("{0}{1}:{2}", delim, face, dice));
-                face++;
-                delim = ", ";
-            }
+                StringBuilder bld = new StringBuilder(100);
+                String delim = "";
+                int face = 1;
+                foreach (var dice in rollData.DiceResult)
+                {
+                    bld.Append(string.Format("{0}{1}:{2}", delim, face, dice));
+                    face++;
+                    delim = ", ";
+                }
 
-            Log.Log(Verbosity,
-                string.Format("{0} roll was [{1}] and gave {2} successes.", description, bld, rollData.Successes));
+                Log.Log(Verbosity,
+                    string.Format("{0} roll was [{1}] and gave {2} successes.", description, bld, rollData.Successes));
+            }
+            else
+            {
+                Log.Log(Verbosity,
+                    string.Format("{0} roll was autosuccessed with 1 success.", description));
+            }
         }
 
         protected virtual int OnBotch(int successes)
@@ -217,18 +255,22 @@ namespace RollerEngine.Rolls
 
         public RollInfo GetRollInfo(Build actor, List<Build> targets)
         {
-            RollInfo rollInfo = new RollInfo();
-            rollInfo.DicePoolInfo = GetDicePool(actor, targets);
-            rollInfo.DCInfo = GetDCInfo(actor, targets);
+            RollInfo rollInfo = new RollInfo
+            {
+                DicePoolInfo = GetDicePool(actor, targets),
+                DCInfo = GetDCInfo(actor, targets)
+            };
 
             return rollInfo;
         }
 
         protected virtual DicePoolInfo GetDicePool(Build actor, List<Build> targets)
         {
-            var dicePool = new DicePoolInfo();
-            dicePool.Traits = new Dictionary<string, TraitValueInfo>();
-            dicePool.Dices = 0;
+            var dicePool = new DicePoolInfo
+            {
+                Traits = new Dictionary<string, TraitValueInfo>(),
+                Dices = 0
+            };
 
             foreach (var trait in DicePool)
             {
@@ -324,9 +366,11 @@ namespace RollerEngine.Rolls
 
         private DCInfo GetDCInfo(Build actor, List<Build> targets)
         {
-            var dcInfo = new DCInfo();
-            dcInfo.Traits = new Dictionary<string, TraitDCInfo>();
-            dcInfo.BaseDC = GetBaseDC(actor, targets);
+            var dcInfo = new DCInfo
+            {
+                Traits = new Dictionary<string, TraitDCInfo>(),
+                BaseDC = GetBaseDC(actor, targets)
+            };
             int dcAdjust = 0;
 
             foreach (var trait in DicePool)

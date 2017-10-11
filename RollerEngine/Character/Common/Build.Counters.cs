@@ -4,8 +4,8 @@ namespace RollerEngine.Character.Common
 {
     public partial class Build
     {
-        public class Counters
-        {
+        public class CountersList
+        {          
             public enum SanctifiedPlants
             {
                 Rosemary,       //-2 diff for lerning/teaching/memory   (WW)
@@ -50,117 +50,142 @@ namespace RollerEngine.Character.Common
             public const string TalenPrefix = "Talen ";
             public const string SpiritPrefix = "Spirit of";
 
-            public Dictionary<string, int> Dictionary = new Dictionary<string, int>();
+            public const int AmountAll = -1;
 
-            public void InitCounters()
+            public static string GetKey(string dynamicName, string baseName)
             {
-                //spending Rage/Gnosis/Willpower
-                Dictionary.Add(SpentPrefix + RollableTraits.Rage, 0);
-                Dictionary.Add(SpentPrefix + RollableTraits.Gnosis, 0);
-                Dictionary.Add(SpentPrefix + RollableTraits.Willpower, 0);
-                //replenish Rage/Gnosis/Willpower
-                Dictionary.Add(ReplenishPrefix + RollableTraits.Rage, 0);
-                Dictionary.Add(ReplenishPrefix + RollableTraits.Gnosis, 0);
-                Dictionary.Add(ReplenishPrefix + RollableTraits.Willpower, 0);
-                //components from modules
-                Dictionary.Add(ReplenishPrefix + ComponentPrefix, 21);           //TODO: WARNING DATE 05 Feb 2017
-                Dictionary.Add(UsagePrefix + ComponentPrefix, 0);
-                //sanctified
-                Dictionary.Add(ReplenishPrefix + SanctifiedPrefix + PlantsNames[SanctifiedPlants.Rosemary], 0);
-                Dictionary.Add(UsagePrefix + SanctifiedPrefix + PlantsNames[SanctifiedPlants.Rosemary], 0);
-                Dictionary.Add(ReplenishPrefix + SanctifiedPrefix + PlantsNames[SanctifiedPlants.Tobacco], 0);
-                Dictionary.Add(UsagePrefix + SanctifiedPrefix + PlantsNames[SanctifiedPlants.Tobacco], 0);
-                Dictionary.Add(ReplenishPrefix + SanctifiedPrefix + PlantsNames[SanctifiedPlants.Cacao], 0);
-                Dictionary.Add(UsagePrefix + SanctifiedPrefix + PlantsNames[SanctifiedPlants.Cacao], 0);
-                //talens
-                Dictionary.Add(ReplenishPrefix + TalenPrefix + TalenNames[Talens.Cacao], 0);
-                Dictionary.Add(UsagePrefix + TalenPrefix + TalenNames[Talens.Cacao], 0);
-                Dictionary.Add(ReplenishPrefix + TalenPrefix + TalenNames[Talens.GaiasBreath], 0);
-                Dictionary.Add(UsagePrefix + TalenPrefix + TalenNames[Talens.GaiasBreath], 0);
-                //spirits
-                //dynamical
+                return string.Format("{0}{1}", dynamicName, baseName);
             }
 
-            public const int AmountAll = -1;
+            public static string GetBaseTrait(string key, string dynamicPrefix)
+            {
+                string result = key.Replace(dynamicPrefix, "").Trim();
+                return result;
+            }
         }
 
-        private readonly Counters _counters = new Counters();
+
+        public void InitCounters()
+        {
+            //spending Rage/Gnosis/Willpower
+            Counters.Add(CountersList.GetKey(CountersList.SpentPrefix, RollableTraits.Rage), 0);
+            Counters.Add(CountersList.GetKey(CountersList.SpentPrefix, RollableTraits.Gnosis), 0);
+            Counters.Add(CountersList.GetKey(CountersList.SpentPrefix, RollableTraits.Willpower), 0);
+/*
+            //replenish Rage/Gnosis/Willpower
+            Counters.Add(ReplenishPrefix + RollableTraits.Rage, 0);
+            Counters.Add(ReplenishPrefix + RollableTraits.Gnosis, 0);
+            Counters.Add(ReplenishPrefix + RollableTraits.Willpower, 0);
+            //components from modules
+            Counters.Add(ReplenishPrefix + ComponentPrefix, 21);           //TODO: WARNING DATE 05 Feb 2017
+            Counters.Add(UsagePrefix + ComponentPrefix, 0);
+            //sanctified
+            Counters.Add(ReplenishPrefix + SanctifiedPrefix + PlantsNames[SanctifiedPlants.Rosemary], 0);
+            Counters.Add(UsagePrefix + SanctifiedPrefix + PlantsNames[SanctifiedPlants.Rosemary], 0);
+            Counters.Add(ReplenishPrefix + SanctifiedPrefix + PlantsNames[SanctifiedPlants.Tobacco], 0);
+            Counters.Add(UsagePrefix + SanctifiedPrefix + PlantsNames[SanctifiedPlants.Tobacco], 0);
+            Counters.Add(ReplenishPrefix + SanctifiedPrefix + PlantsNames[SanctifiedPlants.Cacao], 0);
+            Counters.Add(UsagePrefix + SanctifiedPrefix + PlantsNames[SanctifiedPlants.Cacao], 0);
+            //talens
+            Counters.Add(ReplenishPrefix + TalenPrefix + TalenNames[Talens.Cacao], 0);
+            Counters.Add(UsagePrefix + TalenPrefix + TalenNames[Talens.Cacao], 0);
+            Counters.Add(ReplenishPrefix + TalenPrefix + TalenNames[Talens.GaiasBreath], 0);
+            Counters.Add(UsagePrefix + TalenPrefix + TalenNames[Talens.GaiasBreath], 0);
+            //spirits
+            //dynamical
+*/
+        }
+
+        public void CountersWeekStart()
+        {
+            Counters[CountersList.GetKey(CountersList.SpentPrefix, RollableTraits.Rage)] = 0;
+            Counters[CountersList.GetKey(CountersList.SpentPrefix, RollableTraits.Gnosis)] = 0;
+            Counters[CountersList.GetKey(CountersList.SpentPrefix, RollableTraits.Willpower)] = 0;
+/*
+            Counters[CountersList.ReplenishPrefix + RollableTraits.Rage] = 0;
+            Counters[CountersList.ReplenishPrefix + RollableTraits.Gnosis] = 0;
+            Counters[CountersList.ReplenishPrefix + RollableTraits.Willpower] = 0;
+*/
+        }
 
         public void SpendRage(int rageSpent)
         {
-            _counters.Dictionary[Counters.SpentPrefix + RollableTraits.Rage] += rageSpent;
+            Counters[CountersList.GetKey(CountersList.SpentPrefix, RollableTraits.Rage)] += rageSpent;
         }
 
         public void SpendGnosis(int gnosisSpent)
         {
-            _counters.Dictionary[Counters.SpentPrefix + RollableTraits.Gnosis] += gnosisSpent;
+            Counters[CountersList.GetKey(CountersList.SpentPrefix, RollableTraits.Gnosis)] += gnosisSpent;
         }
 
         public void SpendWillPower(int willSpent)
         {
-            _counters.Dictionary[Counters.SpentPrefix + RollableTraits.Willpower] += willSpent;
+            Counters[CountersList.GetKey(CountersList.SpentPrefix, RollableTraits.Willpower)] += willSpent;
         }
 
+ /*
         public void ReplenishRage(int rageAmount)
         {
-            if (rageAmount == Counters.AmountAll) rageAmount = Traits[RollableTraits.Rage];
-            _counters.Dictionary[Counters.ReplenishPrefix + RollableTraits.Rage] += rageAmount;
+            if (rageAmount == CountersList.AmountAll) rageAmount = Traits[RollableTraits.Rage];
+            Counters[CountersList.ReplenishPrefix + RollableTraits.Rage] += rageAmount;
         }
 
         public void ReplenishGnosis(int gnosisAmount)
         {
-            if (gnosisAmount == Counters.AmountAll) gnosisAmount = Traits[RollableTraits.Gnosis];
-            _counters.Dictionary[Counters.ReplenishPrefix + RollableTraits.Gnosis] += gnosisAmount;
+            if (gnosisAmount == CountersList.AmountAll) gnosisAmount = Traits[RollableTraits.Gnosis];
+            Counters[CountersList.ReplenishPrefix + RollableTraits.Gnosis] += gnosisAmount;
         }
 
         public void ReplenishWillpower(int willAmount)
         {
-            if (willAmount == Counters.AmountAll) willAmount = Traits[RollableTraits.Willpower];
-            _counters.Dictionary[Counters.ReplenishPrefix + RollableTraits.Willpower] += willAmount;
+            if (willAmount == CountersList.AmountAll) willAmount = Traits[RollableTraits.Willpower];
+            Counters[CountersList.ReplenishPrefix + RollableTraits.Willpower] += willAmount;
         }
 
         public void AddModuleComponent(int no)
         {
-            _counters.Dictionary[Counters.ReplenishPrefix + Counters.ComponentPrefix] += no;
+            Counters[CountersList.ReplenishPrefix + CountersList.ComponentPrefix] += no;
         }
 
         public void UseModuleComponent(int no)
         {
-            _counters.Dictionary[Counters.UsagePrefix + Counters.ComponentPrefix] += no;
+            Counters[CountersList.UsagePrefix + CountersList.ComponentPrefix] += no;
         }
 
-        public void AddSanctifiedPlant(Counters.SanctifiedPlants plant, int no)
+        public void AddSanctifiedPlant(CountersList.SanctifiedPlants plant, int no)
         {
-            var key = Counters.ReplenishPrefix + Counters.SanctifiedPrefix + Counters.PlantsNames[plant];
-            _counters.Dictionary[key] += no;
+            var key = CountersList.ReplenishPrefix + CountersList.SanctifiedPrefix + CountersList.PlantsNames[plant];
+            Counters[key] += no;
         }
 
-        public void SpendSanctifiedPlant(Counters.SanctifiedPlants plant, int no)
+        public void SpendSanctifiedPlant(CountersList.SanctifiedPlants plant, int no)
         {
-            var key = Counters.UsagePrefix + Counters.SanctifiedPrefix + Counters.PlantsNames[plant];
-            _counters.Dictionary[key] += no;
+            var key = CountersList.UsagePrefix + CountersList.SanctifiedPrefix + CountersList.PlantsNames[plant];
+            Counters[key] += no;
         }
 
-        public void AddTalens(Counters.Talens talen, int no)
+        public void AddTalens(CountersList.Talens talen, int no)
         {
-            var key = Counters.ReplenishPrefix + Counters.TalenPrefix + Counters.TalenNames[talen];
-            _counters.Dictionary[key] += no;
+            var key = CountersList.ReplenishPrefix + CountersList.TalenPrefix + CountersList.TalenNames[talen];
+            Counters[key] += no;
         }
 
-        public void SpendTalens(Counters.Talens talen, int no)
+        public void SpendTalens(CountersList.Talens talen, int no)
         {
-            var key = Counters.UsagePrefix + Counters.TalenPrefix + Counters.TalenNames[talen];
-            _counters.Dictionary[key] += no;
+            var key = CountersList.UsagePrefix + CountersList.TalenPrefix + CountersList.TalenNames[talen];
+            Counters[key] += no;
         }
 
         public void AddSpirits(string spiritName, int no)
         {
-            var key = Counters.SpiritPrefix + spiritName;
-            if (!_counters.Dictionary.ContainsKey(key))
+            var key = CountersList.SpiritPrefix + spiritName;
+            if (!Counters.ContainsKey(key))
             {
-                _counters.Dictionary.Add(key, 0);
+                Counters.Add(key, 0);
             }
-            _counters.Dictionary[key] += no;
+            Counters[key] += no;
         }
+*/
+
     }
 }

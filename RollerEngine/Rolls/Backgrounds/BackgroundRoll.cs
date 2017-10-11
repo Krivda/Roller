@@ -15,7 +15,7 @@ namespace RollerEngine.Rolls.Backgrounds
             Conditions.Add(Build.Conditions.Background);
         }
 
-        protected override int Roll(Build actor, List<Build> targets, bool hasSpec, bool hasWill)
+        protected override int Roll(Build actor, List<Build> targets, bool hasSpec, bool hasWill, bool autoSuccess)
         {
             if (hasSpec)
                 throw  new Exception("Can't have specializations on Background rolls.");
@@ -23,7 +23,7 @@ namespace RollerEngine.Rolls.Backgrounds
             if (hasWill)
                 throw new Exception("Can't apply will on Background rolls.");
 
-            return base.Roll(actor, targets, false, false);
+            return base.Roll(actor, targets, false, false, autoSuccess);
         }
     }
 }

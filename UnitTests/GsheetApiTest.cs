@@ -12,7 +12,7 @@ namespace UnitTests
         [Test]
         public void GetPartySpreadsheet()
         {
-            var data = SpreadsheetService.GetNotEmptySpreadsheetRange("1tKXkAjTaUpIDkjmCi7w1QOVbnyYU2f-KOWEnl2EAIZg", "A1:J93", "Party sheet list");
+            var data = SpreadsheetService.GetNotEmptySpreadsheetRange("1tKXkAjTaUpIDkjmCi7w1QOVbnyYU2f-KOWEnl2EAIZg", "A1:J130", "Party sheet list");
             Assert.AreEqual("Talents:", data[28][0]);
             Assert.AreEqual("Skills:", data[40][0]);
             Assert.AreEqual("Knowledge:", data[60][0]);

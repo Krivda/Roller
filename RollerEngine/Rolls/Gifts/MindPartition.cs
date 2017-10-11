@@ -30,6 +30,7 @@ namespace RollerEngine.Rolls.Gifts
 
         public int Roll(Build actor)
         {
+            //TODO: spend Willpower
             _botchCount = 0;
             int successes = base.Roll(actor, new List<Build>() { actor }, false, false);
 

@@ -184,7 +184,6 @@ namespace RollerEngine.Character
                     //Spiridon teach Lynn Ancestor Veneration
                     plan.Add(new TeachRiteToGarou(Spiridon, Lynn, Rite.AncestorVeneration, 1));
                     plan.Add(new LearnRiteFromGarou(Lynn, Spiridon, Rite.AncestorVeneration, 1));
-
                     break;
 
                 //22 Mar (teaching week)
@@ -212,6 +211,10 @@ namespace RollerEngine.Character
                     //Lynn teach Yoki Ancestor Veneration
                     plan.Add(new TeachRiteToGarou(Lynn, Yoki, Rite.AncestorVeneration, 1));
                     plan.Add(new LearnRiteFromGarou(Yoki, Lynn, Rite.AncestorVeneration, 1));
+
+                    plan.Add(new QueueRiteLearning(Nameless, Rite.VigorOfDeparted));
+                    plan.Add(new QueueRiteLearning(Nameless, Rite.Knowing));
+                    plan.Add(new QueueRiteLearning(Nameless, Rite.TeaCeremony));
                     break;
 
                 //05 Apr (teaching week)
@@ -246,7 +249,7 @@ namespace RollerEngine.Character
                     buffPlan.Nameless = NamelessBuff.MaxBoostCarnyx();
 
                     //teach
-                    plan.Add(new TeachAbility(Kinfolk2, Nameless, Build.Abilities.Linguistics));
+                    plan.Add(new TeachAbility(Kinfolk2, Nameless, Build.Abilities.Survival));
                     plan.Add(new TeachAbility(Kinfolk1, Spiridon, Build.Abilities.Occult));
                     plan.Add(new TeachAbility(Kurt, Yoki, Build.Abilities.Poison)); //TODO: manually add Science 1 for 3 XP
                     plan.Add(new TeachAbility(Spiridon, Kinfolk2, Build.Abilities.Crafts));
@@ -299,7 +302,6 @@ namespace RollerEngine.Character
                     plan.Add(new TeachAbility(Nameless, Yoki, Build.Abilities.Brawl));
                     plan.Add(new TeachAbility(Kinfolk1, Kurt, Build.Abilities.Firearms));
                     plan.Add(new TeachAbility(Spiridon, Kinfolk2, Build.Abilities.Performance));
-
                     break;
 
                 //24 May
@@ -327,12 +329,16 @@ namespace RollerEngine.Character
 
                 //07,14,21,28 June
                 case 18:
+                    //this is just for results of learning
+                    buffPlan.Nameless = NamelessBuff.MaxBoostCarnyx();
+                    break;
+
                 case 19:
                 case 20:
                 case 21:
                     return null; //pause between arcs
 
-                //plan.Add(new TeachAbility(Kinfolk2, Nameless, Build.Abilities.Survival))
+                //plan.Add(new TeachAbility(Kinfolk2, Nameless, Build.Abilities.Linguistics))
                 //UnbrokenCord.plan.Add(new TeachAbility(Lynn, Nameless, Build.Abilities.Enigmas));
                 //plan.Add(new TeachAbility(Kinfolk2, Lynn, Build.Abilities.Medicine));
                 //plan.Add(new TeachAbility(Poison, Spiridon, Build.Abilities.Poison));

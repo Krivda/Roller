@@ -4,7 +4,6 @@ using RollerEngine.Character.Common;
 using RollerEngine.Logger;
 using RollerEngine.Modifiers;
 using RollerEngine.Roller;
-using RollerEngine.WodSystem;
 using RollerEngine.WodSystem.WTA;
 
 namespace RollerEngine.Rolls.Rites
@@ -36,7 +35,7 @@ namespace RollerEngine.Rolls.Rites
             if (!actor.CheckBonusExists(Build.Abilities.Rituals, Name))
             {
                 actor.SpendGnosis(_gnosisSpent);
-                actor.SpendSanctifiedPlant(Build.Counters.SanctifiedPlants.Tobacco,1);
+                //actor.SpendSanctifiedPlant(Build.Counters.SanctifiedPlants.Tobacco,1);
 
                 int result = base.Roll(actor, new List<Build>() {actor}, hasSpec, hasWill);
 

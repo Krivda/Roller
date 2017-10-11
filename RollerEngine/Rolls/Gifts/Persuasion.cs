@@ -20,7 +20,7 @@ namespace RollerEngine.Rolls.Gifts
             if (!actor.CheckBonusExists(Build.Atributes.Manipulation, Name))
             {
 
-                int result = base.Roll(actor, new List<Build>() {actor}, hasSpec, hasWill);
+                int result = base.Roll(actor, new List<Build>() {actor}, hasSpec, hasWill, true);
 
                 if (result > 0)
                 {

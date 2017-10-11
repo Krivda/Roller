@@ -13,6 +13,7 @@ namespace RollerEngine.Character
     {
 
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        //todo: piece of shit: breaks in parallel tests
         private static bool _expPoolStarted;
 
         public static HatysParty LoadParty(IRollLogger log, IRollAnalyzer roller)
@@ -162,7 +163,14 @@ namespace RollerEngine.Character
                 case "Tribal Skills:":
                 case "Tribal Knowledges:":
                 case "Other:":
-
+                case "Class":
+                case "Rank":
+                case "Breed":
+                case "Auspice":
+                case "Tribe":
+                case "Camp":
+                case "Pack":
+                case "Caern":
                     logger.Trace("line {0} skipped, becuase it is a known placeholder '{1}'", index, traitName);
                     return String.Empty;
             }

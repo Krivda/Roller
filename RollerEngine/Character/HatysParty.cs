@@ -6,9 +6,7 @@ using RollerEngine.Character.Party;
 using RollerEngine.Roller;
 using RollerEngine.Logger;
 using RollerEngine.Modifiers;
-using RollerEngine.Rolls.Rites;
 using RollerEngine.WeekPlan;
-using RollerEngine.WodSystem;
 using RollerEngine.WodSystem.WTA;
 
 namespace RollerEngine.Character
@@ -336,6 +334,18 @@ namespace RollerEngine.Character
                             itemKvp.Key, itemKvp.Value.Item1, itemKvp.Value.Item2));
                 }
             }
+
+            /* todo: later
+            foreach (var hatysPartyMemberKvp in _party)
+            {
+                string spentWillKey = Build.CountersList.GetKey(Build.CountersList.SpentPrefix, Build.RollableTraits.Willpower);
+
+                _log.Log(Verbosity.Error,
+                    string.Format("{0} has used {1} of {2} Will.", hatysPartyMemberKvp.Key,
+                        hatysPartyMemberKvp.Value.Self.Counters[spentWillKey],
+                        hatysPartyMemberKvp.Value.Self.Traits[Build.RollableTraits.Willpower]));
+
+            }*/
         }
 
         public void LogTotalProgress()
@@ -382,6 +392,8 @@ namespace RollerEngine.Character
                 {
                     buildKvp.Value.AncestorsUsesLeft = 1;
                 }
+
+                buildKvp.Value.CountersWeekStart();
 
             }
 
@@ -648,8 +660,7 @@ namespace RollerEngine.Character
 
                 if (actor.Value.WeeklyPartialActions != 0)
                 {
-                    _log.Log(Verbosity.Error,  string.Format(
-                        "{0} has {1} unused partial actions!", actor.Key, actor.Value.WeeklyPartialActions));
+                    _log.Log(Verbosity.Error,  string.Format("{0} has {1} unused partial actions!", actor.Key, actor.Value.WeeklyPartialActions));
                 }
             }
 
